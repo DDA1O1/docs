@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* src/tailwind.css */
-img[alt="My Logo"] {
-  width: 10rem; /* Equivalent to w-40 in Tailwind */
-  transition: transform 0.3s; /* Equivalent to transition-transform and duration-300 */
-}
 
 img[alt="My Logo"]:hover {
   transform: scale(1.1); /* Equivalent to hover:scale-110 */

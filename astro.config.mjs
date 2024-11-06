@@ -9,9 +9,9 @@ import tailwind from '@astrojs/tailwind';
 // https://astro.build/config
 export default defineConfig({
   integrations: [starlight({
-      title: 'My Docs',
+      title: 'Docs',
       logo:{
-          src: './public/favicon.svg',
+          src: './src/assets/fg.svg',
           alt: 'My Logo',  // Add an alt attribute for selecting the logo
       },
       customCss:[
