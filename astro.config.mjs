@@ -22,6 +22,9 @@ export default defineConfig({
           github: 'https://github.com/DDA1O1',
           twitter: 'https://twitter.com/DDA1O1',
       },
+      editLink: {
+          baseUrl: 'https://github.com/DDA1O1/docs/tree/main',
+      },
       sidebar: [
           {
               label: 'Guides',
