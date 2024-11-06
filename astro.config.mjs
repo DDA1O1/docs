@@ -13,6 +13,10 @@ export default defineConfig({
       logo:{
           src: './public/favicon.svg',
       },
+      customCss:[
+          // Path to your Tailwind base styles:
+        './src/tailwind.css',
+        ],
       social: {
           github: 'https://github.com/withastro/starlight',
       },
@@ -29,7 +33,10 @@ export default defineConfig({
               autogenerate: { directory: 'reference' },
           },
       ],
-  }), tailwind()],
+  }), tailwind({
+    // Disable the default base styles:
+    applyBaseStyles: false,
+  })],
 
   output: 'server',
   adapter: vercel(),
