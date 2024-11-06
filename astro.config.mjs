@@ -12,6 +12,7 @@ export default defineConfig({
       title: 'My Docs',
       logo:{
           src: './public/favicon.svg',
+          alt: 'My Logo',  // Add an alt attribute for selecting the logo
       },
       customCss:[
           // Path to your Tailwind base styles:
