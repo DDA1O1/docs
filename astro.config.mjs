@@ -19,7 +19,8 @@ export default defineConfig({
         './src/tailwind.css',
         ],
       social: {
-          github: 'https://github.com/withastro/starlight',
+          github: 'https://github.com/DDA1O1',
+          twitter: 'https://twitter.com/DDA1O1',
       },
       sidebar: [
           {
