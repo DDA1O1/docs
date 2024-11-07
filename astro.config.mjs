@@ -34,8 +34,24 @@ export default defineConfig({
               ],
           },
           {
-              label: 'Reference',
-              autogenerate: { directory: 'reference' },
+              label: 'Computer Architecture',
+              autogenerate: { directory: 'Computer_Architecture' },
+          },
+          {
+              label: 'C++',
+              autogenerate: { directory: 'C++' },
+          },
+          {
+              label: 'Web dev',
+              autogenerate: { directory: 'web dev' },
+          },
+          {
+              label: 'Python',
+              autogenerate: { directory: 'python' }
+          },
+          {
+              label: 'Data Science',
+              autogenerate: { directory: 'data_science' }
           },
       ],
   }), tailwind({
