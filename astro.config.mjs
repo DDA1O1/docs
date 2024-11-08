@@ -11,7 +11,7 @@ export default defineConfig({
   integrations: [starlight({
       title: 'Docs',
       logo:{
-          src: './src/assets/fg.svg',
+          src: './src/assets/r.png',
           alt: 'My Logo',  // Add an alt attribute for selecting the logo
       },
       customCss:[
