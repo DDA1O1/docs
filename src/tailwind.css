@@ -9,3 +9,15 @@ img[alt="My Logo"]:hover {
 .custom-frame {
   @apply  text-white p-1 rounded-md shadow-md border-l-4 border-blue-500;
 }
+
+.bold-frame {
+  @apply  text-yellow-600 text-xl font-semibold p-2 rounded-md shadow-md border-l-8  mb-4;
+}
+
+.symbol {
+  @apply text-xl font-bold; /* Adjust the color and size as needed */
+}
+
+
+
+
