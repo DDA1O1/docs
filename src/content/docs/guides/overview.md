@@ -8,4 +8,6 @@ description: A guide.
 ## Before you start
 
 - Niether any book nor any course can teach you 100% of the things you need to know.
-- It's a never ending learning process.
+- This is just a overview guide to get you started about a subject.
+- Do not expect that you will become expert after reading this guide or any other guide.
+- It will take you a decade to master any subject.
