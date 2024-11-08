@@ -53,6 +53,10 @@ export default defineConfig({
               label: 'Data Science',
               autogenerate: { directory: 'data_science' }
           },
+          {
+              label: 'Thoughts',
+              autogenerate: { directory: 'Thoughts' }
+          },
       ],
   }), tailwind({
     // Disable the default base styles:
