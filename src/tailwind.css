@@ -2,7 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-
 img[alt="My Logo"]:hover {
   transform: scale(1.1); /* Equivalent to hover:scale-110 */
+}
+
+.custom-frame {
+  @apply  text-white p-1 rounded-md shadow-md border-l-4 border-blue-500;
 }
