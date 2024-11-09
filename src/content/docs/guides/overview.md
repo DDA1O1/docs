@@ -4,6 +4,7 @@ description: A guide.
 ---
 
 - Documentaion is the fastest way to learn anything.If you don't want to be stuck in tutorial hell, start doing it and write about it.
+- Although some Documentaion is written in such a fancy and sophisticated way that it is become hard to understand.Only way is to implement it first, then try to understand it.Don't get stuck in jargons.
 
 ## Before you start
 
