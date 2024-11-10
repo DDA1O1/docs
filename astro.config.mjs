@@ -43,8 +43,12 @@ export default defineConfig({
               autogenerate: { directory: 'C++' },
           },
           {
-              label: 'Web dev',
-              autogenerate: { directory: 'web dev' },
+              label: 'Web Dev',
+              items: [
+                //   { label: 'HTML', slug: 'web_dev/html' }, 
+                  { label: 'JavaScript', autogenerate: { directory: 'web_dev/Javascript' } },
+                  { label: 'CSS', autogenerate: { directory: 'web_dev/CSS' } },
+              ]
           },
           {
               label: 'Python',
