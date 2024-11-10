@@ -10,9 +10,9 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   integrations: [starlight({
       title: 'Docs',
-      favicon: './src/assets/r.png',
+      favicon: '/public/r.png',
       logo:{
-          src: './src/assets/r.png',
+          src: '/public/r.png',
           alt: 'My Logo', // Add an alt attribute for selecting the logo
       },
       customCss:[
