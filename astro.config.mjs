@@ -12,7 +12,8 @@ export default defineConfig({
       title: 'Docs',
       logo:{
           src: './src/assets/r.png',
-          alt: 'My Logo',  // Add an alt attribute for selecting the logo
+          alt: 'My Logo',
+          replacesTitle: true  // Add an alt attribute for selecting the logo
       },
       customCss:[
           // Path to your Tailwind base styles:
