@@ -11,7 +11,7 @@ img[alt="My Logo"]:hover {
 }
 
 .bold-frame {
-  @apply  text-orange-300 text-xl font-semibold p-2 rounded-md shadow-md border-l-8  mb-4;
+  @apply  text-orange-300 text-xl font-semibold p-2 rounded-md shadow-md;
 }
 
 
