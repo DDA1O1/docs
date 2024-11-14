@@ -1,8 +1,35 @@
 ---
-title: "Hello World"
+title: "Setting up"
 description: "Setting up"
 ---
 
 ### Setting up the runtime environment
 
-- Download runtime environment such as [Node.js](https://nodejs.org/), [Bun](https://bun.sh/), [Deno](https://deno.com/).Traditionally,Javascript was used only on the client side(in the browser). Node.js is the most popular runtime environment with vast ecosystem of libraries(npm).Built on the [V8 JavaScript engine](https://github.com/v8/v8) (the same engine used by Chrome), Node.js enables developers to use JavaScript to build server applications, command-line tools, APIs, and more.
+- Download runtime environment such as [Node.js](https://nodejs.org/), [Bun](https://bun.sh/), [Deno](https://deno.com/).Traditionally,Javascript was used only on the client side(in the browser). Node.js is the most popular runtime environment with vast ecosystem of libraries(npm).It was developed by [Ryan Dahl](https://x.com/rough__sea) in 2009, also creter of Deno.Built on the [V8 JavaScript engine](https://github.com/v8/v8) (the same engine used by Chrome), Node.js enables developers to use JavaScript to build server applications, command-line tools, APIs, and more.
+
+
+- Install any IDE such as [VSCode](https://code.visualstudio.com/).
+
+### Hello World in Node.js
+
+- Check if node is installed by running `node -v` in the terminal.
+
+```bash
+$ node -v
+v18.16.0
+```
+
+- Create a new folder for your project and open it in your IDE.Create a new file called index.js and save it in the folder.
+
+```javascript
+// index.js
+console.log("Hello World!");
+```
+
+- Open the terminal and run `node index.js` in the folder.Run the command to start the server.
+
+```bash
+$ node index.js
+Hello World!
+```
+
