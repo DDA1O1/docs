@@ -421,3 +421,30 @@ console.log(Math.tan(Math.PI / 4)); // 1
 ```
 
 - To learn more about the `Math` object,visit [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math).
+
+## Date and Time
+
+- The `Date` object in Javascript provides a set of methods for working with dates and times.
+
+```javascript
+let date = new Date(); // New keyword is used to create a new Date object.
+console.log(date); // "Day Month Date Year Hours:Minutes:Seconds GMT+Timezone"
+
+// Methods of the Date object
+console.log(date.getFullYear()); // 2024
+console.log(date.getMonth()); // 10 (0-11)
+console.log(date.getDate()); // 15
+console.log(date.getHours()); // 10
+console.log(date.getMinutes()); // 10
+console.log(date.getSeconds()); // 10
+console.log(date.getDay()); // 3 (0-6)
+console.log(date.getTime()); // 1726358410000 (milliseconds since January 1, 1970)
+console.log(date.toLocaleString()); // "Day Month Date Year Hours:Minutes:Seconds GMT+Timezone"
+console.log(date.toLocaleDateString()); // "Day Month Date Year"
+console.log(date.toLocaleTimeString()); // "Hours:Minutes:Seconds"
+
+// We can also use the toLocaleString method to format the date.
+console.log(date.toLocaleString('default', {month: 'long'})); // "Day Month Date Year"
+```
+
+- To learn more about the `Date` object,visit [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date).
