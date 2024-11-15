@@ -70,8 +70,21 @@ var variableName2 = "value";
 - Javascript has two types of data types:Primitive and Non-Primitive.
 - Primitive data types are immutable(cannot be changed).
 - Non-Primitive data types are mutable(can be changed).
+- This categorisation reflects how JavaScript manages data in memory and how programs access this data. Primitive types are stored directly in memory, while non-primitive types store references to their data. For a deeper understanding, check out the [MDN documentation on JavaScript data structures](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures).
 
 ### Primitive Data Types
+
+- **Call by value:** When a primitive data type is assigned to a variable, a copy of the value is created and stored in the new variable. Changes to one variable don't affect the other since each has its own independent copy of the data.
+
+```javascript
+// Example of call by value
+let x = 10;
+let y = x;  // y gets a copy of x's value
+
+y = 20;  // modifying y doesn't affect x
+console.log(x);  // 10
+console.log(y);  // 20
+```
 
 - **String:** Represents a sequence of characters.
 - **Number:** Represents numeric values.
@@ -83,8 +96,21 @@ var variableName2 = "value";
 
 ### Non-Primitive Data Types
 
+- **Call by reference:** When a non-primitive data type is assigned to a variable, the variable stores a reference (memory address) to the data rather than the actual data itself. This means multiple variables can point to the same data in memory, and modifying the data through one variable affects all references to that data.
+
+```javascript
+// Example of call by reference
+let arr1 = [1, 2, 3];
+let arr2 = arr1;  // arr2 references the same array as arr1
+
+arr2.push(4);
+console.log(arr1);  // [1, 2, 3, 4]
+console.log(arr2);  // [1, 2, 3, 4]
+```
+
 - **Array:** Represents a collection of elements.
 - **Object:** Represents a collection of key-value pairs.
+- **Function:** Represents a function.
 
 ## Type Conversion
 
@@ -161,3 +187,24 @@ console.log(a++); // 2
 console.log(a); // 3
 ```
 - To learn more about prefix and postfix operators,visit [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Increment).
+
+### Comparison Operators
+
+- Comparison operators are used to compare two values.
+- The result of a comparison is a boolean value.
+
+```javascript
+console.log(2 == "2"); // true
+console.log(2 === "2"); // false
+console.log(2 != "2"); // false
+console.log(2 !== "2"); // true
+
+console.log(null > 0); // false
+console.log(null == 0); // false 
+console.log(null >= 0); // true
+
+// The reason for the above behaviour is that the comparison operator converts null to a number,treating it as 0.That is why null >= 0 is true and null > 0 is false.Equality check == does not convert null to a number.That is why null == 0 is false.
+
+// To avoid such confusion,it is recommended to use the strict equality operator ===.Write code in a way that does not rely on type conversion.Clean code is always preferred.
+```
+
