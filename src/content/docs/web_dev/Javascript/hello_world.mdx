@@ -155,6 +155,25 @@ console.log(typeof num); // "number"
 // "false" => true
 // "" => false
 ```
+:::tip[TypeScript]
+TypeScript is a programming language that is a superset of JavaScript. It adds static typing to help catch errors during development and prevent unexpected type-related behaviors.
+
+```typescript
+// TypeScript will catch these errors during development
+function calculateTotal(price: number, quantity: number): number {
+    return price * quantity;
+}
+
+calculateTotal(10, 2);     // ✅ Works fine: 20
+calculateTotal("10", 2);   // ❌ Error: Argument of type 'string' is not assignable to parameter of type 'number'
+calculateTotal(10, "2");   // ❌ Error: Argument of type 'string' is not assignable to parameter of type 'number'
+
+// In regular JavaScript, these would silently convert types and potentially cause bugs
+// "10" * 2    -> 20
+// 10 * "2"    -> 20
+// "10" * "2"  -> 20
+```
+:::
 
 ## Operator Precedence
 
