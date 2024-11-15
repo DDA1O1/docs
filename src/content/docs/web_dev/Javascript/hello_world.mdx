@@ -130,3 +130,34 @@ console.log(typeof num); // "number"
 // "" => false
 ```
 
+## Operator Precedence
+
+- Operator precedence is the order in which operators are evaluated in an expression.
+- For example,in the expression `2 + 3 * 4`,the multiplication operator `*` has higher precedence than the addition operator `+`.So,it is evaluated first.
+
+```javascript
+console.log(2 + 3 * 4); // 14
+```
+- To learn more about operator precedence,visit [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence).
+
+:::danger[Best Practices]
+**Do not rely on operator precedence.Use parentheses to make the code more readable.**
+
+```javascript
+console.log((2 + 3) * 4); // 20
+```
+:::
+
+## Prefix and Postfix Operators
+
+- Prefix operators are operators that are placed before the operand.
+- Postfix operators are operators that are placed after the operand.
+
+```javascript
+let a = 1;
+console.log(++a); // 2
+console.log(a); // 2
+console.log(a++); // 2
+console.log(a); // 3
+```
+- To learn more about prefix and postfix operators,visit [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Increment).
