@@ -3,13 +3,19 @@ title: "Setting up"
 description: "Setting up"
 ---
 
-## History
+### History
 
 - Netscape wanted to make the web more interactive.They needed a scripting language that is easy to use and can be executed in the browser.Without needing a full page reload.
 - They hired Brendan Eich and he created the language in 10 days.The intense pressure was due to the fact that Microsoft was also developing a similar product called JScript.
 - They named it as LiveScript but later changed it to Javascript when Java was very popular to leverage the popularity of Java.
 - [ECMA International](https://www.ecma-international.org/) standardized the language in 1997 and named it as ECMAScript(ES) due to compatibility issues between internet explorer and netscape.
 - Due to its rushed development,the language has some wierd behaviours initially which was later fixed with each new [ECMAScript version](https://262.ecma-international.org/12.0/).
+- For example,the typeof operator used to return "object" for null.
+
+```javascript
+console.log(typeof null); // "object"
+```
+---
 
 :::tip[Atwood's Law]
 **Any application that can be written in Javascript,will eventually be written in Javascript.**
@@ -45,4 +51,82 @@ $ node index.js
 Hello World!
 ```
 
+### Variables and Constants
+
+- Variables are used to store data that can be changed during the execution of the program.
+- Constants are used to store data that cannot be changed during the execution of the program.
+
+```javascript
+let variableName = "value";
+const constantName = "value";
+var variableName2 = "value";
+```
+:::caution[var]
+ **var** is used to declare a variable in older versions of Javascript.It is not recommended to use var in modern Javascript.Due to its function scope,it passes the value of local variable to the global scope.This can lead to unexpected behaviour in the code.
+:::
+
 ## Data Types
+
+- Javascript has two types of data types:Primitive and Non-Primitive.
+- Primitive data types are immutable(cannot be changed).
+- Non-Primitive data types are mutable(can be changed).
+
+### Primitive Data Types
+
+- **String:** Represents a sequence of characters.
+- **Number:** Represents numeric values.
+- **BigInt:** Represents numeric values that are too large to be represented by the Number type.
+- **Boolean:** Represents a boolean value.
+- **Null:** Represents a null value.
+- **Undefined:** Represents an undefined value.
+- **Symbol:** Used to create unique identifiers for objects.
+
+### Non-Primitive Data Types
+
+- **Array:** Represents a collection of elements.
+- **Object:** Represents a collection of key-value pairs.
+
+## Type Conversion
+
+- Type conversion is the process of converting one data type to another.
+- When we are fetching data from a database or an API,or taking input from the user,we do not know whether the data is of the type we expect.Type conversion is used to handle such situations.
+
+```javascript
+let a = 1;
+let b = "2";
+console.log(a + b); // "12"
+
+// Here,Javascript automatically converts the number 1 to a string and concatenates it with the string "2".
+
+let a = "124abc";
+let num = Number(a);
+console.log(num); // NaN
+console.log(typeof num); // "number"
+
+// Here,Javascript automatically converts the string "124abc" to a number.But since the string is not a valid number,it returns NaN.The typeof operator still returns "number".
+
+let a = null;
+console.log(a); // null
+console.log(typeof a); // "object"
+let num = Number(a);
+console.log(num); // 0
+console.log(typeof num); // "number"
+
+// "25" => 25
+// true => 1
+// false => 0
+// null => 0
+// undefined => NaN
+// "25abc" => NaN
+// "abc" => NaN
+// {} => NaN
+// [] => 0
+// [1,2,3] => NaN
+// (function(){}) => NaN
+// Symbol => NaN
+// Boolean => true or false
+// "true" => true
+// "false" => true
+// "" => false
+```
+
