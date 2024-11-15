@@ -227,3 +227,190 @@ console.log(null >= 0); // true
 // To avoid such confusion,it is recommended to use the strict equality operator ===.Write code in a way that does not rely on type conversion.Clean code is always preferred.
 ```
 
+## Stack and Heap Memory
+
+- Stack memory is used for primitive data types.
+- Heap memory is used for non-primitive data types.
+
+### Stack Memory
+
+- The stack memory in JavaScript operates on a Last-In-First-Out (LIFO) principle:
+- Each primitive variable gets pushed onto the stack
+- Each value has its own space in memory
+- Variables are removed in reverse order of their addition
+- Stack memory is automatically managed
+- Perfect for primitive data types (numbers, strings, booleans)
+
+:::note
+- Stack memory is fast and automatically cleaned up, but has a limited size. It's used for:
+- Primitive values
+- Function call references
+- Local variables
+:::
+
+```ascii
+                    JavaScript Call Stack
+            ═══════════════════════════════════
+
+                    Function Returns    
+                         ⬆️
+┌────────────────────┐   │            
+│    Function C      │   │            
+│                    │   │            
+├────────────────────┤   │            
+│    Function B      │   │            
+│                    │   │            
+├────────────────────┤   │            
+│    Function A      │   │            
+│                    │   │            
+├────────────────────┤   │            
+│      Main()        │   │            
+└────────────────────┘   │            
+     Call Stack           │            
+                    Function Calls    
+
+╔══════════════════════════════════════╗
+║              Execution Order         ║
+╠══════════════════════════════════════╣
+║ 1. Main() calls Function A    ⬇️     ║
+║ 2. Function A calls B         ⬇️     ║
+║ 3. Function B calls C         ⬇️     ║
+║ 4. C completes, returns to B  ⬆️     ║
+║ 5. B completes, returns to A  ⬆️     ║
+║ 6. A completes, returns to Main  ⬆️  ║
+╚══════════════════════════════════════╝
+```
+### Heap Memory
+
+- The heap memory in JavaScript is used for non-primitive data types.
+- Objects are stored in the heap memory.
+- Variables hold references to the objects in the heap.
+- Multiple references can point to the same object.
+- Memory is cleaned by the garbage collector.
+
+```ascii
+                    JavaScript Heap Memory
+            ═══════════════════════════════════
+
+Stack (References)          Heap (Objects)
+┌──────────────────┐       ╔════════════════════╗
+│                  │       ║     Object 1       ║
+│ person1 ─────────┼─────→║ {                  ║
+│                  │       ║   name: "Alice",   ║
+│                  │       ║   age: 25          ║
+│ person2 ─────────┼─┐     ║ }                  ║
+│                  │ │     ╚════════════════════╝
+└──────────────────┘ │     
+                     │     ╔════════════════════╗
+                     └────→║     Object 2       ║
+                           ║ {                  ║
+                           ║   name: "Bob",     ║
+                           ║   age: 30          ║
+                           ║ }                  ║
+                           ╚════════════════════╝
+
+╔════════════════════════════════════════════════════╗
+║                 Key Characteristics                ║
+╠════════════════════════════════════════════════════╣
+║ • Objects are stored in heap memory                ║
+║ • Variables hold references (pointers) to objects  ║
+║ • Multiple references can point to same object     ║
+║ • Memory is cleaned by garbage collector           ║
+║ • No guaranteed order of storage                   ║
+╚════════════════════════════════════════════════════╝
+
+Example Code:
+────────────────────────────────────────────────────
+let person1 = { name: "Alice", age: 25 };
+let person2 = { name: "Bob", age: 30 };
+
+// person1 and person2 store references to 
+// their respective objects in the heap
+```
+
+:::note
+- The stack memory stores the references to the objects in the heap.
+- The heap memory stores the objects.
+:::
+
+## String Interpolation
+
+- String interpolation is the process of embedding variables or expressions within a string.
+- In older versions of Javascript,we used to use the `+` operator to concatenate strings.
+
+```javascript
+let name = "Alice";
+console.log("Hello " + name); // "Hello Alice"
+```
+
+- In modern versions of Javascript,we use template literals to achieve string interpolation.
+
+```javascript
+let name = "Alice";
+console.log(`Hello ${name}`); // "Hello Alice"
+```
+### String Methods
+
+- String methods are functions that can be used to manipulate strings.
+
+```javascript
+let name = "Alice";
+console.log(name.toUpperCase()); // "ALICE"
+console.log(name.toLowerCase()); // "alice"
+console.log(name.length); // 5
+console.log(name.slice(1, 3)); // "li"
+console.log(name.replace("A", "B")); // "Blic"
+console.log(name.includes("A")); // true
+console.log(name.indexOf("A")); // 0
+console.log(name.charAt(0)); // "A"
+console.log(name.split("")); // ["A", "l", "i", "c", "e"]
+console.log(name.trim()); // "Alice"
+console.log(name.padStart(10, "X")); // "XXXXXAlice"
+console.log(name.padEnd(10, "X")); // "AliceXXXXX"
+console.log(name.repeat(3)); // "AliceAliceAlice"
+```
+- To learn more about string methods,open the console in your browser and type `String.prototype`.You will see a list of methods that can be used with strings.Since all strings are objects in Javascript,they have methods associated with them.Visit [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) for more information.
+
+## Numbers
+
+- Numbers in Javascript are of type `number`.
+- We can use the `Number` object to create numbers.
+
+```javascript
+let num = new Number(10);
+console.log(num); // 10
+console.log(typeof num); // "object"
+
+// We can also use the Number constructor to convert a string to a number.
+let num = Number("10");
+console.log(num); // 10
+console.log(typeof num); // "number"
+
+// Methods of the Number object
+console.log(num.toString()); // "10"
+console.log(num.toFixed(2)); // "10.00"
+console.log(num.toPrecision(3)); // "10.0"
+console.log(num.toExponential(2)); // "1.00e+1"
+console.log(num.toLocaleString()); // "10"
+console.log(num.toPrecision(3)); // "10.0"
+
+Number.MAX_VALUE; // 1.7976931348623157e+308
+Number.MIN_VALUE; // 5e-324
+```
+
+- To learn more about the `Number` object,visit [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number).
+
+### Math Object
+
+- The `Math` object in Javascript provides a set of methods for performing mathematical operations.
+
+```javascript
+console.log(Math.abs(-10)); // 10
+console.log(Math.ceil(1.1)); // 2
+console.log(Math.floor(1.9)); // 1
+console.log(Math.round(1.5)); // 2
+console.log(Math.max(1, 2, 3)); // 3
+console.log(Math.min(1, 2, 3)); // 1
+```
+
+- To learn more about the `Math` object,visit [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math).
