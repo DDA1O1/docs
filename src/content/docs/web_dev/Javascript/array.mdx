@@ -1,7 +1,152 @@
 ---
-title: Array
-description: Array is a collection of elements.
+title: Arrays 
+description: Understanding JavaScript arrays and their copy behaviors
 sidebar: {
     order: 2
 }
 ---
+
+## Arrays in JavaScript
+
+Arrays in JavaScript are like ordered lists that:
+- Start counting from 0 (e.g., first item is at position 0)
+- Can grow or shrink in size
+- Can store any type of data (numbers, strings, objects, even other arrays)
+- Can be modified after creation
+
+```javascript
+// Basic array creation and usage
+const numbers = [1, 2, 3, 4, 5];
+const mixed = ['text', 42, true, { key: 'value' }, [1, 2]];
+```
+
+## Array Copy Behaviors
+
+### 1. Reference Copy
+The simplest form of copying - creates a new reference to the same array.
+```javascript
+const original = [1, 2, {x: 3}];
+const reference = original;  // Same array in memory
+
+reference.push(4);
+console.log(original);  // [1, 2, {x: 3}, 4]  (affected)
+console.log(reference); // [1, 2, {x: 3}, 4]  (affected)
+```
+
+### 2. Shallow Copy
+Creates a new array but maintains references to nested objects.
+
+```ascii
+         Shallow Copy Visualization
+    ═══════════════════════════════════
+
+Original Array         Copied Array
+┌──────────────┐      ┌──────────────┐
+│    arr1      │      │    arr2      │
+├──────────────┤      ├──────────────┤
+│ [0]: 1       │      │ [0]: 1       │
+│ [1]: 2       │      │ [1]: 2       │
+│ [2]: ─────┐  │      │ [2]: ─────┐  │
+└───────────┼──┘      └───────────┼──┘
+            │                     │
+            │   Heap Memory       │
+            │  ┌────────────┐     │
+            └─→│ {x: 10}    │←────┘
+               └────────────┘
+```
+
+```javascript
+// Shallow copy methods
+const original = [1, 2, {x: 3}];
+const shallowCopy1 = [...original];     // Spread operator
+const shallowCopy2 = Array.from(original); // Array.from()
+const shallowCopy3 = original.slice();     // slice()
+
+// Demonstrating shared references
+shallowCopy1[2].x = 100;
+console.log(original[2].x);     // 100 (nested object affected)
+```
+
+### 3. Deep Copy
+Creates a completely independent copy with new references for all nested items.
+
+```ascii
+         Deep Copy Visualization
+    ═══════════════════════════════════
+
+Original Array         Deep Copied Array
+┌──────────────┐      ┌──────────────┐
+│    arr1      │      │    arr2      │
+├──────────────┤      ├──────────────┤
+│ [0]: 1       │      │ [0]: 1       │
+│ [1]: 2       │      │ [1]: 2       │
+│ [2]: ─────┐  │      │ [2]: ─────┐  │
+└───────────┼──┘      └───────────┼──┘
+            │                     │
+            │   Heap Memory       │
+            │  ┌────────────┐     │  ┌────────────┐
+            └─→│ {x: 10}    │     └─→│ {x: 10}    │
+               └────────────┘        └────────────┘
+               (Object #1)           (Object #2)
+```
+
+```javascript
+// Modern deep copy methods
+const original = [1, 2, {x: 3}];
+
+// Method 1: structuredClone (recommended)
+const deepCopy1 = structuredClone(original);
+
+// Method 2: JSON parse/stringify (with limitations)
+const deepCopy2 = JSON.parse(JSON.stringify(original));
+
+// Demonstrating independence
+deepCopy1[2].x = 200;
+console.log(original[2].x);  // Still 3 (unaffected)
+```
+### Example
+
+```javascript
+const users = [
+    { id: 1, name: 'Alice', settings: { theme: 'dark' } },
+    { id: 2, name: 'Bob', settings: { theme: 'light' } }
+];
+
+// Shallow copy behavior
+const shallowUsers = [...users];
+shallowUsers[0].settings.theme = 'light';
+console.log(users[0].settings.theme);      // 'light' (affected)
+
+// Deep copy behavior
+const deepUsers = structuredClone(users);
+deepUsers[0].settings.theme = 'dark';
+console.log(users[0].settings.theme);      // 'light' (unaffected)
+```
+
+## Array Methods
+
+Common array methods can be categorized by whether they modify the original array:
+
+### Non-mutating Methods (Return new array)
+```javascript
+const arr = [1, 2, 3, 4, 5];
+arr.map(item => item * 2);     // Returns [2, 4, 6, 8, 10], arr unchanged
+arr.filter(item => item % 2 === 0); // Returns [2, 4], arr unchanged
+arr.reduce((acc, item) => acc + item, 0); // Returns 15, arr unchanged
+arr.slice(1, 4);              // Returns [2, 3, 4], arr unchanged
+arr.forEach(item => console.log(item)); // Returns undefined, arr unchanged
+arr.join('-');                      // Returns '1-2-3-4-5', arr unchanged
+```
+
+### Mutating Methods (Modify original array)
+```javascript
+const arr = [1, 2, 3, 4, 5];
+arr.splice(1, 2);             // Returns [2, 3], arr is now [1, 4, 5]
+arr.push(6);                  // Returns new length 4, arr is now [1, 4, 5, 6]
+arr.pop();                    // Returns 6, arr is now [1, 4, 5]
+arr.forEach(item => {         // Returns undefined, can mutate arr if callback modifies it
+    console.log(item);
+});
+arr.sort((a, b) => a - b);    // Returns sorted array, arr is now [1, 4, 5, 6]
+```
+
