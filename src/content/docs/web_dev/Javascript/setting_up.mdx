@@ -452,3 +452,45 @@ console.log(date.toLocaleString('default', {month: 'long'})); // "Day Month Date
 ```
 
 - To learn more about the `Date` object,visit [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date).
+
+## Symbols in JavaScript
+
+Symbols create unique identifiers that help prevent naming conflicts. 
+
+- Here is an example of how Symbols can be used to create private properties of an object.
+- We developed a game and we want to store the score of the player in a private property.We can use a Symbol to create a unique key for the score property.
+- Symbols are not enumerable/iterable and are not accessible using regular object inspection.
+- If another developer wants to add a new property with the same name as the Symbol,it will not override the existing property.
+```javascript
+// Create a Symbol for tracking game score
+const scoreKey = Symbol('score');
+
+const gamePlayer = {
+    name: 'Player 1',
+    level: 1,
+    [scoreKey]: 0,  // "Private" score counter using Symbol
+    
+    // Methods to work with the score
+    addPoints(points) {
+        this[scoreKey] += points;
+    },
+    
+    getScore() {
+        return this[scoreKey];
+    }
+};
+
+// Using the game player
+gamePlayer.addPoints(100);
+console.log(gamePlayer.getScore());  // 100
+
+// Regular object inspection won't show the score
+console.log(Object.keys(gamePlayer));  // ['name', 'level']
+
+// Another developer can't accidentally override our score system
+gamePlayer.score = 999;  // This creates a different property
+console.log(gamePlayer.score);      // 999
+console.log(gamePlayer.getScore()); // Still 100
+```
+
+This shows how Symbols can help create properties that won't conflict with other property names, useful when building reusable code or libraries.

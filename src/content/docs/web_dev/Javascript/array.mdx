@@ -1,5 +1,5 @@
 ---
-title: Arrays 
+title: Arrays , objects and functions
 description: Understanding JavaScript arrays and their copy behaviors
 sidebar: {
     order: 2
@@ -67,6 +67,16 @@ shallowCopy1[2].x = 100;
 console.log(original[2].x);     // 100 (nested object affected)
 ```
 
+:::tip[Spread Operator]
+
+```javascript
+const arr = [1, 2, 3];
+const arr2 = [4, 5];
+const arr3 = [6, 7];
+const newArr = [...arr, ...arr2, ...arr3]; // Returns [1, 2, 3, 4, 5, 6, 7]
+```
+:::
+
 ### 3. Deep Copy
 Creates a completely independent copy with new references for all nested items.
 
@@ -104,7 +114,7 @@ const deepCopy2 = JSON.parse(JSON.stringify(original));
 deepCopy1[2].x = 200;
 console.log(original[2].x);  // Still 3 (unaffected)
 ```
-### Example
+#### Example
 
 ```javascript
 const users = [
@@ -149,4 +159,143 @@ arr.forEach(item => {         // Returns undefined, can mutate arr if callback m
 });
 arr.sort((a, b) => a - b);    // Returns sorted array, arr is now [1, 4, 5, 6]
 ```
+
+## Objects
+
+- Objects are collections of key-value pairs
+- Keys are strings (or symbols), values can be any type of data
+- Objects are mutable
+- Objects are unordered
+
+```javascript
+const user = {
+    name: 'Alice',
+    age: 25,
+    isAdmin: true,
+    "color": red
+};
+
+console.log(user.name); // Alice
+console.log(user['age']); // 25
+console.log(user["color"]); // red
+```
+#### Object Methods
+
+```javascript
+const obj1 = {
+    name: "Alice",
+    age: 25
+};
+
+const obj2 = {
+    name1: "Bob",
+    age1: 30
+};
+
+const obj3 = {...obj1, ...obj2}; // Spread operator
+
+console.log(obj3.name); // Alice
+console.log(obj3.age1); // 30
+console.log(obj3); // { name: 'Alice', age: 25, name1: 'Bob', age1: 30 }
+```
+- To learn more about the object methods, visit [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object).
+
+## Destructuring
+
+Destructuring allows you to unpack values from arrays or properties from objects into distinct variables. This syntax makes it easier to work with complex data structures.
+
+#### Object Destructuring
+```javascript
+// Basic destructuring
+const person = { name: 'Alice', age: 25, city: 'London' };
+const { name, age } = person;
+console.log(name);  // 'Alice'
+console.log(age);   // 25
+
+// Destructuring with different variable names
+const { name: firstName, age: yearsOld } = person;
+console.log(firstName);  // 'Alice'
+console.log(yearsOld);   // 25
+
+// Default values
+const { country = 'Unknown' } = person;
+console.log(country);  // 'Unknown' (since it wasn't in person object)
+```
+
+#### Array Destructuring
+```javascript
+// Basic array destructuring
+const colors = ['red', 'green', 'blue'];
+const [first, second] = colors;
+console.log(first);   // 'red'
+console.log(second);  // 'green'
+
+// Skip elements using commas
+const [,, third] = colors;
+console.log(third);   // 'blue'
+
+// Rest pattern
+const [primary, ...rest] = colors;
+console.log(primary); // 'red'
+console.log(rest);    // ['green', 'blue']
+```
+
+#### Nested Destructuring
+```javascript
+const data = {
+    user: {
+        id: 1,
+        details: {
+            firstName: 'Alice',
+            lastName: 'Smith'
+        }
+    },
+    scores: [10, 20, 30]
+};
+
+// Destructuring nested objects and arrays
+const { 
+    user: { 
+        details: { firstName, lastName },
+        id
+    },
+    scores: [firstScore, ...otherScores]
+} = data;
+
+console.log(firstName);    // 'Alice'
+console.log(id);          // 1
+console.log(firstScore);  // 10
+console.log(otherScores); // [20, 30]
+```
+
+#### JSON
+```javascript
+// JSON is a string representation of a JavaScript object.
+
+{
+    "name": "Alice",
+    "age": 25,
+    "data1":{
+        "name1": "Bob",
+        "age1": 30,
+        "data2":{
+            "name2": "Charlie",
+            "age2": 35,
+            "data3":{
+                "name3": "David",
+                "age3": 40
+            }
+        }
+    }
+}
+
+// JSON.parse() is used to parse a JSON string and convert it into a JavaScript object.
+// JSON.stringify() is used to convert a JavaScript object into a JSON string.
+```
+## Functions
+
+- Functions are blocks of code that perform a specific task.
+- Functions can take input parameters and return output values.
+- Functions can be used to organize code and make it more modular and reusable.
+
 
