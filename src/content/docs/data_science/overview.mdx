@@ -9,34 +9,47 @@ description: A guide.
     Collect Raw Data → Meaningful Conclusion
 </div>
 
-### Data can be anything from raw data to structured data to unstructured data:
+### Types of Data
 
-- Likes/Comments
-- tweets
-- Feedbacks
+#### Structured Data
+- Database records
+- API responses
+- User interactions (clicks, hovers)
+- Metrics (likes, comments)
+
+#### Unstructured Data
 - Images
 - Videos
-- Text
-- Data from APIs
-- Data from databases
-- Hovering of your mouse
-- Clicking of your mouse
+- Text content
+- Social media posts
+- User feedback
 
 
 ## Why is it important?
 
-### To make decisions/predictions for future events like:
+Data Science enables organizations to:
 
-- New product launch
-- Future revenue and expenditure
-- How many people will buy the same product next year.
-- To invest in infrastucture projects and how feasible they are.
-- Employee cost or AWS bill.
-- If the prediction is right then its called good data science.
-- If not then it's called layoff.
-- Fraud detection.
-- Cause of an event(why someone purchased a product is it by listening a song or they saw some ads).
+### Make Strategic Business Decisions
+- Product launch strategy and market fit
+- Revenue forecasting and budget planning
+- Sales prediction and inventory management
+- Infrastructure investment analysis
+- Resource allocation and cost optimization
 
+### Enhance Operations
+- Risk assessment and fraud detection
+- Customer behavior analysis
+- Process optimization
+- Quality control
+- Predictive maintenance
+
+### Drive Innovation
+- Customer experience personalization
+- Product recommendation systems
+- Market trend analysis
+- Research and development insights
+- Competitive analysis
+---
 <div class="text-white">
     - **I can go on and on usecases.But you understood the point.**
 </div>
@@ -47,73 +60,114 @@ description: A guide.
     Gather Data → Label Data → Train Model(80/20) → Make Predictions
 </div>
 
-<div class="text-white">
+
 ### Fraud Detection Model Example
-</div>
 
-- Gather Data: Amount, Address, Date, Frequency of transactions
-<div class="text-green-500">
-- Label Data: Classify transactions as valid or fraudulent
-</div>
-- Train Model: Use 80% of data for training, 20% for testing
-- Make Predictions: Optimize model parameters for better accuracy
+1. **Collect Information**
+   - How much money was spent and when
+   - Where the purchase was made
+   - What device was used to make the purchase
+   - Past shopping habits
+   - How old the account is and how often it's used
 
-  
+2. **Mark Transactions**
+   <div class="text-green-500">
+   - Label each purchase as either "Safe" (0) or "Suspicious" (1)
+   - Expert teams review suspicious cases
+   - Look at past reported fraud cases
+   - Use basic rules to spot unusual activity
+   </div>
+
+3. **Train the System**
+   - Use 80% of past data to teach the system
+   - Clean up and organize the information
+   - Pick the best method to spot patterns
+   - Test different approaches to make sure it works well
+
+4. **Put it to Work**
+   - Check new purchases in real-time
+   - Keep an eye on how well it's working
+   - Update the system regularly with new data
+   - Fine-tune how careful the system should be
+
+
 ## Two Methods:
 
 <div class="flex space-x-4">
-  <div class="basis-1/2 p-4 rounded-md shadow-md text-center border-2 border-orange-500">
-    <h3 class="text-xl font-semibold">Machine Learning</h3>
+  <div class="basis-1/2 p-4 rounded-md shadow-md text-center border-2 border-orange-500 hover:shadow-lg transition-shadow">
+    <h3 class="text-xl font-semibold mb-2">Machine Learning</h3>
+    <p class="text-sm text-gray-400">Best for smaller datasets</p>
+    <div class="mt-2">
+      <span class="inline-block bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Less Complex</span>
+    </div>
   </div>
-  <div class="basis-1/2 p-4 rounded-md shadow-md text-center border-2 border-orange-500">
-    <h3 class="text-xl font-semibold">Deep Learning</h3>
+  <div class="basis-1/2 p-4 rounded-md shadow-md text-center border-2 border-orange-500 hover:shadow-lg transition-shadow">
+    <h3 class="text-xl font-semibold mb-2">Deep Learning</h3>
+    <p class="text-sm text-gray-400">Best for large datasets</p>
+    <div class="mt-2">
+      <span class="inline-block bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">More Complex</span>
+    </div>
   </div>
 </div>
 
 
 ### Machine Learning:
 
-- The size of the dataset is comparatively less.
-- Compute resources will be also used less.
-- Example: Take any smart watch.The sensor tells your heartbeat on the go and according to that heart beat it tells you whether you are running,jogging,walking or swimming.The sensors measure your heartbeat, your surrounding moisture,wind spped,temperature etc. This data would be millions of rows and thousands of columns.This data is still manageable to train in a simple machine.If you want more data for same purpose to accuretly predict 99.9% of the time then you have to do deep learning.
+- **Data Size:** Works well with smaller datasets
+- **Computing Power:** Requires less computing resources
+- **Real-World Example:** 
+  Think of a smart watch tracking your activities:
+  - Collects data like heart rate, movement, and temperature
+  - Decides if you're walking, running, or swimming
+  - Uses thousands of data points
+  - Can run on simple devices like your watch
+  - Good enough for 90-95% accuracy in most cases
 
 
 ### Deep Learning:
 
-- The size of the dataset is comparatively more.
-- Compute resources will be also used more.
-- Example: Take a car which is trying to predict whether there is a human or any living being in front of the car or not by using a video camera or radio waves or any other technology.Let's take a 4K camera which captures 4K frames per second. Each second of video has multiple frames.Each frame has multiple pixels.Each pixel has its own RGB values. See the amount of data just to store a single image.This data is stored in matrices.
+- **Data Size:** Needs massive amounts of data
+- **Computing Power:** Requires powerful computers
+- **Real-World Example:**
+  Think of a self-driving car's camera system:
+  - Processes 4K video in real-time
+  - Each second = thousands of images
+  - Each image = millions of pixels
+  - Must detect people, cars, signs instantly
+  - Needs 99.9% accuracy for safety
+  - Requires special computers to process
 
 
 ## Roles
 
 ### Data Engineer:
-
-- Build pipelines to collect data from different sources.
-- Build storage solutions to store data.
-- Provide APIs to access data.
+- Build pipelines to collect data from different sources
+- Design and maintain data storage solutions
+- Create APIs for easy data access
+- Tools used: SQL, Python, Apache Spark, AWS/Azure, Docker
 
 ### Data Analyst:
-
-
-- Understand data (organise it in a structured way).
-- Clean data (remove noise).
-- Analyse data (find patterns).
-- Visualise data (create charts and graphs).
-- Tools used: Python, Excel, PowerBI, Tableau, SQL, etc.
+- Transform raw data into structured formats
+- Clean and validate data quality
+- Find patterns and insights in data
+- Create visual reports and dashboards
+- Present findings to stakeholders
+- Tools used: Python, Excel, PowerBI, Tableau, SQL
 
 ### Data Scientist:
+- Design and run data experiments
+- Build and test machine learning models
+- Optimize model performance
+- Solve complex business problems
+- Work with stakeholders to define goals
+- Tools used: Python, R, SQL, pandas, numpy, scikit-learn
 
-- Experiment and analysis of data.
-- Use diffetrent machine learning models.
-- Fine tune models.
-- Tools used: Python, R, SQL, pandas, numpy, etc.
-
-### Machine Learning Engineer/Scientist/AI Engineer:
-
-- Prediction of data.
-- Classification of data.
-- Deep Learning.
-- Natural Language Processing.
-- Use case fit.
-- Tools used: Python, Tensorflow, Keras, Spark, PyTorch, etc.
+### Machine Learning Engineer:
+- Build and deploy ML/AI systems
+- Work on specialized areas:
+  - Computer Vision
+  - Natural Language Processing
+  - Recommendation Systems
+  - Deep Learning Models
+- Optimize model performance at scale
+- Tools used: Python, TensorFlow, PyTorch, Keras, MLflow
