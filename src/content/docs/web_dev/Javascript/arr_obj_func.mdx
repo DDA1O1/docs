@@ -482,4 +482,109 @@ function modernCode() {
 - Consider TypeScript for stricter code organization
 :::
 
+### Arrow Functions vs Regular Functions
 
+Arrow functions and regular functions have several key differences in syntax and behavior:
+
+```javascript
+// Regular Function
+function regularFunction(a, b) {
+    return a + b;
+}
+
+// Arrow Function
+const arrowFunction = (a, b) => a + b;
+```
+
+#### Key Differences
+
+1. **`this` Binding**:
+```javascript
+const obj = {
+    name: 'Example',
+    // Regular function
+    regularMethod: function() {
+        setTimeout(function() {
+            console.log(this.name); // undefined
+        }, 100);
+    },
+    // Arrow function
+    arrowMethod: function() {
+        setTimeout(() => {
+            console.log(this.name); // 'Example'
+        }, 100);
+    }
+};
+
+obj.regularMethod(); // undefined
+obj.arrowMethod();   // Example
+```
+
+2. **Constructor Usage**:
+```javascript
+// Regular functions can be constructors
+function Car(make) {
+    this.make = make;
+}
+const myCar = new Car('Toyota'); // Works
+
+// Arrow functions cannot be constructors
+const CarArrow = (make) => {
+    this.make = make;
+};
+const myCarArrow = new CarArrow('Toyota'); // TypeError
+```
+
+3. **Arguments Object**:
+```javascript
+// Regular function has arguments object
+function regular() {
+    console.log(arguments); // [1, 2, 3]
+}
+
+// Arrow function doesn't have arguments
+const arrow = () => {
+    console.log(arguments); // ReferenceError
+};
+
+regular(1, 2, 3); // [1, 2, 3]
+arrow(1, 2, 3); // ReferenceError
+```
+
+4. **Implicit Return**:
+```javascript
+// Regular function needs explicit return
+function addRegular(a, b) {
+    return a + b;
+}
+
+// Arrow function with implicit return
+const addArrow = (a, b) => a + b;
+
+// Arrow function with object implicit return
+const createObj = (name) => ({ name });
+```
+
+:::tip[When to Use Each]
+- Use **Arrow Functions** for:
+  - Short callback functions
+  - Methods that don't need their own `this`
+  - Functional programming (map, reduce, etc.)
+  
+- Use **Regular Functions** for:
+  - Object methods that need `this`
+  - Constructor functions
+  - When you need the `arguments` object
+  - Event handlers where `this` should refer to the element
+:::
+
+#### IIFE (Immediately Invoked Function Expression)
+
+- IIFE is a function that is defined and executed immediately.
+- It is used to create a new execution context and avoid polluting the global scope.
+
+```javascript
+(function() {
+    console.log('IIFE executed!');
+})();
+```
