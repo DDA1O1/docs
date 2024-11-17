@@ -157,7 +157,8 @@ arr.pop();                    // Returns 6, arr is now [1, 4, 5]
 arr.forEach(item => {         // Returns undefined, can mutate arr if callback modifies it
     console.log(item);
 });
-arr.sort((a, b) => a - b);    // Returns sorted array, arr is now [1, 4, 5, 6]
+arr.sort((a, b) => a - b);    // Returns sorted array, arr is now [1, 4, 5, 6].
+// Note: sort() method modifies the original array.
 ```
 
 ## Objects
