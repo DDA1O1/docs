@@ -181,21 +181,29 @@ calculateTotal(10, "2");   // ❌ Error: Argument of type 'string' is not assign
 
 ## Operator Precedence
 
-- Operator precedence is the order in which operators are evaluated in an expression.
+- Operator precedence determines the order in which operators are evaluated in an expression.
 - For example,in the expression `2 + 3 * 4`,the multiplication operator `*` has higher precedence than the addition operator `+`.So,it is evaluated first.
 
 ```javascript
-console.log(2 + 3 * 4); // 14
+// Examples
+console.log(2 + 3 * 4);     // 14 (multiplication happens first)
+console.log((2 + 3) * 4);   // 20 (parentheses override precedence)
+console.log(5 > 3 && 2 < 4); // true (comparison before logical AND)
 ```
-- To learn more about operator precedence,visit [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence).
 
 :::danger[Best Practices]
-**Do not rely on operator precedence.Use parentheses to make the code more readable.**
+**Use parentheses to make your code's intention clear, rather than relying on operator precedence rules:**
 
 ```javascript
-console.log((2 + 3) * 4); // 20
+// Less clear
+let result = a + b * c / d;
+
+// More clear
+let result = a + ((b * c) / d);
 ```
 :::
+
+For a complete reference, visit [MDN's Operator Precedence documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence).
 
 ## Prefix and Postfix Operators
 
