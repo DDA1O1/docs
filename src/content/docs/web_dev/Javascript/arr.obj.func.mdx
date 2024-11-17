@@ -1,5 +1,5 @@
 ---
-title: Arrays , objects and functions
+title: Arrays , Objects and Functions
 description: Understanding JavaScript arrays and their copy behaviors
 sidebar: {
     order: 2
@@ -299,4 +299,186 @@ console.log(otherScores); // [20, 30]
 - Functions can take input parameters and return output values.
 - Functions can be used to organize code and make it more modular and reusable.
 
+```javascript
+function add(a, b) {
+    return a + b;
+}
+
+console.log(add(1, 2)); // 3
+```
+#### Functions with Objects and Arrays
+
+Functions can work with complex data types like objects and arrays. Here are some common patterns:
+
+```javascript
+// Object as parameter
+function processUser(user) {
+    return `${user.firstName} ${user.lastName} is ${user.age} years old`;
+}
+
+const user = {
+    firstName: 'John',
+    lastName: 'Doe',
+    age: 30
+};
+console.log(processUser(user)); // "John Doe is 30 years old"
+
+// Array as parameter
+function calculateAverage(numbers) {
+    const sum = numbers.reduce((acc, curr) => acc + curr, 0);
+    return sum / numbers.length;
+}
+
+const scores = [85, 92, 78, 95, 88];
+console.log(calculateAverage(scores)); // 87.6
+
+// Returning an object
+function createPerson(name, age) {
+    return {
+        name,
+        age,
+        greet() {
+            return `Hello, I'm ${this.name}`;
+        }
+    };
+}
+
+// Returning an array
+function splitAndSort(text) {
+    return text.split(' ').sort();
+}
+
+console.log(splitAndSort('apple banana cherry')); // ['apple', 'banana', 'cherry']
+```
+### Variable Scope
+
+JavaScript has several types of scope:
+- **Global Scope**: Variables accessible throughout the entire program
+- **Function Scope**: Variables only accessible within their containing function
+- **Block Scope**: Variables (using `let`/`const`) only accessible within their containing block
+
+```javascript
+// Global scope
+const globalVar = 'I am global';
+
+function exampleFunction() {
+    // Function scope
+    const functionVar = 'I am function-scoped';
+    
+    if (true) {
+        // Block scope
+        const blockVar = 'I am block-scoped';
+        console.log(blockVar);     // Works
+        console.log(functionVar);  // Works
+        console.log(globalVar);    // Works
+    }
+    
+    console.log(functionVar);      // Works
+    console.log(blockVar);         // ReferenceError: blockVar is not defined
+}
+
+console.log(globalVar);        // Works
+console.log(functionVar);      // ReferenceError: functionVar is not defined
+```
+
+:::tip[Best Practices]
+- Use `const` by default for variables that won't be reassigned
+- Use `let` when you need to reassign variables
+- Avoid `var` as it doesn't respect block scope and can lead to unexpected behavior
+- Keep global variables to a minimum to prevent naming conflicts
+:::
+
+### Hoisting: A JavaScript Legacy Challenge
+
+Hoisting is a JavaScript behavior where variable and function declarations are moved to the top of their scope during code execution. While it's considered a bad practice in modern JavaScript, understanding it is crucial for maintaining legacy code.
+
+```javascript
+// What developers write
+console.log(myVar);  // undefined (doesn't crash!)
+var myVar = "Hello";
+
+// What JavaScript actually sees
+var myVar;           // Declaration is "hoisted" up
+console.log(myVar);  // undefined
+myVar = "Hello";     // Assignment stays here
+```
+
+#### Why Hoisting is Problematic
+
+1. **Confusing Code Flow**:
+```javascript
+// Bad practice (but works due to hoisting)
+calculateTotal(100);  // Works! But why?
+
+function calculateTotal(amount) {
+    console.log(amount * tax);  // undefined × 100 = NaN
+    var tax = 0.2;             // Declaration hoisted, but not the value
+}
+
+// Better practice
+const tax = 0.2;
+function calculateTotal(amount) {
+    console.log(amount * tax);  // Clear and predictable
+}
+calculateTotal(100);
+```
+
+2. **Function Declaration vs Expression**:
+```javascript
+// Function declarations are fully hoisted
+doSomething();  // Works!
+function doSomething() {
+    console.log("I'm hoisted!");
+}
+
+// Function expressions are not
+doSomethingElse();  // Error!
+const doSomethingElse = () => {
+    console.log("I'm not hoisted!");
+};
+```
+
+#### Legacy Code Examples
+
+```javascript
+// Common in legacy code - relying on hoisting
+function oldCodebase() {
+    for(var i = 0; i < items.length; i++) {
+        // var is hoisted to function scope
+    }
+    console.log(i);  // Still accessible! 😱
+
+    if(true) {
+        var secret = "123";  // Hoisted to function scope
+    }
+    console.log(secret);     // Accessible outside if block! 😱
+}
+
+// Modern approach
+function modernCode() {
+    for(let i = 0; i < items.length; i++) {
+        // let has block scope
+    }
+    console.log(i);  // ReferenceError ✅
+
+    if(true) {
+        const secret = "123";  // Block scoped
+    }
+    console.log(secret);      // ReferenceError ✅
+}
+```
+
+:::danger[Why You Need to Know Hoisting]
+1. Many legacy JavaScript codebases rely heavily on hoisting
+2. Understanding hoisting helps debug unexpected behavior in older code
+3. JavaScript's forgiving nature allowed bad practices to persist
+:::
+
+:::tip[Modern Best Practices]
+- Always use `const` or `let` instead of `var`
+- Declare variables at the top of their scope
+- Declare functions before using them
+- Use linters (ESLint) to catch hoisting-related issues
+- Consider TypeScript for stricter code organization
+:::
 
