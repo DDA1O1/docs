@@ -1,0 +1,282 @@
+---
+title: DOM, Events and Async
+sidebar: {
+    order: 4
+}
+---
+
+## DOM
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Example</title>
+    <style>
+        .main-content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .description {
+            color: #666;
+        }
+        .button-group {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="container" class="main-content">
+        <h1>Welcome to my page</h1>
+        <p class="description">This is a sample DOM structure</p>
+        <div class="button-group">
+            <button id="myButton">Click me!</button>
+        </div>
+        <img src="sample.jpg" alt="Sample image" data-custom="value">
+    </div>
+
+    <script>
+        // DOM manipulation examples
+        const button = document.getElementById('myButton');
+        button.addEventListener('click', () => {
+            alert('Button clicked!');
+        });
+    </script>
+</body>
+</html>
+```
+
+DOM (Document Object Model) is like a tree structure that represents your webpage. It allows JavaScript to:
+- Read webpage content
+- Change elements and text
+- Update styles
+- React to user actions
+
+```javascript
+// Examples
+document.getElementById('myButton')        // Find element
+document.querySelector('.myClass')         // Find first matching element
+element.innerHTML = 'New text'            // Change content
+element.style.color = 'red'               // Change style
+
+// # is used to select id
+// . is used to select class
+```
+### DOM Tree
+
+```ascii
+                        Window
+                           │
+                           ▼
+                       Document
+                           │
+                           ▼
+                         HTML
+                  ┌────────┴────────┐
+                  ▼                 ▼
+                HEAD              BODY
+          ┌───────┼────────┐    ┌────┴────┐
+          ▼       ▼        ▼    ▼         ▼
+        meta    style    title  div       div
+ [charset="UTF-8"]            [id]      [class]
+        meta               [class]        │
+ [name="viewport"]           │           ▼
+         link               ▼         h1,img,p
+    [rel="stylesheet"]     p,a      [data-attr]
+                     [href, class]  [src, alt]
+```
+### DOM Methods
+
+Common DOM manipulation methods include:
+
+```javascript
+// Finding Elements
+document.getElementById('myId')               // Returns single element by ID
+document.getElementsByClassName('myClass')    // Returns HTMLCollection of elements
+document.getElementsByTagName('div')          // Returns HTMLCollection of elements
+document.querySelector('.myClass')            // Returns first matching element
+document.querySelectorAll('div.myClass')     // Returns NodeList of all matching elements
+
+// Creating & Modifying Elements
+document.createElement('div')                 // Creates new element
+element.appendChild(childElement)             // Adds child element
+element.removeChild(childElement)             // Removes child element
+element.replaceChild(newChild, oldChild)      // Replaces child element
+element.cloneNode(true)                       // Clones element (true = deep clone)
+
+// Modifying Content
+element.textContent = 'New text'              // Updates text (safer)
+element.innerHTML = '<span>New HTML</span>'   // Updates HTML content
+element.setAttribute('class', 'newClass')     // Sets attribute
+element.getAttribute('class')                 // Gets attribute
+element.removeAttribute('class')              // Removes attribute
+
+// Styling
+element.style.backgroundColor = 'red'         // Direct style modification
+element.classList.add('newClass')             // Adds class
+element.classList.remove('oldClass')          // Removes class
+```
+### NodeList
+
+A NodeList is a collection of nodes returned by methods like `querySelectorAll()` or properties like `childNodes`. It's similar to an array but has some important differences.
+
+```javascript
+// Getting a NodeList
+const paragraphs = document.querySelectorAll('p');
+const childNodes = element.childNodes;
+
+// Accessing Elements
+const firstParagraph = paragraphs[0];        // Using index
+const length = paragraphs.length;            // Getting length
+paragraphs.item(1);                          // Using item() method
+
+// Converting to Array
+const array = Array.from(paragraphs);        // Modern way
+const arrayAlt = [...paragraphs];            // Spread operator
+const oldArray = Array.prototype.slice.call(paragraphs); // Old way
+
+// Iterating
+// 1. forEach method
+paragraphs.forEach(paragraph => {
+    paragraph.classList.add('highlight');
+});
+
+// 2. for...of loop
+for (const paragraph of paragraphs) {
+    paragraph.style.color = 'blue';
+}
+
+// 3. Traditional for loop
+for (let i = 0; i < paragraphs.length; i++) {
+    paragraphs[i].textContent = `Paragraph ${i + 1}`;
+}
+```
+## Events
+
+Events are actions or occurrences that happen in a web browser, such as user interactions or system updates. JavaScript can detect and respond to these events.
+
+### Event Handling
+
+```javascript
+// 1. Adding Event Listeners
+element.addEventListener('click', function(event) {
+    console.log('Clicked!');
+});
+
+// 2. Removing Event Listeners
+const handler = (event) => console.log('Clicked!');
+element.addEventListener('click', handler);
+element.removeEventListener('click', handler);
+
+// 3. Event Object Properties
+element.addEventListener('click', (event) => {
+    console.log(event.target);        // Element that triggered the event
+    console.log(event.currentTarget); // Element that listener is attached to
+    console.log(event.type);         // Type of event (e.g., 'click')
+    console.log(event.timeStamp);    // Time when event occurred
+    
+    event.preventDefault();          // Prevent default behavior
+    event.stopPropagation();        // Stop event bubbling
+});
+```
+
+### Common Events
+
+```javascript
+// Mouse Events
+element.addEventListener('click', () => {});      // Mouse click
+element.addEventListener('dblclick', () => {});   // Double click
+element.addEventListener('mouseenter', () => {}); // Mouse enters element
+element.addEventListener('mouseleave', () => {}); // Mouse leaves element
+element.addEventListener('mousemove', () => {});  // Mouse moves
+
+// Keyboard Events
+document.addEventListener('keydown', (e) => {     // Key pressed
+    console.log(e.key);                          // Key value
+    console.log(e.code);                         // Physical key
+});
+document.addEventListener('keyup', () => {});     // Key released
+
+// Form Events
+form.addEventListener('submit', (e) => {          // Form submission
+    e.preventDefault();                          // Prevent form submission
+});
+input.addEventListener('change', () => {});       // Input value changes
+input.addEventListener('input', () => {});        // Real-time input changes
+input.addEventListener('focus', () => {});        // Input receives focus
+input.addEventListener('blur', () => {});         // Input loses focus
+
+// Document/Window Events
+window.addEventListener('load', () => {});        // Page fully loaded
+document.addEventListener('DOMContentLoaded', () => {}); // DOM ready
+window.addEventListener('resize', () => {});      // Window resized
+window.addEventListener('scroll', () => {});      // Page scrolled
+```
+
+### Event Propagation
+
+Events in the DOM bubble up through the ancestor elements (event bubbling) and can also capture down (event capturing).
+
+```javascript
+// Event Bubbling (default)
+parent.addEventListener('click', () => {
+    console.log('Parent clicked');
+});
+child.addEventListener('click', () => {
+    console.log('Child clicked');
+    // Outputs: Child clicked, then Parent clicked
+});
+
+// Event Capturing (third parameter true)
+parent.addEventListener('click', () => {
+    console.log('Parent clicked');
+}, true);
+child.addEventListener('click', () => {
+    console.log('Child clicked');
+    // Outputs: Parent clicked, then Child clicked
+}, true);
+
+// Stop Propagation
+child.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevents event from bubbling up
+    console.log('Child only');
+});
+```
+
+### Event Delegation
+
+Event delegation is a technique of handling events on multiple elements using a single event listener on their parent.
+
+```javascript
+// Instead of adding listeners to each button
+document.getElementById('button-container').addEventListener('click', (e) => {
+    if (e.target.matches('button')) {
+        console.log('Button clicked:', e.target.textContent);
+    }
+});
+
+// Example HTML:
+// <div id="button-container">
+//     <button>Button 1</button>
+//     <button>Button 2</button>
+//     <button>Button 3</button>
+// </div>
+```
+:::note
+
+ **Error Handling**
+   ```javascript
+   element.addEventListener('click', (e) => {
+       try {
+           // Event handling code
+       } catch (error) {
+           console.error('Error handling click:', error);
+           // Proper error handling
+       }
+   });
+   ```
+:::
+

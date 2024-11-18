@@ -260,4 +260,19 @@ const age = 20;
 const drink = age >= 18 ? "Beer" : "Juice";
 console.log(drink); // "Beer"
 ```
+#### Break and Continue
 
+- The `break` statement is used to terminate a loop or switch statement.
+- The `continue` statement is used to skip the rest of the current iteration of a loop.
+
+```javascript
+for (let i = 0; i < 10; i++) {
+    if (i === 5) break; // Terminate the loop when i is 5
+    console.log(i);
+}  // output: 0 1 2 3 4
+
+for (let i = 0; i < 10; i++) {
+    if (i === 5) continue; // Skip the rest of the loop when i is 5
+    console.log(i);
+}  // output: 0 1 2 3 4 6 7 8 9
+```

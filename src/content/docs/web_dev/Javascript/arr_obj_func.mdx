@@ -161,6 +161,99 @@ arr.sort((a, b) => a - b);    // Returns sorted array, arr is now [1, 4, 5, 6].
 // Note: sort() method modifies the original array.
 ```
 
+#### Chaining Methods
+Higher-order methods can be chained together for complex operations.
+
+```javascript
+const products = [
+    { name: 'Laptop', price: 1000, inStock: true },
+    { name: 'Phone', price: 500, inStock: false },
+    { name: 'Tablet', price: 300, inStock: true }
+];
+
+const totalInStock = products
+    .filter(product => product.inStock)
+    .map(product => product.price)
+    .reduce((acc, price) => acc + price, 0);
+
+console.log(totalInStock); // 1300
+```
+
+### Array Loops
+
+- Array loops are used to iterate over the elements of an array.
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+for (let i = 0; i < numbers.length; i++) {
+    console.log(numbers[i]);
+}
+```
+
+#### forEach()
+The `forEach()` method executes a provided function once for each array element.
+
+```javascript
+// Basic syntax
+array.forEach(function(element, index, array) {
+    // Your code here
+});
+
+// Simple example
+const numbers = [1, 2, 3];
+numbers.forEach(num => console.log(num));  // Logs: 1, 2, 3
+
+// With index
+numbers.forEach((num, index) => {
+    console.log(`Index ${index}: ${num}`);
+}); // Logs: "Index 0: 1", "Index 1: 2", "Index 2: 3"
+
+// With array
+numbers.forEach((num, index, array) => {
+    console.log(array);
+}); // Logs: [1, 2, 3]
+```
+
+**Key Features:**
+- Always returns `undefined`
+- Cannot break or return from the loop
+- Skips empty array elements
+- Modifies the original array if the callback function does so
+
+**Common Use Cases:**
+```javascript
+// 1. Modifying objects in an array
+const users = [
+    { name: 'Alice', active: false },
+    { name: 'Bob', active: false }
+];
+users.forEach(user => user.active = true);
+
+// 2. Side effects (like DOM updates)
+const items = ['apple', 'banana', 'orange'];
+items.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    list.appendChild(li);
+});
+
+// 3. Accumulating values
+let sum = 0;
+[1, 2, 3].forEach(num => sum += num);
+```
+
+:::tip[When to Use]
+Use `forEach()` when:
+- You need to perform side effects
+- You want to modify each array element
+- You don't need to break the loop early
+
+Consider using `map()`, `filter()`, or `reduce()` when you need to:
+- Create a new array based on transformations
+- Filter elements
+- Accumulate a single value
+:::
+
 ## Objects
 
 - Objects are collections of key-value pairs
@@ -200,6 +293,77 @@ console.log(obj3.age1); // 30
 console.log(obj3); // { name: 'Alice', age: 25, name1: 'Bob', age1: 30 }
 ```
 - To learn more about the object methods, visit [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object).
+
+### Map and Set Collections
+
+#### Map
+- A collection that lets you store key-value pairs where keys can be of any type (objects, functions, primitives).
+- Map is not iterable for in loop.
+
+```javascript
+// Creating and using Maps
+const userRoles = new Map();
+userRoles.set('john', 'admin');        // Add entry
+userRoles.get('john');                 // Get value: 'admin'
+userRoles.has('john');                 // Check existence: true
+userRoles.delete('john');              // Remove entry
+userRoles.size;                        // Get size
+
+// Iterating
+for (const [user, role] of userRoles) {
+    console.log(`${user} is ${role}`);
+}
+```
+
+**Common Use Cases:**
+- Caching/memoization results
+
+```javascript
+// Example: Simple cache
+const cache = new Map();
+function expensiveOperation(input) {
+    if (cache.has(input)) return cache.get(input);
+    const result = /* complex calculation */;
+    cache.set(input, result);
+    return result;
+}
+```
+
+#### Set
+- A collection of unique values where duplicates are automatically removed.
+
+```javascript
+// Creating and using Sets
+const uniqueTags = new Set(['js', 'python', 'js']); // Duplicates removed
+uniqueTags.add('java');                // Add value
+uniqueTags.has('python');              // Check existence: true
+uniqueTags.delete('js');               // Remove value
+uniqueTags.size;                       // Get size
+
+// Quick array deduplication
+const array = [1, 2, 2, 3, 3];
+const unique = [...new Set(array)];    // [1, 2, 3]
+```
+
+**Common Use Cases:**
+- Removing duplicates from arrays
+- Tracking unique visitors/events
+- Managing selected items in UI
+
+```javascript
+// Example: Tracking unique users
+const activeUsers = new Set();
+function trackUserActivity(userId) {
+    activeUsers.add(userId);
+    console.log(`Active users: ${activeUsers.size}`);
+}
+```
+
+:::tip[Quick Reference]
+- Use **Map** when you need key-value pairs with non-string keys
+- Use **Set** when you need to maintain a list of unique values
+- Both are iterable and have better performance than arrays/objects for frequent lookups
+:::
 
 ## Destructuring
 
