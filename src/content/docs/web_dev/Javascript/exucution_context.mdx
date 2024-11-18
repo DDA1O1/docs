@@ -1,6 +1,6 @@
 ---
-title: Execution Context
-description: Understanding JavaScript's Execution Context and Its Importance
+title: Execution Context, Control Flow
+description: Execution Context and Control Flow in JavaScript
 sidebar: {
     order: 3
 }
@@ -110,3 +110,154 @@ let result_2 = addValues(6, 9);
  - `result_1` and `result_2` are stored in the global execution context after the function calls.
  - Function execution context is created when the function is called and destroyed when the function is finished.
 :::
+
+## Control Flow
+
+Control flow determines how JavaScript executes code from top to bottom. It includes various structures that alter this flow:
+
+### 1. Sequential Flow
+- Default execution order from top to bottom
+- Each statement is executed one after another
+
+```javascript
+let name = "John";
+let age = 30;
+console.log(name, age);
+```
+
+### 2. Conditional Flow
+- Uses `if`, `else if`, `else`, and `switch` statements
+- Code execution based on conditions
+
+```javascript
+if (age >= 18) {
+    console.log("Adult");
+} else {
+    console.log("Minor");
+}
+
+switch (name) {
+    case "John":
+        console.log("Hello John!");
+        break;
+    default:
+        console.log("Hello stranger!");
+}
+
+// `break` is used to stop the execution of the switch statement.
+// If there is no `break`, the execution will continue to the next case.
+// `default` is executed when none of the cases match.
+```
+
+### 3. Loop Flow
+- Repeats code blocks using `for`, `while`, `do...while`
+- Continues until a condition is met
+
+```javascript
+// For loop
+for (let i = 0; i < 3; i++) {
+    console.log(`Iteration ${i}`);
+}
+
+// While loop
+let counter = 0;
+while (counter < 3) {
+    console.log(`Count: ${counter}`);
+    counter++;
+}
+
+// `do...while` loop is similar to `while` loop, but it will execute the code block once before checking the condition.
+do {
+    console.log(`Count: ${counter}`);
+    counter++;
+} while (counter < 3); // `do...while` loop will execute the code block at least once.
+```
+
+### 4. Function Flow
+- Functions create their own execution context
+- Can alter flow through `return` statements
+- Includes function calls and callbacks
+
+```javascript
+function processData(data, callback) {
+    // Process data
+    let result = data * 2;
+    
+    // Alter flow with return
+    if (!result) return null;
+    
+    // Execute callback
+    callback(result); // `callback` is a function that is passed as an argument to `processData`.
+}
+```
+
+### 5. Error Handling Flow
+- Uses `try`, `catch`, and `finally` blocks
+- Handles exceptions and errors gracefully
+
+```javascript
+try {
+    // Risky code
+    throw new Error("Something went wrong");
+} catch (error) {
+    console.error(error.message);
+} finally {
+    console.log("Cleanup code");
+}
+```
+
+:::note
+Understanding control flow is crucial for:
+- Writing predictable code
+- Debugging effectively
+- Managing program complexity
+- Handling asynchronous operations
+:::
+
+#### Truthy and Falsy Values
+
+- In JavaScript, certain values are considered "truthy" or "falsy" in conditional statements.
+- Truthy values are values that are considered true in a boolean context.
+- Falsy values are values that are considered false in a boolean context.
+
+```javascript
+console.log(Boolean(0)); // false
+console.log(Boolean(null)); // false
+console.log(Boolean(undefined)); // false
+console.log(Boolean("")); // false
+console.log(Boolean(NaN)); // false
+console.log(Boolean({})); // true
+console.log(Boolean([])); // true
+console.log(Boolean(function () {})); // true
+console.log(Boolean(true)); // true
+console.log(Boolean(false)); // false
+console.log(Boolean("Hello")); // true
+console.log(Boolean(" ")); // true
+console.log(Boolean("0")); // true
+```
+
+:::note
+- `0`, `null`, `undefined`, `NaN`, `""` (empty string) are all falsy values.
+- Everything else is truthy.
+:::
+
+##### Nullish Coalescing Operator
+
+- The nullish coalescing operator (`??`) is a logical operator that returns its right operand when its left operand is `null` or `undefined`, and otherwise returns its left operand.
+- When getting a value from an object, we can use the nullish coalescing operator to return a default value if the value is `null` or `undefined`.
+
+```javascript
+let value = null ?? "Default Value";
+console.log(value); // "Default Value"
+```
+
+#### Ternary Operator
+
+- The ternary operator is a shorthand for an `if...else` statement.
+
+```javascript
+const age = 20;
+const drink = age >= 18 ? "Beer" : "Juice";
+console.log(drink); // "Beer"
+```
+
