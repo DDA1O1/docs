@@ -1,0 +1,68 @@
+---
+title: Execution Context
+description: Understanding JavaScript's Execution Context and Its Importance
+sidebar: {
+    order: 3
+}
+---
+
+## What is Execution Context?
+
+Execution context is a fundamental concept in JavaScript that defines the environment where code is executed. Think of it as a container that stores:
+
+1. The code being executed
+2. The variables and functions available to that code
+3. The value of the `this` keyword
+4. The outer environment reference (scope chain)
+
+## Why Does Execution Context Matter?
+
+Understanding execution context is crucial because it:
+
+1. Explains how JavaScript manages scope and variable access
+2. Helps you understand hoisting behavior
+3. Clarifies how `this` binding works
+4. Explains closure mechanisms
+5. Is essential for debugging and understanding call stack
+
+## How Execution Context Works
+
+### Types of Execution Context
+
+1. **Global Execution Context (GEC)**
+   - Created when JavaScript engine starts running your code
+   - Creates two important things:
+     - Global object (`window` in browsers, `global` in Node.js)
+     - `this` keyword (points to global object in non-strict mode)
+   - Serves as the base execution context
+
+2. **Function Execution Context (FEC)**
+   - Created whenever a function is called
+   - Each function gets its own execution context
+   - Multiple FECs can exist during runtime
+
+### Execution Context Lifecycle
+
+1. **Creation Phase (Memory Creation)**
+   - Creates the global object (for GEC)
+   - Sets up memory space for variables and functions
+
+2. **Execution Phase**
+   - Executes code line by line
+   - Assigns actual values to variables
+   - Executes function calls (creating new execution contexts)
+
+## Execution Context Visualization
+
+```javascript
+let value1 = 20;
+let value2 = 30;
+
+function addValues(val1, val2) {
+    let sum = val1 + val2;
+    return sum;
+}
+
+addValues(value1, value2);
+let result = addValues(6, 9);
+```
