@@ -14,16 +14,8 @@ Execution context is a fundamental concept in JavaScript that defines the enviro
 2. The variables and functions available to that code
 3. The value of the `this` keyword
 4. The outer environment reference (scope chain)
-
-## Why Does Execution Context Matter?
-
-Understanding execution context is crucial because it:
-
-1. Explains how JavaScript manages scope and variable access
-2. Helps you understand hoisting behavior
-3. Clarifies how `this` binding works
-4. Explains closure mechanisms
 5. Is essential for debugging and understanding call stack
+6. Hoisting behavior.
 
 ## How Execution Context Works
 
@@ -52,7 +44,7 @@ Understanding execution context is crucial because it:
    - Assigns actual values to variables
    - Executes function calls (creating new execution contexts)
 
-## Execution Context Visualization
+## Example
 
 ```javascript
 let value1 = 20;
@@ -63,6 +55,58 @@ function addValues(val1, val2) {
     return sum;
 }
 
-addValues(value1, value2);
-let result = addValues(6, 9);
+let result_1 = addValues(value1, value2);
+let result_2 = addValues(6, 9);
 ```
+
+```ascii
+                        JavaScript Execution Context
+                     ═══════════════════════════════════════
+
+                     ┌─────────────────────────────────────┐
+                     │            Global Context           │
+                     ├─────────────────────────────────────┤
+                     │             this: window            │
+                     └─────────────────┬───────────────────┘
+                                       │
+                                       ▼
+                     ┌─────────────────┴────────────────┐
+                     │                                  │
+                     ▼                                  ▼
+    ┌────────────────────────┐            ┌───────────────────────┐
+    │   Memory Creation      │            │    Execution Phase    │
+    ├────────────────────────┤            ├───────────────────────┤
+    │ • value1: undefined    │            │ • value1: 20          │
+    │ • value2: undefined    │            │ • value2: 30          │
+    │ • addValues: fn()      │            │ • result_1 ───┐       │
+    │ • result_1: undefined  │            │ • result_2 ─┐ │       │
+    │ • result_2: undefined  │            │             │ │       │
+    └────────────────────────┘            └─────────────┼─┼───────┘
+                                                        │ │
+    ┌────────────────────────┐                          │ │
+    │ Function Execution #1  │◄─────────────────────────┘ │
+    ├────────────────────────┤                            │
+    │ Variable Environment:  │                            │
+    │ • val1: 20             │                            │
+    │ • val2: 30             │                            │
+    │ • sum: undefined       │            ┌───────────────┘
+    │                        │            │
+    │ Execution Thread:      │            ▼
+    │ • sum = val1 + val2    │  ┌────────────────────────┐
+    │ • return sum (50)      │  │ Function Execution #2  │
+    └────────────────────────┘  ├────────────────────────┤
+                                │ Variable Environment:  │
+                                │ • val1: 6              │
+                                │ • val2: 9              │
+                                │ • sum: undefined       │
+                                │                        │
+                                │ Execution Thread:      │
+                                │ • sum = val1 + val2    │
+                                │ • return sum (15)      │
+                                └────────────────────────┘
+```
+
+:::note
+ - `result_1` and `result_2` are stored in the global execution context after the function calls.
+ - Function execution context is created when the function is called and destroyed when the function is finished.
+:::
