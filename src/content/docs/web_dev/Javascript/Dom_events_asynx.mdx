@@ -561,3 +561,20 @@ fetch('https://api.example.com/data')
     .then(data => console.log(data))
     .catch(error => console.error('Error:', error));
 ```
+:::note
+- The Fetch API only rejects a Promise when a network error occurs (like no internet connection)
+- HTTP error responses (400-599) are still "successful" in terms of Promise resolution
+- You need to explicitly check `response.ok` or `response.status` to handle HTTP errors
+- Example:
+  ```javascript
+  fetch('https://api.example.com/data')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));
+  ```
+:::
