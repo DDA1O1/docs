@@ -1,0 +1,168 @@
+---
+title: "OOPs and Closure"
+sidebar: {
+    order: 5
+}
+---
+
+## OOPs
+
+- OOPs is a programming paradigm based on the concept of "objects", which can contain data and code to manipulate that data.
+- Objects can have methods, which are functions associated with the object.
+- OOPs is used to structure code into reusable, modular, and maintainable pieces.
+
+### Object literals
+
+- Object literals are a way to create objects in JavaScript.
+- They are defined using curly braces `{}`.
+- Properties are defined as key-value pairs.
+- Methods are defined as functions.
+
+```javascript
+const person = {
+    name: "John",
+    age: 30,
+    sayHello: function() {
+        console.log(`Hello, my name is ${this.name}`);
+    }
+};
+```
+
+- `this` keyword refers to the current object/context. `this` is not a fixed value but changes depending on the context.
+- Remember when we are visualising the `call stack` in execution  context of javascript whenever a new function is called a new execution context is created and `this` is set to the current object/context.
+
+### Classes
+
+- JavaScript is a prototype-based language that supports object-oriented programming with classes.
+- Classes are templates for creating objects. They encapsulate data with code to work on that data. Classes in JS are built on prototypes but have a more syntactical sugar.
+- `constructor` is a special method for creating and initializing an object created with a class.
+
+```javascript
+class Person {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+    sayHello() {
+        console.log(`Hello, my name is ${this.name}`);
+    }
+}
+
+const person1 = new Person("John", 30);
+person1.sayHello();
+```
+
+### Constructor Function
+
+- `new` keyword creates a new object and sets the `this` keyword to the new object.
+- `this` keyword inside the constructor function refers to the new object being created.
+- new keyword calls the constructor function which passes the values to the object.
+
+```javascript
+function Person(name, age) {
+    this.name = name;
+    this.age = age;
+    this.sayHello = function() {
+        console.log(`Hello, my name is ${this.name}`);
+    }
+}
+
+const person1 = new Person("John", 30);
+person1.sayHello();
+```
+
+## Prototype
+
+- Prototype is an object that is associated with every object in JavaScript.
+- It is used to add methods and properties to objects.
+- It is used to implement inheritance in JavaScript.
+
+### Prototype inheritance
+
+- In JavaScript, every thing is a object.
+- Javascript will look for the property or method in the object itself and if it is not found it will look for it in the prototype object until it reaches the end of the prototype chain.
+- Prototype inheritance is a way to inherit properties and methods from a prototype object.
+
+```ascii
+                                        ┌─────────┐
+                                        │  null   │
+                                        └────┬────┘
+                                             │
+                                             ▼
+                                    ┌─────────────────┐
+                                    │ Object.prototype│
+                                    └────────┬────────┘
+                                             │
+                     ┌───────────────────────┼───────────────────────┐
+                     │                       │                       │
+                     ▼                       ▼                       ▼
+            ┌─────────────────┐     ┌───────────────┐      ┌───────────────┐
+            │ Array.prototype  │     │String.prototype│    │Function.prototype│
+            └────────┬────────┘     └───────┬───────┘      └───────┬───────┘
+                     │                      │                       │
+                     ▼                      ▼                       ▼
+              ┌──────────┐           ┌──────────┐            ┌──────────┐
+              │  Array   │           │  String  │            │ Function │
+              └──────────┘           └──────────┘            └──────────┘
+                     │                      │                       │
+                     ▼                      ▼                       ▼
+              ┌──────────┐           ┌──────────┐            ┌──────────┐
+              │ [1,2,3]  │           │ "hello"  │            │function(){}│
+              └──────────┘           └──────────┘            └──────────┘
+```
+
+#### Creating your own prototype
+
+- We can add our own properties and methods to the prototype object.
+
+```javascript
+Person.prototype.sayHello = function() {
+    console.log(`Hello, my name is ${this.name}`);
+}
+
+const person1 = new Person("John", 30);
+person1.sayHello();   //without new keyword this will be undefined.prototype won't be linked.constructer function won't be called.
+
+// creating prototype at the object level.
+const String = "Hello";
+const arr = [1,2,3];
+const func = function() {
+    console.log("Hello");
+}
+
+Object.prototype.sayHello = function() {
+    console.log(`Hello`);
+}
+
+String.sayHello();  //Hello
+arr.sayHello();    //Hello
+func.sayHello();   //Hello
+
+// Linking object to a object.
+const obj = {
+    name: "John"
+}
+
+const obj2 = {
+    name1: "Jane"
+}
+// old way of linking object to a object.
+obj2.__proto__ = obj;
+
+// new way of linking object to a object.
+Object.setPrototypeOf(obj2, obj);
+
+console.log(obj2.name);  //John
+console.log(obj2.name1);   //Jane
+
+// Creating your own prototype method
+const for = "ghtdk     ";
+
+String.prototype.trueLength = function() {
+    console.log(`True length is ${this.trim().length}`);
+}
+
+for.length;  //10
+for.trueLength();  //True length is 7
+```
+
