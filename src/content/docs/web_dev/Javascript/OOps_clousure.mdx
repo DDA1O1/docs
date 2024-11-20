@@ -166,3 +166,100 @@ for.length;  //10
 for.trueLength();  //True length is 7
 ```
 
+### call , apply and bind
+
+- When the setName function is called with the createUser function, the setName function creates its own new execution context and gets deleted after the execution of setName function.
+- The call keyword is used to hold the reference of the setName function even after the execution of setName function.
+- `this` keyword is used to tell the setName function to pass the `this` value to the createUser function.
+
+```javascript
+function setName(name) {
+    this.name = name;
+}
+
+function createUser(name, email, password) {
+    setName(name);
+    this.email = email;
+    this.password = password;
+}
+
+const user = new createUser("John", "john@example.com", "password");
+console.log(user); // createUser { email: 'john@example.com', password: 'password' }
+
+// call method
+function setName(name) {
+    this.name = name;
+}
+
+function createUser(name, email, password) {
+    setName.call(this, name);
+    this.email = email;
+    this.password = password;
+}
+
+const user1 = new createUser("John", "john@example.com", "password");
+console.log(user1); // createUser { name: 'John', email: 'john@example.com', password: 'password' }
+```
+#### apply method
+
+- `apply` method calls a function with a given `this` value and arguments provided as an array.
+
+```javascript
+function setUserInfo(name, age, city) {
+    this.name = name;
+    this.age = age;
+    this.city = city;
+}
+
+function createUser(name, age, city, email, password) {
+    setUserInfo.apply(this, [name, age, city]);  // passing arguments as array
+    this.email = email;
+    this.password = password;
+}
+
+const user = new createUser("John", 30, "New York", "john@example.com", "password");
+console.log(user); 
+// createUser {
+//   name: 'John',
+//   age: 30,
+//   city: 'New York',
+//   email: 'john@example.com',
+//   password: 'password'
+// }
+```
+#### bind method
+
+- `bind` method creates a new function that, when called, has its `this` keyword set to the provided value.
+- Unlike `call` and `apply`, `bind` doesn't immediately invoke the function but returns a new function with the bound context.
+- This is particularly useful when you want to preserve the context of `this` in callbacks and event handlers.
+
+```javascript
+function greet() {
+    console.log(`Hello, my name is ${this.name}`);
+}
+
+const user = {
+    name: "John"
+};
+
+const boundGreet = greet.bind(user);
+boundGreet(); // Hello, my name is John
+
+// Practical example with event handlers
+class Button {
+    constructor(text) {
+        this.text = text;
+        this.clickHandler = this.clickHandler.bind(this);
+    }
+
+    clickHandler() {
+        console.log(`Button ${this.text} was clicked`);
+    }
+
+    render() {
+        const button = document.createElement('button');
+        button.addEventListener('click', this.clickHandler);
+        return button;
+    }
+}
+```
