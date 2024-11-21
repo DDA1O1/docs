@@ -33,9 +33,7 @@ const person = {
 
 ### Classes
 
-- JavaScript is a prototype-based language that supports object-oriented programming with classes.
-- Classes are templates for creating objects. They encapsulate data with code to work on that data. Classes in JS are built on prototypes but have a more syntactical sugar.
-- `constructor` is a special method for creating and initializing an object created with a class.
+- The class syntax introduced in ES6 is essentially syntactic sugar over constructor functions. The constructor method in a class serves the same purpose as a constructor function, but with a more modern and cleaner syntax.
 
 ```javascript
 class Person {
@@ -54,22 +52,24 @@ person1.sayHello();
 
 ### Constructor Function
 
-- `new` keyword creates a new object and sets the `this` keyword to the new object.
-- `this` keyword inside the constructor function refers to the new object being created.
-- new keyword calls the constructor function which passes the values to the object.
 
-```javascript
-function Person(name, age) {
-    this.name = name;
-    this.age = age;
-    this.sayHello = function() {
-        console.log(`Hello, my name is ${this.name}`);
+
+// Constructor function
+function tr() {
+    this.library = 'React';    // Creates properties on the instance
+    this.server = 'Node';
+    this.bro = 'bro';
+}
+const tr1 = new tr();          // Creates new instance
+
+// Class (modern way to write constructor functions)
+class tr2 {
+    constructor() {            // Special constructor method
+        this.library = 'React';
+        this.server = 'Server';
     }
 }
-
-const person1 = new Person("John", 30);
-person1.sayHello();
-```
+const tr21 = new tr2();        // Creates new instance
 
 ## Prototype
 
@@ -166,7 +166,7 @@ for.length;  //10
 for.trueLength();  //True length is 7
 ```
 
-### Call and Bind
+### Call and this keyword
 
 #### Call
 - When the setName function is called with the createUser function, the setName function creates its own new execution context and gets deleted after it's execution.
@@ -174,11 +174,12 @@ for.trueLength();  //True length is 7
 - `this` keyword is used to tell the setName function to pass the `this` context of setName function to the createUser function.
 
 ```javascript
-function setName(name) {
-    this.name = name;
-}
+
 
 function createUser(name, email, password) {
+    function setName(name) {
+        this.name = name;
+    }
     setName(name);
     this.email = email;
     this.password = password;
@@ -187,12 +188,12 @@ function createUser(name, email, password) {
 const user = new createUser("John", "john@example.com", "password");
 console.log(user); // createUser { email: 'john@example.com', password: 'password' }
 
-// call keword 
-function setName(name) {
-    this.name = name;
-}
+// call and this keyword 
 
 function createUser(name, email, password) {
+    function setName(name) {
+        this.name = name;
+    }
     setName.call(this, name);
     this.email = email;
     this.password = password;
@@ -202,3 +203,65 @@ const user1 = new createUser("John", "john@example.com", "password");
 console.log(user1); // createUser { name: 'John', email: 'john@example.com', password: 'password' }
 ```
 #### Bind
+
+- The `bind` keword is used to bind the `this` context of a function/object to another function/object.
+- Without using `bind(this)` keword the execution context of the constructor function will not be passed to the new function/object we are using.
+- To put it simply, we would not be able to access the properties and methods of any library/object created with the new keyword which creates a new instance of that object/library.
+
+```javascript
+function tr(){
+    this.library = 'React';
+    this.server = 'Library';
+    this.bro = 'bro';
+
+   // document.getElementById('btn').addEventListener('click', handleClick);
+   // output of above:
+                    // clicked
+                    // undefined
+                      
+        document.getElementById('btn').addEventListener('click', handleClick.bind(this));
+
+}
+
+const tr1 = new tr();  // creates a new instance of tr
+console.log(tr1);  // tr1 { library: 'React', server: 'Library', bro: 'bro' }
+
+function handleClick(){
+    console.log('clicked');   //clicked
+    console.log(this.bro);    //bro
+}
+
+class tr2{
+        constructor(){
+            this.library = 'React';
+            this.server = 'Server';
+            document.getElementById('btn2').addEventListener('click',handleClick2.bind(this));
+            console.log(this);  // tr2 { library: 'React', server: 'Server' }
+        
+        }
+    }
+
+    function handleClick2(){
+        console.log('clicked2');  //clicked2
+        console.log(this.server);  //Server
+    }
+    const tr21 = new tr2();  // creates a new instance of tr2
+    console.log(tr21);  // tr2 { library: 'React', server: 'Server' }
+
+// function inside the class constructor
+
+class tr2{
+        constructor(){
+            this.library = 'React';
+            this.server = 'Server';
+            document.getElementById('btn2').addEventListener('click',this.handleClick2.bind(this));  // this.handleClick2 is being used here to tell that the handleClick2 function is inside the tr2 object not in global execution context.
+            console.log(this);  // tr2 { library: 'React', server: 'Server' }
+        
+        }
+    handleClick2(){
+        console.log('clicked2');  //clicked2
+        console.log(this.server);  //Server
+    }
+}
+
+```
