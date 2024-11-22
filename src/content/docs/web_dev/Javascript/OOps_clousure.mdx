@@ -44,7 +44,7 @@ const person = {
 - Javascript will look for the property or method in the object itself and if it is not found it will look for it in the prototype object until it reaches the end of the prototype chain.
 - Prototype inheritance is a way to inherit properties and methods from a prototype object.
 
-```ascii
+```text
                                         ┌─────────┐
                                         │  null   │
                                         └────┬────┘
@@ -185,7 +185,8 @@ function tr(){
                        // clicked
                        // undefined
                       
-   document.getElementById('btn').addEventListener('click', handleClick.bind(this));
+    document.getElementById('btn')
+    .addEventListener('click', handleClick.bind(this));
 
 }
 
@@ -201,7 +202,8 @@ class tr2{
         constructor(){
             this.library = 'React';
             this.server = 'Server';
-            document.getElementById('btn2').addEventListener('click',handleClick2.bind(this));
+            document.getElementById('btn2')
+            .addEventListener('click',handleClick2.bind(this));
             console.log(this);  // tr2 { library: 'React', server: 'Server' }
         
         }
