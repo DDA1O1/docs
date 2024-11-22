@@ -31,46 +31,6 @@ const person = {
 - `this` keyword refers to the current object/context. `this` is not a fixed value but changes depending on the context.
 - Remember when we are visualising the `call stack` in execution  context of javascript whenever a new function is called a new execution context is created and `this` is set to the current object/context.
 
-### Classes
-
-- The class syntax introduced in ES6 is essentially syntactic sugar over constructor functions. The constructor method in a class serves the same purpose as a constructor function, but with a more modern and cleaner syntax.
-
-```javascript
-class Person {
-    constructor(name, age) {
-        this.name = name;
-        this.age = age;
-    }
-    sayHello() {
-        console.log(`Hello, my name is ${this.name}`);
-    }
-}
-
-const person1 = new Person("John", 30);
-person1.sayHello();
-```
-
-### Constructor Function
-
-```javascript
-
-// Constructor function
-function tr() {
-    this.library = 'React';    // Creates properties on the instance
-    this.server = 'Node';
-    this.bro = 'bro';
-}
-const tr1 = new tr();          // Creates new instance
-
-// Class (modern way to write constructor functions)
-class tr2 {
-    constructor() {            // Special constructor method
-        this.library = 'React';
-        this.server = 'Server';
-    }
-}
-const tr21 = new tr2();        // Creates new instance
-```
 
 ## Prototype
 
@@ -172,7 +132,7 @@ for.trueLength();  //True length is 7
 #### Call
 - When the setName function is called with the createUser function, the setName function creates its own new execution context and gets deleted after it's execution.
 - The call keyword is used to hold the reference of the setName function even after the execution of setName function.
-- `this` keyword is used to tell the setName function to pass the `this` context of setName function to the createUser function.
+- `this` keyword is used in the `call(this, name)` to tell the setName function to pass the `this` context of setName function to the createUser function.
 
 ```javascript
 
@@ -203,6 +163,11 @@ function createUser(name, email, password) {
 const user1 = new createUser("John", "john@example.com", "password");
 console.log(user1); // createUser { name: 'John', email: 'john@example.com', password: 'password' }
 ```
+
+### Classes
+
+
+
 #### Bind
 
 - The `bind` keword is used to bind the `this` context of a function/object to another function/object.
@@ -217,10 +182,10 @@ function tr(){
 
    // document.getElementById('btn').addEventListener('click', handleClick);
    // output of above:
-                    // clicked
-                    // undefined
+                       // clicked
+                       // undefined
                       
-        document.getElementById('btn').addEventListener('click', handleClick.bind(this));
+   document.getElementById('btn').addEventListener('click', handleClick.bind(this));
 
 }
 
