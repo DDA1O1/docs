@@ -129,7 +129,6 @@ for.trueLength();  //True length is 7
 
 ### Call and this keyword
 
-#### Call
 - When the setName function is called with the createUser function, the setName function creates its own new execution context and gets deleted after it's execution.
 - The call keyword is used to hold the reference of the setName function even after the execution of setName function.
 - `this` keyword is used in the `call(this, name)` to tell the setName function to pass the `this` context of setName function to the createUser function.
@@ -163,10 +162,113 @@ function createUser(name, email, password) {
 const user1 = new createUser("John", "john@example.com", "password");
 console.log(user1); // createUser { name: 'John', email: 'john@example.com', password: 'password' }
 ```
+### new Keyword
 
-### Classes
+- The `new` keyword is used to create instances of objects from constructor functions.
+- When using the `new` keyword, 4 things happen behind the scenes:
 
+```javascript
+function createUser(username) {
+    this.username = username;
+}
 
+// When we write: const user = new createUser("john")
+// JavaScript does this internally:
+
+// 1. Creates an empty object
+const user = {};
+
+// 2. Sets the constructor function's prototype as the object's prototype
+user.__proto__ = createUser.prototype;
+
+// 3. Calls the constructor function with 'this' set to the new object
+createUser.call(user, "john");
+// Now user = { username: "john" }
+
+// 4. Returns the object (happens automatically)
+// return user;
+
+// This is why we can do:
+const user = new createUser("john");
+console.log(user.username); // "john"
+console.log(user instanceof createUser); // true
+
+// Without new keyword:
+const badUser = createUser("john");
+console.log(badUser); // undefined
+console.log(window.username); // "john" (in browsers) - attaches to global object!
+```
+
+- If you forget the `new` keyword:
+  - `this` will refer to the global object (window in browsers, global in Node.js)
+  - Properties will be attached to the global object instead of a new instance
+  - The function will return undefined (unless explicitly returning something)
+  - No prototype linking occurs
+
+- Even if you do not declare the constructor function inside the class, the `new` keyword will still create a new instance of the class and the constructor function will be called.
+
+### Class Constructor
+
+- ES6 introduced the class keyword to create objects.It is a syntactic sugar over the existing prototype based inheritance.
+
+```javascript
+class User {
+    constructor(username, email, password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+    encryptPassword() {
+        return `${this.password}abc`;
+    }
+    changeUsername() {
+        return `${this.username.toUpperCase()}`;
+    }
+}
+
+const user = new User("john", "john@example.com", "password");
+console.log(user.encryptPassword());  //passwordabc
+console.log(user.changeUsername());  //JOHN
+
+// Behind the scenes
+
+function User(username, email, password) {
+    this.username = username;
+    this.email = email;
+    this.password = password;
+}
+
+User.prototype.encryptPassword = function() {
+    return `${this.password}abc`;
+}
+
+User.prototype.changeUsername = function() {
+    return `${this.username.toUpperCase()}`;
+}
+
+const user = new User("john", "john@example.com", "password");
+console.log(user.encryptPassword());  //passwordabc
+console.log(user.changeUsername());  //JOHN
+
+// Inheritance
+
+class Teacher extends User {
+    constructor(username, email, password, role) {
+        super(username, email, password);
+        this.role = role;
+    }
+    static createId() {
+        return `${Math.random() * 10}`;
+    }
+}
+
+const teacher = new Teacher("john", "john@example.com", "password", "teacher");
+console.log(teacher);  //Teacher { username: 'john', email: 'john@example.com', password: 'password', role: 'teacher' }
+console.log(teacher.encryptPassword());  //passwordabc
+console.log(teacher instanceof Teacher);  //true
+console.log(teacher instanceof User);  //true
+console.log(Teacher.createId());  // ReferenceError: Teacher.createId is not a function
+```
 
 #### Bind
 
@@ -180,7 +282,8 @@ function tr(){
     this.server = 'Library';
     this.bro = 'bro';
 
-   // document.getElementById('btn').addEventListener('click', handleClick);
+   // document.getElementById('btn')
+   .addEventListener('click', handleClick);
    // output of above:
                        // clicked
                        // undefined
@@ -222,7 +325,10 @@ class tr2{
         constructor(){
             this.library = 'React';
             this.server = 'Server';
-            document.getElementById('btn2').addEventListener('click',this.handleClick2.bind(this));  // this.handleClick2 is being used here to tell that the handleClick2 function is inside the tr2 object not in global execution context.
+            document.getElementById('btn2')
+            .addEventListener('click',this.handleClick2.bind(this));
+            // this.handleClick2 is being used here to tell that the handleClick2 
+            // function is inside the tr2 object not in global execution context.
             console.log(this);  // tr2 { library: 'React', server: 'Server' }
         
         }
@@ -233,3 +339,5 @@ class tr2{
 }
 
 ```
+
+
