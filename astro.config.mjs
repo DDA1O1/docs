@@ -71,4 +71,11 @@ export default defineConfig({
   adapter: vercel({
     webAnalytics: { enabled: true }
   }),
+  vite: {
+    resolve: {
+      alias: {
+        '@/': '/src/'
+      }
+    }
+  }
 });
