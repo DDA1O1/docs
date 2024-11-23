@@ -1,0 +1,82 @@
+---
+---
+<div class="chart-container">
+  <canvas id="complexityChart"></canvas>
+</div>
+
+<script>
+  import Chart from 'chart.js/auto';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('complexityChart') as HTMLCanvasElement;
+    
+    // Generate more data points for smoother curves
+    const points = Array.from({length: 20}, (_, i) => i);
+    
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: points,
+        datasets: [
+          {
+            label: 'O(1)',
+            data: points.map(() => 1),
+            borderColor: 'rgba(75, 192, 192, 1)',
+          },
+          {
+            label: 'O(log n)',
+            data: points.map(x => Math.log2(x + 1)),
+            borderColor: 'rgba(54, 162, 235, 1)',
+          },
+          {
+            label: 'O(n)',
+            data: points.map(x => x),
+            borderColor: 'rgba(255, 99, 132, 1)',
+          },
+          {
+            label: 'O(n log n)',
+            data: points.map(x => x * Math.log2(x + 1)),
+            borderColor: 'rgba(255, 206, 86, 1)',
+          },
+          {
+            label: 'O(n²)',
+            data: points.map(x => x * x),
+            borderColor: 'rgba(153, 102, 255, 1)',
+          },
+          {
+            label: 'O(2ⁿ)',
+            data: points.map(x => Math.pow(2, x)),
+            borderColor: 'rgba(255, 159, 64, 1)',
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Operations'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Input Size'
+            }
+          }
+        }
+      }
+    });
+  });
+</script>
+
+<style>
+.chart-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+</style> 
