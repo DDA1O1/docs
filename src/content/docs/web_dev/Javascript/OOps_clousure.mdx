@@ -477,3 +477,91 @@ function User(username, email, password) {
 :::danger[Race condition]
 - If you use `this.password` instead of `this._password` in the setter method, it will create a race condition where the value of the property will be changed to the value of the setter method.It will keep on changing untill the call stack is exceded.
 :::
+
+#### Lexical Scope
+
+- Memory are shared between the parent and child functions.
+- The child function can access the variables of the parent function.
+
+```javascript
+function one() {
+    const username = "john";
+    function two() {
+        const website = "youtube";
+        function three() {
+            console.log(username, website);
+        }
+        three();
+    }
+    two();
+}
+one();
+// john youtube
+```
+:::note[Scope Sharing]
+- Child functions do not share their scope with each other.
+:::
+
+#### Closure
+
+- Closure is a function that has access to the variables of its parent scope even after the parent function has executed.
+- `outer()` function has returned the `inner()` function and the `inner()` function has access to the variables of the `outer()` function even after the `outer()` function has executed.
+- When you return the `inner()` function it returns its local scope as well as the Lexical scope of the `outer()` function.
+
+```javascript
+function outer() {
+    let a = 10;
+    function inner() {
+        let b = 20;
+        console.log(a, b);
+    }
+    return inner;
+}
+const result = outer();
+console.log(result);  //[Function: inner]
+result();  //10 20
+```
+#### Example
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="btn">Orange</button>
+    <button id="btn2">Green</button>
+</body>
+<script>
+
+// Closure 
+  const btn = document.getElementById("btn");
+  const btn2 = document.getElementById("btn2");
+
+  function changeColor(color) {
+    return function() {
+        document.body.style.backgroundColor = `${color}`;
+    }
+  }
+
+  btn.addEventListener("click", changeColor("orange"));
+  btn2.addEventListener("click", changeColor("green"));
+
+  // Anotherway using bind keyword
+
+  const btn = document.getElementById("btn");
+  const btn2 = document.getElementById("btn2");
+
+  function changeColor(color) {
+    document.body.style.backgroundColor = `${color}`;
+  }
+
+  btn.addEventListener("click", changeColor.bind(this, "orange"));
+  btn2.addEventListener("click", changeColor.bind(this, "green"));
+</script>
+</html>
+```
