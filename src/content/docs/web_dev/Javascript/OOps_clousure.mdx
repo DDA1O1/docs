@@ -391,3 +391,72 @@ for(let [key, value] of Object.entries(user)) {
 - javascript objects have some properties that are hardcoded and cannot be changed.
 - These properties are: `__proto__`, `constructor`, `prototype`, `hasOwnProperty`, `isPrototypeOf`, `propertyIsEnumerable`, `toLocaleString`, `toString`, `Math.PI`, `NaN`, `Infinity`.
 :::
+
+#### getter and setter
+
+- The `getter` and `setter` methods are used to get and set the value of a property.
+- They are used to control the access to a property.
+
+```javascript
+class User {
+    constructor(username, email, password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+}
+
+const user = new User("john", "john@example.com", "password");
+console.log(user.password);  //password
+
+// using getter and setter
+
+class User {
+    constructor(username, email, password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+    get password() {
+        return `${this._password}abc`;
+    }
+    set password(value) {
+        this._password = value;   
+        // _password is a convention to make the property private.
+    }
+}   
+
+const user = new User("john", "john@example.com", "password");
+console.log(user.password);  //passwordabc
+
+// But the private property _password is still accessible.
+console.log(user._password);  //password
+
+// To make the private property truly private, we use the `#` symbol.
+
+class User {
+  #password; // Declare private field
+
+  constructor(username, email, password) {
+      this.username = username;
+      this.email = email;
+      this.password = password;
+  }
+  
+  get password() {
+      return this.#password.toUpperCase();
+  }
+  
+  set password(value) {
+      this.#password = value;
+  }
+}   
+
+const user = new User("john", "john@example.com", "password");
+console.log(user.password);  //PASSWORD
+console.log(user.#password);  //ReferenceError: #password is not defined
+
+```
+:::danger[Race condition]
+- If you use `this.password` instead of `this._password` in the setter method, it will create a race condition where the value of the property will be changed to the value of the setter method.It will keep on changing untill the call stack is exceded.
+:::
