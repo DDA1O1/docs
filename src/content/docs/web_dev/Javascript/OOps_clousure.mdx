@@ -356,6 +356,14 @@ const user = {
 console.log(Object.getOwnPropertyDescriptor(user, 'name'));  
 //{ value: 'John', writable: true, enumerable: true, configurable: true }
 
+for(let [key, value] of Object.entries(user)) {
+    console.log(`${key}: ${value}`);
+}
+// name: John
+// age: 30
+
+// making the property non writable, non enumerable, non configurable
+
 Object.defineProperty(user, 'name', {
     writable: false,
     enumerable: false,
@@ -364,6 +372,11 @@ Object.defineProperty(user, 'name', {
 
 console.log(Object.getOwnPropertyDescriptor(user, 'name'));  
 //{ value: 'John', writable: false, enumerable: false, configurable: false }
+
+for(let [key, value] of Object.entries(user)) {
+    console.log(`${key}: ${value}`);
+}
+// age: 30
 
 ```
 
