@@ -456,6 +456,23 @@ const user = new User("john", "john@example.com", "password");
 console.log(user.password);  //PASSWORD
 console.log(user.#password);  //ReferenceError: #password is not defined
 
+// old way of making private property
+
+function User(username, email, password) {
+    this.username = username;
+    this.email = email;
+    this.password = password;
+    // making the password property private
+    Object.defineProperty(this, 'password', {
+        get: function() {
+            return this._password.toUpperCase();
+        },
+        set: function(value) {
+            this._password = value;
+        }
+    });
+}
+
 ```
 :::danger[Race condition]
 - If you use `this.password` instead of `this._password` in the setter method, it will create a race condition where the value of the property will be changed to the value of the setter method.It will keep on changing untill the call stack is exceded.
