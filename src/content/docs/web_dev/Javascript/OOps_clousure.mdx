@@ -350,7 +350,12 @@ class tr2{
 ```javascript
 const user = {
     name: "John",
-    age: 30
+    age: 30,
+    
+    func: function() {
+        console.log('Hello');
+    }
+
 }
 
 console.log(Object.getOwnPropertyDescriptor(user, 'name'));  
@@ -361,6 +366,7 @@ for(let [key, value] of Object.entries(user)) {
 }
 // name: John
 // age: 30
+// func: [Function: func]
 
 // making the property non writable, non enumerable, non configurable
 
@@ -379,4 +385,7 @@ for(let [key, value] of Object.entries(user)) {
 // age: 30
 
 ```
-
+:::danger[Hardcoded Object properties]
+- javascript objects have some properties that are hardcoded and cannot be changed.
+- These properties are: `__proto__`, `constructor`, `prototype`, `hasOwnProperty`, `isPrototypeOf`, `propertyIsEnumerable`, `toLocaleString`, `toString`, `Math.PI`, `NaN`, `Infinity`.
+:::
