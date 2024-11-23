@@ -32,7 +32,7 @@ const person = {
 - Remember when we are visualising the `call stack` in execution  context of javascript whenever a new function is called a new execution context is created and `this` is set to the current object/context.
 
 
-## Prototype
+### Prototype
 
 - Prototype is an object that is associated with every object in JavaScript.
 - It is used to add methods and properties to objects.
@@ -72,7 +72,7 @@ const person = {
               └──────────┘           └──────────┘            └──────────┘
 ```
 
-#### Creating your own prototype
+### Creating your own prototype
 
 - We can add our own properties and methods to the prototype object.
 
@@ -207,7 +207,7 @@ console.log(window.username); // "john" (in browsers) - attaches to global objec
 
 - Even if you do not declare the constructor function inside the class, the `new` keyword will still create a new instance of the class and the constructor function will be called.
 
-### Class Constructor
+## Class Constructor
 
 - ES6 introduced the class keyword to create objects.It is a syntactic sugar over the existing prototype based inheritance.
 
@@ -270,7 +270,7 @@ console.log(teacher instanceof User);  //true
 console.log(Teacher.createId());  // ReferenceError: Teacher.createId is not a function
 ```
 
-#### Bind
+### Bind
 
 - The `bind` keword is used to bind the `this` context of a function/object to another function/object.
 - Without using `bind(this)` keword the execution context of the constructor function will not be passed to the new function/object we are using.
@@ -340,7 +340,7 @@ class tr2{
 
 ```
 
-#### getOwnPropertyDescriptor
+### getOwnPropertyDescriptor
 
 - The `getOwnPropertyDescriptor` method returns a property descriptor for a given property on an object.
 - It is used to get the property descriptor of a property.Which is a object containing the value, writable, enumerable, configurable properties.
@@ -392,7 +392,7 @@ for(let [key, value] of Object.entries(user)) {
 - These properties are: `__proto__`, `constructor`, `prototype`, `hasOwnProperty`, `isPrototypeOf`, `propertyIsEnumerable`, `toLocaleString`, `toString`, `Math.PI`, `NaN`, `Infinity`.
 :::
 
-#### getter and setter
+### getter and setter
 
 - The `getter` and `setter` methods are used to get and set the value of a property.
 - They are used to control the access to a property.
@@ -478,7 +478,7 @@ function User(username, email, password) {
 - If you use `this.password` instead of `this._password` in the setter method, it will create a race condition where the value of the property will be changed to the value of the setter method.It will keep on changing untill the call stack is exceded.
 :::
 
-#### Lexical Scope
+### Lexical Scope
 
 - Memory are shared between the parent and child functions.
 - The child function can access the variables of the parent function.
@@ -502,7 +502,7 @@ one();
 - Child functions do not share their scope with each other.
 :::
 
-#### Closure
+## Closure
 
 - Closure is a function that has access to the variables of its parent scope even after the parent function has executed.
 - `outer()` function has returned the `inner()` function and the `inner()` function has access to the variables of the `outer()` function even after the `outer()` function has executed.
@@ -521,7 +521,7 @@ const result = outer();
 console.log(result);  //[Function: inner]
 result();  //10 20
 ```
-#### Example
+### Example
 
 
 ```html
