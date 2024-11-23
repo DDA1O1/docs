@@ -32,3 +32,53 @@ description: "Overview"
                 │  (Solution)  │
                 └──────────────┘
 ```
+
+### Algorithm Efficiency
+
+Algorithm efficiency is measured in terms of two key metrics:
+
+```mermaid
+graph LR
+    subgraph Time Complexity Growth
+    direction TB
+    style subgraph fill:#f5f5f5,stroke:#333
+    O_1[O(1)] --> O_log[O(log n)]
+    O_log --> O_n[O(n)]
+    O_n --> O_nlog[O(n log n)]
+    O_nlog --> O_n2[O(n²)]
+    O_n2 --> O_2n[O(2ⁿ)]
+    end
+```
+
+1. **Time Complexity**
+   - How runtime grows with input size
+   - Expressed in Big O notation
+   - Common complexities:
+     - O(1): Constant time
+     - O(log n): Logarithmic
+     - O(n): Linear
+     - O(n log n): Log-linear
+     - O(n²): Quadratic
+     - O(2ⁿ): Exponential
+
+2. **Space Complexity**
+   - Memory usage relative to input size
+   - Also expressed in Big O notation
+   - Includes:
+     - Input space
+     - Auxiliary space (extra space used)
+
+
+
+#### Analyzing Efficiency
+
+When evaluating an algorithm, consider:
+- Best case scenario
+- Average case scenario
+- Worst case scenario (most commonly used)
+
+#### Trade-offs
+
+- Time vs Space: Often need to balance between speed and memory usage
+- Readability vs Performance: Sometimes simpler code is preferred over slightly better performance
+- Development time vs Optimization: Consider if optimization is worth the development effort
