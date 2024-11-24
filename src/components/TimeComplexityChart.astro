@@ -34,20 +34,10 @@
             borderColor: 'rgba(255, 99, 132, 1)',
           },
           {
-            label: 'O(n log n)',
-            data: points.map(x => x * Math.log2(x + 1)),
-            borderColor: 'rgba(255, 206, 86, 1)',
-          },
-          {
             label: 'O(n²)',
             data: points.map(x => x * x),
             borderColor: 'rgba(153, 102, 255, 1)',
           },
-          {
-            label: 'O(2ⁿ)',
-            data: points.map(x => Math.pow(2, x)),
-            borderColor: 'rgba(255, 159, 64, 1)',
-          }
         ]
       },
       options: {
