@@ -34,7 +34,24 @@ import TimeComplexityChart from '@/components/TimeComplexityChart.astro';
                 │  (Solution)  │
                 └──────────────┘
 ```
-
+Suppose you want to write a code where you have read, write and response for 10000 users per second in a database.
+      - input handling: 5 operations/user/second
+      - database write: 10 operations/user/second
+      - response handling: 5 operations/user/second
+      - total operations: 20 operations/user/second
+      - time complexity: O(20)
+      - space complexity: O(1)
+Now you need a server to handle that can handle 200000 operations per second.any normal server can handle this task without overheating.
+Code optimization becomes necessary only when you found yourself in constraints.Where the cpu can only do 500000 operations per second.
+:::note[Code Optimization vs Readability]
+- Prioritize code readability over performance optimization in most scenarios
+- Performance optimization should only be your primary focus when:
+  - Working with strict hardware constraints
+  - Building performance-critical systems
+  - Dealing with high-scale applications
+  - Operating in resource-limited environments
+- Remember: Readable code is easier to maintain, debug, and collaborate on
+:::
 ### Time and Space Complexity
 
 #### Time Complexity
