@@ -323,5 +323,45 @@ int main() {
 - `auto` is used to automatically deduce the type of the variable.
 
 ```cpp
- 
+#include <iostream>
+using namespace std;
+
+int main() {
+    auto sum = [](int a, int b) -> int {return a + b;};
+    cout << sum(1, 2) << endl; // 3
+    return 0;
+}
+// without return 
+int main() {
+    auto sum = [](int a, int b){
+        cout << "Sum of " << a << " and " << b << " is " << a + b << endl;
+    };
+    sum(1, 2); // Sum of 1 and 2 is 3
+    return 0;
+}
 ```
+
+### Arrays
+- Collection of similar data types.
+- Indexed based.
+- Can store only one type of data.
+- Continuous memory address allocation.
+
+```cpp
+int numbers[5] = {1, 2, 3, 4, 5};
+```
+
+```text
+Memory Layout for int numbers[5]:
+┌─────────┬─────────┬─────────┬─────────┬─────────┐
+│ numbers │numbers+1│numbers+2│numbers+3│numbers+4│
+├─────────┼─────────┼─────────┼─────────┼─────────┤
+│    1    │    2    │    3    │    4    │    5    │
+├─────────┼─────────┼─────────┼─────────┼─────────┤
+│  2000   │  2004   │  2008   │  2012   │  2016   │
+└─────────┴─────────┴─────────┴─────────┴─────────┘
+   ^         ^         ^         ^         ^
+   │         │         │         │         │
+Memory addresses (assuming 4-byte integers)
+```
+
