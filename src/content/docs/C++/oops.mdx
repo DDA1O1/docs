@@ -232,7 +232,7 @@ class Bread {
         }
         // copy constructor
         // const is used to prevent the object from being modified
-        // &other is reference to the object passed as a parameter
+        // &other is the deep copy of the object
         Bread(const Bread &other) {  
             this->name = new string(*other.name); //`*` is used cause `name` is a string pointer
         }
