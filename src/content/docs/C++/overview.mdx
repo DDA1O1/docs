@@ -485,3 +485,23 @@ int main() {
 - You must delete the dynamically allocated memory using `delete[]` to avoid memory leak.
 - Rule of thumb: If you use `new`, you must use `delete`.
 :::
+
+###### 2D Array
+- Matrix.
+
+```cpp
+int main() {
+    int arr[3][3] = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            cout << arr[i][j] << " ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
+```
