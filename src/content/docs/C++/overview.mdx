@@ -301,7 +301,7 @@ int main() {
 
 // Pass by reference
 // Changing the actual value of the variable.for example unique ID of a person.
-
+// & is used to declare the reference variable.
 void passByReference(int &x) {
     x = x + 5;
     cout << "x inside function: " << x << endl; // 15
@@ -341,7 +341,7 @@ int main() {
 }
 ```
 
-### Arrays
+### Array and Pointer
 - Collection of similar data types.
 - Indexed based.
 - Can store only one type of data.
@@ -370,4 +370,115 @@ Memory Layout for int numbers[5]:
    │         │         │         │         │
 Memory addresses (assuming 4-byte integers)
 ```
+```cpp
+int totalPrice(int price[],int size) {
+    int total = 0; // To prevent garbage value
+    for(int i = 0; i < size; i++) {
+        total = total + price[i];
+    }
+    return total;
+}
+int main() {
+    int price[5] = {10, 20, 30, 40, 50};
+    cout << "Total price is " << totalPrice(price, 5) << endl; // 150
+    return 0;
+}
+```
+- returning an array from a function in stack memory
+    - Stack memory,Fixed size
+    - Performance critical
+```cpp
+#include <iostream>
+using namespace std;
 
+void createArray(int arr[]) {
+    for(int i = 0; i < 5; i++) {
+        arr[i] = i + 1;
+    }
+}
+int main() {
+    int arr[5];
+    createArray(arr);
+    for(int i = 0; i < 5; i++) {
+        cout << arr[i] << endl;
+    }
+    return 0;
+}
+```
+###### Pointer
+- A variable that stores the memory address of another variable.
+- Used to access the memory address of a variable.
+- Can be used to traverse through the array.
+- `*` is used to declare and store the memory address consider it as data type.It points to the memory location.
+- You cannot store memory address in `int`,`float`,`char`,etc.
+- `&` is used to get the memory address of a variable.
+- `*ptr` is to store the memory address of a variable in pointer data type.
+
+```cpp
+int main() {
+    int x = 10;
+    int *ptr = &x; 
+    cout << "Value of x is " << x << endl; // 10
+    cout << "Memory address of x is " << &x << endl; // 0x61ff0c
+    cout << *ptr << endl; // 10
+    cout << "Memory address of ptr is " << &ptr << endl; // 0x61ff0c
+    return 0;
+}
+```
+###### Heap Memory
+- Dynamic memory allocation.
+- Used to allocate memory at runtime.
+- Used to create dynamic objects.
+
+Stack Memory load the function ,declare the variable and free the memory automatically after the function call.
+Heap Memory load the function ,declare the variable but you have to free the memory manually.It does not free the memory automatically.
+- `new` keyword is used to allocate the memory in heap also called dynamic memory allocation.
+- `delete` keyword is used to free the memory allocated to the pointer.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    int *ptr = new int(10);
+    cout << "Value of ptr is " << *ptr << endl; // 10
+    delete ptr; // to free the memory allocated to the pointer
+    return 0;
+}
+```
+- returning an array from a function in heap/dynamic memory
+    - Heap memory,Dynamic size
+    - When array size is not known beforehand.
+    - Large size of array.
+    - Complex data structure for processing.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Function that returns dynamically allocated array based on user input
+int* createArray(int size) {
+    // Dynamically allocate memory for the array during runtime
+    int *arr = new int[size];
+
+    for(int i = 0; i < size; i++) {
+        arr[i] = i * 2;  // Fill the array with even numbers
+    }
+    return arr;
+}
+
+int main() {
+    int size;
+    cout << "Enter the size of the array: ";
+    cin >> size;
+    int *dynamicArray = createArray(size);
+    for(int i = 0; i < size; i++) {
+        cout << dynamicArray[i] << " ";
+    }
+    delete[] dynamicArray; // Free the dynamically allocated memory
+    return 0;
+}
+
+:::danger[Note]
+You must delete the dynamically allocated memory using `delete[]` to avoid memory leak.
+:::
