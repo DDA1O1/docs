@@ -1,0 +1,71 @@
+---
+title: "OOPs in C++"
+description: "OOPs in C++"
+---
+
+- OOPs stands for Object Oriented Programming.It is a programming paradigm based on the concept of `objects`, everything is object in OOPs.
+- OOPs is not a language, it is a concept.Almost all languages support OOPs approach.
+- `main()` function exist without any class in C++.That means it supports variety of programming styles.
+- Bjarne Stroustrup introduced OOPs in C++ in 1985 [OOPSLA](https://stroustrup.com/oopsla.pdf)
+
+### Class and Object
+- Class is a blueprint of an object.
+- Object is an instance of a class.
+- Every new object instance is a copy of original class.
+
+> `<vector>` is a class and `vector<int> v` is an object/instance of that class.
+- same as array, but more flexible.
+- `vector` allows fast random access to any element.
+- It is preferred when random-access performance is the primary need.
+- [vector](https://learn.microsoft.com/en-us/cpp/standard-library/vector-class?view=msvc-170) is a class in C++ STL
+
+```cpp
+// user defined class
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class Bread {
+    public:
+        // data members(attributes) fancy name for variables in a class
+        string name;
+        int quantity;
+        vector<string> ingredients; //list of ingredients
+
+        // member functions(methods) fancy name for functions in a class
+        void display() {
+            cout << "Bread name: " << name << endl;
+            cout << "Quantity: " << quantity << endl;
+            cout << "Ingredients: ";
+            for (string ingredient : ingredients) {
+                cout << ingredient << " ";
+            }
+            cout << endl;
+        }
+}; // do not forget semicolon
+
+// access modifier
+// public: accessible from anywhere
+// private: accessible only within the class
+// protected: accessible within the class and derived classes
+
+// The default access modifier for a class is private if not specified.
+
+int main() {
+    Bread bread; // class name always starts with capital letter and object name always starts with small letter
+
+    bread.name = "Whole Wheat Bread";
+    bread.quantity = 10;
+    bread.ingredients = {"Flour", "Water", "Yeast", "Salt"};
+
+    bread.display();
+
+    Bread bread2;
+    bread2.name = "White Bread";
+    bread2.quantity = 5;
+    bread2.ingredients = {"Flour", "Water", "Yeast", "Salt"};
+    bread2.display();
+    return 0;
+}
+```
