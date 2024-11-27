@@ -69,3 +69,190 @@ int main() {
     return 0;
 }
 ```
+
+### Constructor
+- Constructor is a special member function of a class that is automatically called when an object is created.
+- It is used to initialize the object.
+- It has the same name as the class and no return type.
+- It can take parameters.
+- It can be parameterized or non-parameterized.
+- If no constructor is defined, compiler will automatically generate a default constructor.
+```cpp
+// default constructor
+class Bread {
+    public:
+        Bread() {
+            cout << "Bread constructor called" << endl;
+        }
+};
+
+int main() {
+    Bread bread; //output: Bread constructor called
+    return 0;
+}
+
+// default values can be assigned in constructor
+
+class Bread {
+    public:
+        Bread() {
+            name = "Unknown";
+            quantity = 1;
+            ingredients = {"Water"};
+        }
+        void display() {
+            cout << "Bread name: " << name << endl;
+            cout << "Quantity: " << quantity << endl;
+            cout << "Ingredients: ";
+            for (string ingredient : ingredients) {
+                cout << ingredient << " ";
+            }
+            cout << endl;
+        }
+};
+
+int main() {
+    Bread bread;  //output: Bread constructor called
+    bread.display(); //output: Bread name: Unknown, Quantity: 1, Ingredients: Water
+    return 0;
+}
+
+// parameterized constructor
+
+class Bread {
+    public:
+        Bread(string name, int quantity, vector<string> ingredients) {
+            this->name = name;
+            this->quantity = quantity;
+            this->ingredients = ingredients;
+        }
+        void display() {
+            cout << "Bread name: " << name << endl;
+            cout << "Quantity: " << quantity << endl;
+            cout << "Ingredients: ";
+            for (string ingredient : ingredients) {
+                cout << ingredient << " ";
+            }
+            cout << endl;
+        }
+};
+
+int main() {
+    Bread bread("Whole Wheat Bread", 10, {"Flour", "Water", "Yeast", "Salt"});
+    bread.display();
+    return 0;
+}
+```
+##### Copy Constructor and Destructor
+
+- Copy constructor is a constructor that creates an object by copying another object.
+- It is used to initialize an object with the values of another object.
+- It takes the same type of object as a parameter.
+
+```cpp
+// normal copy
+class Bread {
+    public:
+        string name;
+        int quantity;
+        vector<string> ingredients;
+
+        Bread(string name, int quantity, vector<string> ingredients) {
+            this->name = name;
+            this->quantity = quantity;
+            this->ingredients = ingredients;
+        }
+        void display() {
+            cout << "Bread name: " << name << endl;
+            cout << "Quantity: " << quantity << endl;
+            cout << "Ingredients: ";
+            for (string ingredient : ingredients) {
+                cout << ingredient << " ";
+            }
+            cout << endl;
+        }
+};
+
+int main() {
+    Bread bread1("Whole Wheat Bread", 10, {"Flour", "Water", "Yeast", "Salt"});
+    Bread bread2 = bread1;
+    bread1.name = "White Bread";
+    bread1.display(); //output: Bread name: White Bread, Quantity: 10, Ingredients: Flour Water Yeast Salt
+    bread2.display(); //output: Bread name: Whole Wheat Bread, Quantity: 10, Ingredients: Flour Water Yeast Salt
+    return 0;
+}
+```
+- The normal copy works absolutely fine.
+
+The problem arises when you want to deal with dynamic memory allocation with pointers.In `Stack memory` the allocation and deallocation is handled automatically.But in `Heap memory` the allocation and deallocation/deletion have to be done manually.Destructor is used to deallocate the memory `~` is used to define destructor also called as `tilde operator`.
+
+```cpp
+class Bread {
+    public:
+        string *name;
+        Bread(string name) {
+            this->name = new string(name);  // dynamic memory allocation with new keyword
+        }
+        // destructor
+        ~Bread() {  
+            delete name;  // dynamic memory deallocation with delete keyword
+            cout << "Bread destructor called" << endl;
+        }
+        void display() {
+            cout << "Bread name: " << *name << endl;
+        }
+};
+
+int main() {
+    Bread bread("Whole Wheat Bread");
+    Bread bread2 = bread;
+
+    *bread.name = "White Bread";
+    bread.display(); //output: Bread name: White Bread 
+    bread2.display(); //output: Bread name: White Bread
+    return 0;
+}
+// output: Bread destructor called
+// output: Bread destructor called
+```
+- When you don't define a copy constructor, C++ automatically creates one.This is known as `shallow copy`.That means both objects will point to the same memory location.Changes made in one object will be reflected in another object.
+
+:::danger[Memory Error]
+After the execution of program, destructor will be called for both objects and deallocate the same memory.The memory will be deallocated twice which is a memory error.
+:::
+
+- To avoid this problem, we need to define our own copy constructor.This is known as `deep copy`.
+
+```cpp
+class Bread {
+    public:
+        string *name;
+        Bread(string name) {
+            this->name = new string(name);
+        }
+        // copy constructor
+        // const is used to prevent the object from being modified
+        // &other is reference to the object passed as a parameter
+        Bread(const Bread &other) {  
+            this->name = new string(*other.name); //`*` is used cause `name` is a string pointer
+        }
+        // destructor
+        ~Bread() {
+            delete name;
+            cout << "Bread destructor called" << endl;
+        }
+        void display() {
+            cout << "Bread name: " << *name << endl;
+        }
+};
+
+int main() {
+    Bread bread("Whole Wheat Bread");
+    Bread bread2 = bread;
+    *bread.name = "White Bread";
+    bread.display(); //output: Bread name: White Bread
+    bread2.display(); //output: Bread name: Whole Wheat Bread
+    return 0;
+}
+```
+
