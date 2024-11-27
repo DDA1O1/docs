@@ -417,11 +417,12 @@ int main() {
 ```cpp
 int main() {
     int x = 10;
-    int *ptr = &x; 
+    int* ptr = &x; 
     cout << "Value of x is " << x << endl; // 10
     cout << "Memory address of x is " << &x << endl; // 0x61ff0c
-    cout << *ptr << endl; // 10
-    cout << "Memory address of ptr is " << &ptr << endl; // 0x61ff0c
+    cout << *ptr << endl; // 10 // Dereferencing: Accessing the value stored at the memory address
+    cout << "Memory address of x is " << ptr << endl; // 0x61ff0c
+    cout << "Memory address of ptr is " << &ptr << endl; // 0x61ff08
     return 0;
 }
 ```
@@ -440,7 +441,7 @@ Heap Memory load the function ,declare the variable but you have to free the mem
 using namespace std;
 
 int main() {
-    int *ptr = new int(10);
+    int* ptr = new int(10);
     cout << "Value of ptr is " << *ptr << endl; // 10
     delete ptr; // to free the memory allocated to the pointer
     return 0;
@@ -459,7 +460,7 @@ using namespace std;
 // Function that returns dynamically allocated array based on user input
 int* createArray(int size) {
     // Dynamically allocate memory for the array during runtime
-    int *arr = new int[size];
+    int* arr = new int[size];
 
     for(int i = 0; i < size; i++) {
         arr[i] = i * 2;  // Fill the array with even numbers
@@ -471,7 +472,7 @@ int main() {
     int size;
     cout << "Enter the size of the array: ";
     cin >> size;
-    int *dynamicArray = createArray(size);
+    int* dynamicArray = createArray(size);
     for(int i = 0; i < size; i++) {
         cout << dynamicArray[i] << " ";
     }
@@ -481,5 +482,6 @@ int main() {
 ```
 
 :::danger[Note]
-You must delete the dynamically allocated memory using `delete[]` to avoid memory leak.
+- You must delete the dynamically allocated memory using `delete[]` to avoid memory leak.
+- Rule of thumb: If you use `new`, you must use `delete`.
 :::
