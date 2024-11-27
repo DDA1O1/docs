@@ -1,6 +1,6 @@
 ---
-title: C++ Overview
-description: A brief overview of C++
+title: "C++ Overview"
+description: "A brief overview of C++"
 ---
 
 C++ is a powerful programming language that is widely used for system programming, game development, and other high-performance applications. It is an extension of the C language and adds object-oriented programming features to it.
@@ -62,7 +62,7 @@ int main() {
     return 0;
 }
 ```
-`namespace` like Eigen library,Qt library, etc.
+> `namespace` like Eigen library, crow framework, Qt library, etc.
 
 ##### Variables
 ```cpp
@@ -173,8 +173,10 @@ int main() {
 - clog : used to print the log message to the console
 
 ```cpp
+// getline is used to take the whole line as input.cin only takes the first word as input.
 #include <iostream>
 #include <string>
+
 using namespace std;
 
 int main() {
@@ -200,24 +202,25 @@ int main() {
     cout << "Total: $" << total << endl;
     return 0;
 }
-
 ```
+
 #### Operators
-- Arithmetic Operators: +, -, *, /, %
-- Assignment Operators: =, +=, -=, *=, /=, %=
-- Comparison Operators: ==, !=, >, <, >=, <=
-- Logical Operators: &&, ||, !
-- Bitwise Operators: &, |, ^, ~, <<, >>
+
+- Arithmetic Operators: `+`, `-`, `*`, `/`, `%`
+- Assignment Operators: `=`, `+=`, `-=`, `*=`, `/=`, `%=`
+- Comparison Operators: `==`, `!=`, `>`, `<`, `>=`, `<=`
+- Logical Operators: `&&`, `||`, `!`
+- Bitwise Operators: `&`, `|`, `^`, `~`, `<<`, `>>`
 
 ##### Bitwise Operators
 To understand it you have to know what are bits how logic gates are designed and their truth tables.
 
-- & : AND // 0 0 = 0, 0 1 = 0, 1 0 = 0, 1 1 = 1
-- | : OR // 0 0 = 0, 0 1 = 1, 1 0 = 1, 1 1 = 1
-- ^ : XOR // 0 0 = 0, 0 1 = 1, 1 0 = 1, 1 1 = 0
-- ~ : NOT // 0 = 1, 1 = 0
-- << : Left Shift // 0010 << 1 = 0100
-- >> : Right Shift // 0100 >> 1 = 0010
+- `&` : AND // `0 0 = 0`, `0 1 = 0`, `1 0 = 0`, `1 1 = 1`
+- `|` : OR // `0 0 = 0`, `0 1 = 1`, `1 0 = 1`, `1 1 = 1`
+- `^` : XOR // `0 0 = 0`, `0 1 = 1`, `1 0 = 1`, `1 1 = 0`
+- `~` : NOT // `0 = 1`, `1 = 0`
+- `<<` : Left Shift // `0010 << 1 = 0100`
+- `>>` : Right Shift // `0100 >> 1 = 0010`
 
 ```cpp
 int x = 10; // 0000 1010
@@ -318,7 +321,7 @@ int main() {
 - Anonymous function
 - Can be used to create quick and simple functions without a name.
 - Used for short functions that are used only once in the code.
-- Syntax: [capture](parameters) -> return type {function body}
+- Syntax: `[capture](parameters) -> return_type {function body}`
 - Majorily used in libraries and frameworks.
 - `auto` is used to automatically deduce the type of the variable.
 
@@ -327,7 +330,7 @@ int main() {
 using namespace std;
 
 int main() {
-    auto sum = [](int a, int b) -> int {return a + b;};
+    auto sum = [](int a, int b) -> int {return a + b};
     cout << sum(1, 2) << endl; // 3
     return 0;
 }
@@ -480,6 +483,7 @@ int main() {
     return 0;
 }
 ```
+> `int*` holds the memory address of the first element of the array.It does not hold the memory address of the array.
 
 :::danger[Note]
 - You must delete the dynamically allocated memory using `delete[]` to avoid memory leak.
@@ -487,7 +491,7 @@ int main() {
 :::
 
 ###### 2D Array
-- Matrix.
+> Matrix.
 
 ```cpp
 int main() {
