@@ -735,3 +735,130 @@ int main() {
     return 0;
 }
 ```
+### Standard Template Library (STL)
+- STL is a library of generic classes and functions that provide common data structures and algorithms.
+- It is a part of C++ Standard Library.
+
+```ascii
+STL (Standard Template Library)
+┌─────────────────────────────────────────────────────┐
+│                                                     │
+│  ┌─────────────┐    ┌────────────┐   ┌──────────┐   │
+│  │ Containers  │    │ Algorithms │   │Iterators │   │
+│  └─────────────┘    └────────────┘   └──────────┘   │
+│         │                │                │         │
+│    ┌────┴────┐      ┌────┴────┐      ┌────┴────┐    │
+│    │Sequence │      │Sorting  │      │Input    │    │
+│    │Vector   │      │Searching│      │Output   │    │
+│    │List     │      │Modifying│      │Forward  │    │
+│    │Deque    │      │Counting │      │Bidirect │    │
+│    └─────────┘      │Numeric  │      │Random   │    │
+│    ┌────┴────┐      │Min/Max  │      └─────────┘    │
+│    │Associative│    │Binary   │                     │
+│    │Set      │      │Partition│                     │
+│    │Map      │      │Heap     │                     │
+│    │MultiSet │      └─────────┘                     │
+│    │MultiMap │                                      │
+│    └─────────┘                                      │
+└─────────────────────────────────────────────────────┘
+```
+- `Containers` are used to store and manage collections of objects.
+- `Algorithms` are used to perform operations on containers.
+- `Iterators` are used to traverse the containers.
+
+- `Containers` are classified into `Sequence`, `Associative`, and `Unordered` containers.
+    - `Sequence` containers store elements in a linear arrangement.
+    - `Associative` containers store elements in a sorted order.
+    - `Unordered` containers store elements in an unsorted order.
+
+- `Sequence` containers are further classified into `Vector`, `List`, `Deque`.
+    - `Vector` is a dynamic array that stores elements in a contiguous memory location.
+    - `List` is a doubly linked list that stores elements in a non-contiguous memory location.
+    - `Deque` is a double-ended queue that stores elements in a contiguous memory location.
+    - `Vector` is the fastest container among the three.
+    - `List` is the slowest container among the three.
+    - `Deque` is faster than `List` but slower than `Vector`.
+
+- `Associative` containers are further classified into `Set`, `Map`, `MultiSet`, `MultiMap`.
+    - `Set` is a collection of unique elements.
+        - `Set` is implemented using a binary search tree.
+    - `Map` is a collection of key-value pairs.
+        - `Map` is implemented using a hash table.
+    - `MultiSet` is a collection of elements with duplicate elements.
+    - `MultiMap` is a collection of key-value pairs with duplicate keys.
+
+- `Unordered` containers are further classified into `UnorderedSet`, `UnorderedMap`, `UnorderedMultiSet`, `UnorderedMultiMap`.
+    - `UnorderedSet` is a collection of unique elements.
+        - `UnorderedSet` is implemented using a hash table.
+    - `UnorderedMap` is a collection of key-value pairs.
+        - `UnorderedMap` is implemented using a hash table.
+    - `UnorderedMultiSet` is a collection of elements with duplicate elements.
+    - `UnorderedMultiMap` is a collection of key-value pairs with duplicate keys.
+
+## Example
+
+- `struct` is a collection of variables of different data types under a single name
+- By default, all members in `struct` are `public` (unlike `class` where members are `private` by default)
+- Used for simple data grouping and organization
+
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <deque> // double-ended queue
+#include <list> // linked list
+#include <set> // binary search tree
+#include <map> // hash table
+#include <unordered_set> // hash table
+#include <unordered_map> // hash table
+#include <ctime> // time
+
+using namespace std;
+
+struct Product {
+    int ProductID;
+    string Name;
+    string Category;
+    double Price;
+};
+
+struct Order {
+    int OrderID;
+    int ProductID;
+    int Quantity;
+    time_t OrderDate; // time_t is a data type that stores the number of seconds since the epoch
+    string CustomerID;
+    string Status;
+    double TotalPrice;
+};
+
+int main() {
+    vector<Product> products = {
+        {101, "Laptop", "Electronics", 1000.0},
+        {102, "Mouse", "Electronics", 10.0},
+        {103, "Keyboard", "Electronics", 20.0},
+        {104, "Tacos", "Food", 5.0},
+        {105, "Loaf", "Food", 5.0},
+        {106, "Sofa", "Furniture", 100.0},
+        {107, "Table", "Furniture", 50.0}
+    };
+
+    deque<string> customers = {"C001", "C002", "C003", "C004", "C005", "C006", "C007"};
+
+    customers.push_back("C008");
+    // customers.push_front("C000");  // expensive operation
+
+    list<Order> orders = {};
+
+    orders.push_back({1, 101, 1, time(nullptr), "C001", "Pending"}); // nullptr is a macro that returns the current time
+    orders.push_back({2, 102, 2, time(nullptr), "C002", "Pending"});
+    orders.push_back({3, 103, 1, time(nullptr), "C003", "Pending"});
+    orders.push_back({4, 104, 3, time(nullptr), "C004", "Pending"});
+    orders.push_back({5, 105, 2, time(nullptr), "C005", "Pending"});
+    orders.push_back({6, 106, 1, time(nullptr), "C006", "Pending"});
+    orders.push_back({7, 107, 1, time(nullptr), "C007", "Pending"});
+    return 0;
+}
+```
+
