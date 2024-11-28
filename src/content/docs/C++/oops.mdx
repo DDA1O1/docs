@@ -392,3 +392,193 @@ int main() {
     return 0;
 }
 ```
+
+### Friend Keyword
+- Friend keyword is used to declare a friend function/friend class.
+- Friend function is a function that is not a member of a class but has access to the private members of a class.
+- It is declared in the class with the `friend` keyword.
+- It is defined outside the class.
+- It can access the private members of the class.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Bread {
+    private:
+        string name;
+        int quantity;
+        
+        // friend keyword is used to declare a friend function
+        // & is used to pass the object by reference
+        friend bool compareQuantity(const Bread &lhs, const Bread &rhs);
+
+    // Another way to declare constructor
+    public:
+        Bread(string name, int quantity): name(name), quantity(quantity) {}
+
+        void display() const { // const keyword is used to prevent the function from modifying the object
+            cout << "Bread name: " << name << endl;
+            cout << "Bread quantity: " << quantity << endl;
+        }
+};
+
+// friend function is defined outside the class
+bool compareQuantity(const Bread &lhs, const Bread &rhs) {
+    return lhs.quantity > rhs.quantity;
+}
+
+int main() {
+    Bread bread("Sourdough", 5);
+    Bread bread2("White Bread", 10);
+    bread.display();
+    bread2.display();
+
+    if (compareQuantity(bread, bread2)) {
+        cout << "bread quantity is greater than bread2 quantity" << endl;
+    } else {
+        cout << "bread2 quantity is greater than bread quantity" << endl;
+    }
+    return 0;
+}
+
+```
+- The same program can be written using `getter` and `setter` instead of `friend` keyword.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Bread {
+    private:
+        string name;
+        int quantity;
+
+    public:
+        Bread(string name, int quantity): name(name), quantity(quantity) {}
+        
+        int getQuantity() const { return quantity; }
+
+        void display() const {
+            cout << "Bread name: " << name << endl;
+            cout << "Bread quantity: " << quantity << endl;
+        }
+};
+
+// Regular function using public interface
+bool compareQuantity(const Bread &lhs, const Bread &rhs) {
+    return lhs.getQuantity() > rhs.getQuantity();
+}
+
+int main() {
+    Bread bread("Sourdough", 5);
+    Bread bread2("White Bread", 10);
+    bread.display();
+    bread2.display();
+
+    if (compareQuantity(bread, bread2)) {
+        cout << "bread quantity is greater than bread2 quantity" << endl;
+    } else {
+        cout << "bread2 quantity is greater than bread quantity" << endl;
+    }
+    return 0;
+}
+```
+- Suppose you have a Bakery System and you want to check the secret recipe of the bread.You do not want to expose the secret recipe to the outside world.But you want to let your staff check the secret recipe of the bread.If you use `getter` and `setter` then anyone can access the secret recipe.
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Bread {
+private:
+    string name;
+    double secretRecipe;
+    double price;
+
+public:
+    Bread(string n, double recipe, double p): 
+        name(n), secretRecipe(recipe), price(p) {}
+
+    // Added getters
+    string getName() const { return name; }
+    double getRecipe() const { return secretRecipe; }
+    double getPrice() const { return price; }
+
+    void display() {
+        cout << "Bread: " << name << ", Price: $" << price << endl;
+    }
+};
+
+class BakerySystem {
+public:
+    void checkRecipe(const Bread& bread) {
+        cout << "Checking secret recipe: " << bread.getRecipe() << endl;
+    }
+
+    double getBulkPrice(const Bread& bread, int quantity) {
+        return bread.getPrice() * quantity * 0.9;
+    }
+};
+
+int main() {
+    Bread sourdough("Sourdough", 0.75, 5.99);
+    BakerySystem bakery;
+
+    sourdough.display();
+    bakery.checkRecipe(sourdough);
+    cout << "Bulk price: $" << bakery.getBulkPrice(sourdough, 10) << endl;
+
+    cout << "I stole the recipe: " << sourdough.getRecipe() << endl;
+    cout << "Internal price: " << sourdough.getPrice() << endl;
+
+    return 0;
+}
+```
+- The same program can be written using `friend` keyword instead of `getter` and `setter` where your staff can only access the secret recipe.
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Bread {
+private:
+    string name;
+    double secretRecipe;
+    double price;
+
+public:
+    Bread(string n, double recipe, double p): 
+        name(n), secretRecipe(recipe), price(p) {}
+
+    void display() {
+        cout << "Bread: " << name << ", Price: $" << price << endl;
+    }
+
+    friend class BakerySystem;
+};
+
+class BakerySystem {
+public:
+    void checkRecipe(const Bread& bread) {
+        cout << "Checking secret recipe: " << bread.secretRecipe << endl;
+    }
+
+    double getBulkPrice(const Bread& bread, int quantity) {
+        return bread.price * quantity * 0.9;
+    }
+};
+
+int main() {
+    Bread sourdough("Sourdough", 0.75, 5.99);
+    BakerySystem bakery;
+
+    sourdough.display();
+    bakery.checkRecipe(sourdough);
+    cout << "Bulk price: $" << bakery.getBulkPrice(sourdough, 10) << endl;
+
+    return 0;
+}
+```
