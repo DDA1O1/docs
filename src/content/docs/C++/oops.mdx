@@ -299,3 +299,96 @@ int main() {
     return 0;
 }
 ```
+
+### Getter and Setter
+
+- Getters and setters provide controlled access to class properties
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Bread {
+    private:
+        string name;
+        int quantity;
+        vector<string> ingredients;
+    
+    public:
+        Bread(){
+            name = "Unknown";
+            quantity = 1;
+            ingredients = {"Flour", "Water", "Yeast", "Salt"};
+        }
+
+        Bread(string name, int quantity, vector<string> ingredients) {
+            this->name = name;
+            this->quantity = quantity;
+            this->ingredients = ingredients;
+        }
+
+        // getter
+        string getName() {
+            return name + " Bread";
+        }
+
+        // setter
+        void setName(string name) {
+            this->name = name;
+        }
+
+        // getter for quantity
+        int getQuantity() {
+            return quantity + 1;
+        }
+
+        // setter for quantity
+        void setQuantity(int quantity) {
+            if (quantity > 0) {  // Validate before setting
+                this->quantity = quantity;
+            }
+        }
+
+        // getter for ingredients
+        vector<string> getIngredients() {
+            return ingredients;
+        }
+
+        // setter for ingredients
+        void setIngredients(vector<string> ingredients) {
+            this->ingredients = ingredients;
+        }
+
+        void display() {
+            cout << "Bread name: " << name << endl;
+            cout << "Bread quantity: " << quantity << endl;
+            cout << "Bread ingredients: ";
+            for (string ingredient : ingredients) {
+                cout << ingredient << " ";
+            }
+        }
+};
+
+int main() {
+    Bread bread;  // Creates bread with default values
+    
+    // Using setter to change values
+    bread.setName("Sourdough");                    // Modifies private 'name' safely
+    bread.setQuantity(5);                          // Modifies private 'quantity' safely
+    bread.setIngredients({"Flour", "Starter"});    // Modifies private 'ingredients' safely
+    
+    // Using getter to access values
+    cout << "Name: " << bread.getName() << endl;        // Reads private 'name' safely
+    cout << "Quantity: " << bread.getQuantity() << endl;// Reads private 'quantity' safely
+    cout << "Ingredients: ";
+    for (string ingredient : bread.getIngredients()) {
+        cout << ingredient << " ";
+    }
+    cout << endl;
+    cout <<"---------------------"<< endl;
+
+    bread.display();
+    return 0;
+}
+```
