@@ -256,3 +256,46 @@ int main() {
 }
 ```
 
+#### Delegation constructor
+- Delegation constructor is a constructor that calls another constructor from the same class.
+
+Suppose you have a class `Bread` and you want to initialize the object with default values and also with some specific values.You can use delegation constructor to avoid code duplication.
+
+Means you just want a normal bread.The default constructor will only work if you does not pass any value but here you are telling just give me a normal bread. You are here passing one value the name `normal bread`.
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Bread {
+    public:
+        string name;
+        int quantity;
+        vector<string> ingredients;
+
+        // Delegation constructor
+        Bread(string name) : Bread(name, 1, {"Flour", "Water", "Yeast", "Salt"}) {}
+
+        // Main constructor
+        Bread(string name, int quantity, vector<string> ingredients) {
+            this->name = name;
+            this->quantity = quantity;
+            this->ingredients = ingredients;
+        }
+        void display() {
+            cout << "Bread name: " << name << endl;
+            cout << "Bread quantity: " << quantity << endl;
+            cout << "Bread ingredients: ";
+            for (string ingredient : ingredients) {
+                cout << ingredient << " ";
+            }
+        }
+};
+
+int main() {
+    Bread normalBread("Normal Bread");
+    normalBread.display();
+    return 0;
+}
+```
