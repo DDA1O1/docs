@@ -582,3 +582,64 @@ int main() {
     return 0;
 }
 ```
+
+### Virtual Function and Derived Class
+
+- Virtual function is a function that is declared in the base class and redefined in the derived class.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Bread {
+    public:
+        virtual void prepareIngredients() = 0; // pure virtual function
+        virtual void bake() = 0; // pure virtual function
+        virtual void pack() = 0; // pure virtual function
+
+        virtual ~Bread() = default; // virtual destructor
+
+        void makeBread() {
+            prepareIngredients();
+            bake();
+            pack();
+        }
+};
+
+// derived class
+// `public` keyword is used to inherit the base class
+// `override` keyword is used to override the virtual function
+class SourdoughBread : public Bread {
+    public:
+        void prepareIngredients() override {
+            cout << "Preparing ingredients for Sourdough Bread" << endl;
+        }
+        void bake() override {
+            cout << "Baking Sourdough Bread" << endl;
+        }
+        void pack() override {
+            cout << "Packing Sourdough Bread" << endl;
+        }
+};
+
+class WhiteBread : public Bread {
+    public:
+        void prepareIngredients() override {
+            cout << "Preparing ingredients for White Bread" << endl;
+        }
+        void bake() override {
+            cout << "Baking White Bread" << endl;
+        }
+        void pack() override {
+            cout << "Packing White Bread" << endl;
+        }
+};
+
+int main() {
+    SourdoughBread sourdough;
+    WhiteBread whiteBread;
+    sourdough.makeBread();
+    whiteBread.makeBread();
+    return 0;
+}
+```
