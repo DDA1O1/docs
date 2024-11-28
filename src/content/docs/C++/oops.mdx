@@ -643,3 +643,95 @@ int main() {
     return 0;
 }
 ```
+
+- Pure virtual function is a virtual function that has no definition in the base class.
+- It is used to enforce the derived class to implement the function.
+- It is declared in the base class with `= 0`.
+- It is also known as abstract function.
+
+### Inheritance and Final Keyword
+
+- Inheritance is a mechanism that allows a class to inherit the properties and behaviors of another class.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Bread {
+protected:
+    string name;
+    int quantity;
+
+public:
+    Bread(string name, int quantity): name(name), quantity(quantity) {
+        cout << "Bread constructor: " << name << endl;
+    }
+
+    virtual ~Bread() {
+        cout << "Bread destructor: " << name << endl;
+    }
+
+    virtual void prepareIngredients() const {
+        cout << "Preparing ingredients for " << name << endl;
+    }
+
+    virtual void bake() const {
+        cout << "Baking " << name << endl;
+    }
+
+    virtual void pack() const {
+        cout << "Packing " << name << endl;
+    }
+
+    void makeBread() const {
+        prepareIngredients();
+        bake();
+        pack();
+    }
+};
+
+class SourdoughBread : public Bread {
+public:
+    SourdoughBread(int quantity): Bread("Sourdough", quantity) {}
+
+    void prepareIngredients() const override {
+        cout << "Preparing ingredients for " << name << " Bread" << endl;
+    }
+};
+
+class WhiteBread : public Bread {
+public:
+    WhiteBread(int quantity): Bread("White", quantity) {}
+
+    void prepareIngredients() const override final {
+        cout << "Preparing ingredients for " << name << " Bread" << endl;
+    }
+};
+
+// cannot override the `prepareIngredients` function with `final` keyword from WhiteBread class
+
+// class WholeWheatBread : public WhiteBread {
+//  public:
+//     WholeWheatBread(int quantity): WhiteBread(quantity) {}
+
+//     void prepareIngredients() const override {
+//         cout << "Preparing ingredients for " << name << " Bread" << endl;
+//     }
+// };
+
+int main() {
+    SourdoughBread sourdough(10);
+    WhiteBread whiteBread(5);
+    sourdough.makeBread();
+    whiteBread.makeBread();
+
+    Bread *bread = new SourdoughBread(10);
+    Bread *bread2 = new WhiteBread(5);
+    bread->makeBread();  //`->` is used to access the member functions of the object in pointer
+    bread2->makeBread();
+    delete bread;
+    delete bread2;
+
+    return 0;
+}
+```
