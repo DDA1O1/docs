@@ -392,8 +392,50 @@ int main() {
     return 0;
 }
 ```
+###### const and reference
+
+- `const` is used to prevent the variable from being modified, only give read only access.
+- `&` is used to refer to the original variable.
+
+```cpp
+#include <iostream>
+#include <deque>
+using namespace std;
+
+int main() {
+    deque<int> items = {1, 2, 3};
+    
+    // With copy
+    cout << "With copy:\n";
+    for(auto item : items) {
+        item = 10;
+        cout << "Inside loop: " << item << endl;     // Shows 10
+    }
+    cout << "After loop: ";
+    for(int x : items) cout << x << " ";            // Still 1,2,3
+    cout << endl;
+    
+    // With reference
+    cout << "\nWith reference:\n";
+    for(auto& item : items) {
+        item = 10;
+        cout << "Inside loop: " << item << endl;     // Shows 10
+    }
+    cout << "After loop: ";
+    for(int x : items) cout << x << " ";            // Now 10,10,10
+    cout << endl;
+
+    for(const auto& item : items) {
+        cout << item << " ";
+        // item = 20;  // Error: can't modify const
+    }
+    return 0;
+}
+
+```
 
 ### Friend Keyword
+
 - Friend keyword is used to declare a friend function/friend class.
 - Friend function is a function that is not a member of a class but has access to the private members of a class.
 - It is declared in the class with the `friend` keyword.
@@ -773,177 +815,36 @@ STL (Standard Template Library)
 
 - `Sequence` containers are further classified into `Vector`, `List`, `Deque`.
 
-
-####### vector
-- Vector is a dynamic array that can grow and shrink in size
-- Elements are stored in contiguous memory locations
-- Provides random access using index `[]`
-- Automatically handles memory management
+#### Vector
+- Vector is a dynamic array that can grow or shrink in size.
+- Elements are stored in a contiguous memory location.
+- Fast random access to elements.
 
 ```cpp
-#include <vector>
-#include <iostream>
-using namespace std;
+vector<int> nums = {1, 2, 3};
+``` 
 
-int main() {
-    // Initialize vector
-    vector<int> nums = {1, 2, 3};              // With values
-    vector<string> names(3);                    // Size of 3
-    vector<double> prices(5, 0.0);             // Size 5, all set to 0.0
-
-    // Basic operations
-    nums.push_back(4);                         // Add to end: O(1)
-    nums.pop_back();                           // Remove from end: O(1)
-    nums[0] = 10;                              // Direct access: O(1)
-    
-    // Useful methods
-    int size = nums.size();                    // Current size
-    bool empty = nums.empty();                 // Check if empty
-    nums.clear();                              // Remove all elements
-    
-    // Iteration
-    vector<int> items = {1, 2, 3, 4, 5};
-    for(int item : items) {                    // Range-based loop
-        cout << item << " ";
-    }
-    
-    // Common operations
-    items.insert(items.begin(), 0);            // Insert at start: O(n)
-    items.erase(items.begin());                // Remove from start: O(n)
-    items.resize(10);                          // Resize vector
-    
-    return 0;
-}
-```
-
-Key Points:
-- Fast insertion/removal at the end: O(1)
-- Slow insertion/removal at beginning/middle: O(n)
-- Fast random access: O(1)
-- Automatic memory management
-- Contiguous memory storage
-
-####### list
-- List is a doubly-linked list implementation
-- Elements are stored in non-contiguous memory locations
-- No random access (must traverse from beginning/end)
-- Efficient insertion/deletion at any position
+#### List
+- List is a doubly linked list that can grow or shrink in size.
+- Elements are stored in a non-contiguous memory location.
+- Slow random access to elements.
 
 ```cpp
-#include <list>
-#include <iostream>
-using namespace std;
+list<int> nums = {1, 2, 3};
+``` 
 
-int main() {
-    // Initialize list
-    list<int> nums = {1, 2, 3};                // With values
-    list<string> names(3, "unknown");          // Size 3, all "unknown"
-
-    // Basic operations
-    nums.push_back(4);                         // Add to end: O(1)
-    nums.push_front(0);                        // Add to front: O(1)
-    nums.pop_back();                           // Remove from end: O(1)
-    nums.pop_front();                          // Remove from front: O(1)
-
-    // Useful methods
-    int size = nums.size();                    // Get size
-    bool empty = nums.empty();                 // Check if empty
-    nums.clear();                              // Remove all elements
-
-    // Iteration
-    list<int> items = {1, 2, 3, 4, 5};
-    for(int item : items) {                    // Range-based loop
-        cout << item << " ";
-    }
-
-    // Common operations
-    auto it = items.begin();
-    advance(it, 2);                            // Move iterator to position
-    items.insert(it, 10);                      // Insert at position: O(1)
-    items.erase(it);                           // Remove at position: O(1)
-    
-    // List-specific operations
-    items.sort();                              // Sort the list
-    items.unique();                            // Remove duplicates
-    items.reverse();                           // Reverse the list
-    
-    return 0;
-}
-```
-####### deque
-
-- Deque (double-ended queue) allows fast insertion/deletion at both ends
-- Elements stored in multiple chunks of contiguous memory
-- Provides random access like vector
-- More flexible than vector but slightly slower for random access
+#### Deque
+- Deque is a dynamic array that can grow or shrink in size.
+- Elements are stored in a contiguous memory location.
+- Fast random access to elements.
 
 ```cpp
-#include <deque>
-#include <iostream>
-using namespace std;
+deque<int> nums = {1, 2, 3};
+```  
 
-int main() {
-    // Initialize deque
-    deque<int> nums = {1, 2, 3};              // With values
-    deque<string> names(3, "unknown");         // Size 3, all "unknown"
+#### Associative Containers
 
-    // Basic operations
-    nums.push_back(4);                         // Add to end: O(1)
-    nums.push_front(0);                        // Add to front: O(1)
-    nums.pop_back();                           // Remove from end: O(1)
-    nums.pop_front();                          // Remove from front: O(1)
-    nums[1] = 10;                              // Random access: O(1)
-
-    // Size operations
-    int size = nums.size();                    // Get size
-    bool empty = nums.empty();                 // Check if empty
-    nums.resize(5);                            // Resize deque
-    nums.clear();                              // Remove all elements
-
-    // Iteration
-    deque<int> items = {1, 2, 3, 4, 5};
-    for(const auto& item : items) {            // Range-based loop
-        cout << item << " ";
-    }
-
-    // Insert/Remove operations
-    auto it = items.begin() + 2;               // Iterator to position
-    items.insert(it, 10);                      // Insert at position
-    items.erase(it);                           // Remove at position
-
-    // Access elements
-    int first = items.front();                 // First element
-    int last = items.back();                   // Last element
-    int third = items.at(2);                   // Element at index 2
-    
-    return 0;
-}
-```
-
-Key Points:
-- Fast insertion/deletion at both ends: O(1)
-- Random access: O(1)
-- No reallocation of existing elements
-- Memory stored in chunks, not fully contiguous
-- More complex internal structure than vector
-
-Comparison with Other Containers:
-- More flexible than vector for front operations
-- More memory efficient than list
-- Slower random access than vector
-- Better than vector when frequent push_front needed
-- Better than list when random access needed
-
-Key Points:
-- Fast insertion/deletion anywhere: O(1)
-- No random access: O(n) to reach element
-- More memory overhead than vector
-- Non-contiguous memory storage
-- Bidirectional iteration
-
-####### Associative Containers
-
-####### set
+#### set
 - Set is a collection of unique elements.
 - Elements are stored in a sorted order.
 - Implemented using a binary search tree.
@@ -952,7 +853,7 @@ Key Points:
 set<int> nums = {1, 2, 3};
 ```
 
-####### map
+#### map
 - Map is a collection of key-value pairs.
 - Keys are unique and stored in a sorted order.
 - Implemented using a hash table.
@@ -961,7 +862,7 @@ set<int> nums = {1, 2, 3};
 map<string, int> nameToAge = {{"Alice", 25}, {"Bob", 30}};
 ```
 
-####### multiset
+#### multiset
 - Multiset is a collection of elements with duplicate elements.
 - Elements are stored in a sorted order.
 - Implemented using a binary search tree.
@@ -970,7 +871,7 @@ map<string, int> nameToAge = {{"Alice", 25}, {"Bob", 30}};
 multiset<int> nums = {1, 2, 2, 3};
 ```
 
-####### multimap
+#### multimap
 - Multimap is a collection of key-value pairs with duplicate keys.
 - Keys are stored in a sorted order.
 - Implemented using a hash table.
@@ -979,7 +880,7 @@ multiset<int> nums = {1, 2, 2, 3};
 multimap<string, int> nameToAge = {{"Alice", 25}, {"Alice", 30}};
 ```
 
-####### unordered_set
+#### unordered_set
 - UnorderedSet is a collection of unique elements.
 - Elements are stored in an unsorted order.
 - Implemented using a hash table.
@@ -988,7 +889,7 @@ multimap<string, int> nameToAge = {{"Alice", 25}, {"Alice", 30}};
 unordered_set<int> nums = {1, 2, 3};
 ```
 
-####### unordered_map
+#### unordered_map
 - UnorderedMap is a collection of key-value pairs.
 - Keys are stored in an unsorted order.
 - Implemented using a hash table.
@@ -1005,16 +906,17 @@ unordered_map<string, int> nameToAge = {{"Alice", 25}, {"Bob", 30}};
 
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <string>
-#include <deque> // double-ended queue
-#include <list> // linked list
-#include <set> // binary search tree
-#include <map> // hash table
-#include <unordered_set> // hash table
-#include <unordered_map> // hash table
-#include <ctime> // time
+// Standard library includes for various data structures
+#include <iostream>     // Input/output
+#include <vector>       // Dynamic array
+#include <string>       // String handling
+#include <deque>        // Double-ended queue
+#include <list>         // Doubly linked list
+#include <set>         // Ordered unique elements
+#include <map>         // Key-value pairs
+#include <unordered_set> // Hash-based unique elements
+#include <unordered_map> // Hash-based key-value pairs
+#include <ctime>       // Time functions
 
 using namespace std;
 
@@ -1023,6 +925,12 @@ struct Product {
     string Name;
     string Category;
     double Price;
+};
+
+struct Customer {
+    string CustomerID;
+    string Name;
+    string Email;
 };
 
 struct Order {
@@ -1049,23 +957,23 @@ int main() {
     deque<string> customers = {"C001", "C002", "C003", "C004", "C005", "C006", "C007"};
 
     customers.push_back("C008");
-    // customers.push_front("C000");  // expensive operation
+    customers.push_front("C000");  // expensive operation
 
-    list<Order> orders = {};
+    list<Order> orderHistory = {};
 
-    orders.push_back({1, 101, 1, time(nullptr), "C001", "Pending"}); // nullptr is a macro that returns the current time
-    orders.push_back({2, 102, 2, time(nullptr), "C002", "Pending"});
-    orders.push_back({3, 103, 1, time(nullptr), "C003", "Pending"});
-    orders.push_back({4, 104, 3, time(nullptr), "C004", "Processing"});
-    orders.push_back({5, 105, 2, time(nullptr), "C005", "Processing"});
-    orders.push_back({6, 106, 1, time(nullptr), "C006", "Processing"});
-    orders.push_back({7, 107, 1, time(nullptr), "C007", "Processing"});
+    orderHistory.push_back({1, 101, 1, time(nullptr), "C001", "Pending"}); // nullptr is a macro that returns the current time
+    orderHistory.push_back({2, 102, 2, time(nullptr), "C002", "Pending"});
+    orderHistory.push_back({3, 103, 1, time(nullptr), "C003", "Pending"});
+    orderHistory.push_back({4, 104, 3, time(nullptr), "C004", "Processing"});
+    orderHistory.push_back({5, 105, 2, time(nullptr), "C005", "Processing"});
+    orderHistory.push_back({6, 106, 1, time(nullptr), "C006", "Processing"});
+    orderHistory.push_back({7, 107, 1, time(nullptr), "C007", "Processing"});
+    orderHistory.push_back({8, 103, 1, time(nullptr), "C001", "Processing"});
+    orderHistory.push_back({9, 104, 1, time(nullptr), "C001", "Processing"});
+    orderHistory.push_back({10, 105, 1, time(nullptr), "C001", "Processing"});
 
     set<string> categories;
-    // set is a container that stores unique elements in a sorted order
-    // `const` is used to prevent the object from being modified
-    // `auto` is used to automatically determine the type of the variable
-    // `&` is used to pass the object by reference
+    
 
     for (const auto& product : products) {
         categories.insert(product.Category); // insert the category of the product into the set
@@ -1075,35 +983,49 @@ int main() {
         cout << category << endl;
     }
 
-    map<string, vector<Product>> productsByCategory;
-    // map is a container that stores key-value pairs
-    // `string` is the key type
-    // `vector<Product>` is the value type
+    map<int, int> productCount = {
+        {101, 4},
+        {102, 2},
+        {103, 7},
+        {104, 3},
+        {105, 2},
+        {106, 1},
+        {107, 1}
+    };
 
-    for (const auto& product : products) {
-        productsByCategory[product.Category].push_back(product); // insert the product into the vector of products by category
+    for (const auto& pair : productCount) {
+        cout << pair.first << " " << pair.second << endl;
     }
-
-    for (const auto& [category, products] : productsByCategory) {
-        cout << category << endl;
-        for (const auto& product : products) {
-            cout << product.Name << endl;
-        }
-    }
-
+    
     multimap<string, Order> ordersByCustomer;
-    for (const auto& order : orders) {
+    for (const auto& order : orderHistory) {
         ordersByCustomer.insert({order.CustomerID, order}); // insert the order into the multimap of orders by customer
     }
 
-    unordered_map<string, vector<Order>> ordersByCustomer;
-    for (const auto& order : orders) {
-        ordersByCustomer[order.CustomerID].push_back(order); // insert the order into the vector of orders by customer
+    for (const auto& pair : ordersByCustomer) {
+        cout << pair.first << " " << pair.second.ProductID << endl;
     }
 
+    unordered_map<string, string> customerEmail = {
+        {"C001", "email1@example.com"},
+        {"C002", "email2@example.com"},
+        {"C003", "email3@example.com"},
+        {"C004", "email4@example.com"},
+        {"C005", "email5@example.com"}
+    };
+
+    for (const auto& pair : customerEmail) {
+        cout << pair.first << " " << pair.second << endl;
+    }
+
+
     unordered_set<string> uniqueCustomers;
-    for (const auto& order : orders) {
-        uniqueCustomers.insert(order.CustomerID); // insert the customer ID into the unordered set
+    for (const auto& order : orderHistory) {
+        uniqueCustomers.insert(order.CustomerID);
+    }
+
+    for (const auto& customer : uniqueCustomers) {
+        cout << customer << endl;
     }
 
     return 0;
