@@ -854,10 +854,56 @@ int main() {
     orders.push_back({1, 101, 1, time(nullptr), "C001", "Pending"}); // nullptr is a macro that returns the current time
     orders.push_back({2, 102, 2, time(nullptr), "C002", "Pending"});
     orders.push_back({3, 103, 1, time(nullptr), "C003", "Pending"});
-    orders.push_back({4, 104, 3, time(nullptr), "C004", "Pending"});
-    orders.push_back({5, 105, 2, time(nullptr), "C005", "Pending"});
-    orders.push_back({6, 106, 1, time(nullptr), "C006", "Pending"});
-    orders.push_back({7, 107, 1, time(nullptr), "C007", "Pending"});
+    orders.push_back({4, 104, 3, time(nullptr), "C004", "Processing"});
+    orders.push_back({5, 105, 2, time(nullptr), "C005", "Processing"});
+    orders.push_back({6, 106, 1, time(nullptr), "C006", "Processing"});
+    orders.push_back({7, 107, 1, time(nullptr), "C007", "Processing"});
+
+    set<string> categories;
+    // set is a container that stores unique elements in a sorted order
+    // `const` is used to prevent the object from being modified
+    // `auto` is used to automatically determine the type of the variable
+    // `&` is used to pass the object by reference
+
+    for (const auto& product : products) {
+        categories.insert(product.Category); // insert the category of the product into the set
+    }
+
+    for (const auto& category : categories) {
+        cout << category << endl;
+    }
+
+    map<string, vector<Product>> productsByCategory;
+    // map is a container that stores key-value pairs
+    // `string` is the key type
+    // `vector<Product>` is the value type
+
+    for (const auto& product : products) {
+        productsByCategory[product.Category].push_back(product); // insert the product into the vector of products by category
+    }
+
+    for (const auto& [category, products] : productsByCategory) {
+        cout << category << endl;
+        for (const auto& product : products) {
+            cout << product.Name << endl;
+        }
+    }
+
+    multimap<string, Order> ordersByCustomer;
+    for (const auto& order : orders) {
+        ordersByCustomer.insert({order.CustomerID, order}); // insert the order into the multimap of orders by customer
+    }
+
+    unordered_map<string, vector<Order>> ordersByCustomer;
+    for (const auto& order : orders) {
+        ordersByCustomer[order.CustomerID].push_back(order); // insert the order into the vector of orders by customer
+    }
+
+    unordered_set<string> uniqueCustomers;
+    for (const auto& order : orders) {
+        uniqueCustomers.insert(order.CustomerID); // insert the customer ID into the unordered set
+    }
+
     return 0;
 }
 ```
