@@ -1032,3 +1032,148 @@ int main() {
 }
 ```
 
+- Employee Management System with STL
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Employee {
+    int id;
+    string name;
+    int age;
+    double salary;
+};
+
+void addEmployee(Employee* employees, int index) {
+    employees[index].id = index + 1;
+    cout << "Enter name: ";
+    cin >> employees[index].name;
+    cout << "Enter age: ";
+    cin >> employees[index].age;
+    cout << "Enter salary: ";
+    cin >> employees[index].salary;
+}
+
+void printEmployees(const Employee* employees, int size) {
+    for(int i = 0; i < size; i++) {
+        cout << "\nEmployee " << i + 1 << ":" << endl;
+        cout << "ID: " << employees[i].id << endl;
+        cout << "Name: " << employees[i].name << endl;
+        cout << "Age: " << employees[i].age << endl;
+        cout << "Salary: " << employees[i].salary << endl;
+    }
+}
+
+int main() {
+    int size;
+    cout << "Enter number of employees: ";
+    cin >> size;
+    
+    Employee* employees = new Employee[size];  // Dynamic allocation
+    
+    for(int i = 0; i < size; i++) {
+        addEmployee(employees, i);
+    }
+    
+    printEmployees(employees, size);
+    
+    delete[] employees;  // Free memory
+    return 0;
+}
+```
+
+- Algorithm and Iterator
+
+```cpp
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<numeric>
+#include<iterator>
+#include<string>
+
+using namespace std;
+
+struct Employee {
+    int id;
+    string name;
+    int age;
+    double salary;
+};
+
+void printEmployee(const Employee& employee) {
+    cout << "ID: " << employee.id << endl;
+    cout << "Name: " << employee.name << endl;
+    cout << "Age: " << employee.age << endl;
+    cout << "Salary: " << employee.salary << endl;
+}
+
+int main() {
+    vector<Employee> employees = {
+        {1, "Alice", 25, 50000},
+        {2, "Bob", 30, 60000},
+        {3, "Charlie", 35, 70000},
+        {4, "Dave", 40, 800000},
+        {5, "Eve", 45, 90000},
+        {6, "Frank", 50, 100000},
+        {7, "Grace", 55, 110000},
+        {8, "Hank", 60, 120000},
+        {9, "Ivy", 65, 130000},
+        {10, "Jack", 70, 140000}
+    };
+
+    // sort the employees by salary
+    // lambda function is used to sort the employees by salary
+
+    sort(employees.begin(), employees.end(), [](const Employee& a, const Employee& b) {
+        return a.salary > b.salary;
+    });
+
+    cout << "Employees sorted by salary:" << endl;
+    for_each(employees.begin(), employees.end(), printEmployee);
+
+    // find the employees with salary greater than 80000
+
+    vector<Employee> highEarners;
+    copy_if(employees.begin(), employees.end(), back_inserter(highEarners), [](const Employee& e) {
+        return e.salary > 80000;
+    });
+
+    cout << "High earners:" << endl;
+    for_each(highEarners.begin(), highEarners.end(), printEmployee);
+
+    // calculate the total salary of all employees
+    // 0.0 is the initial value of the sum
+    double totalSalary = accumulate(employees.begin(), employees.end(), 0.0, [](double sum, const Employee& e) {
+        return sum + e.salary;
+    });
+
+    cout << "Total salary: " << totalSalary << endl;
+
+    double averageSalary = totalSalary / employees.size();
+
+    cout << "Average salary: " << averageSalary << endl;
+
+    // find the employee with the highest salary
+    // auto is used to deduce the type of the variable
+    auto highestSalaryEmployee = max_element(employees.begin(), employees.end(), [](const Employee& a, const Employee& b) {
+        return a.salary < b.salary;
+    });
+
+    cout << "Employee with the highest salary:" << endl;
+    printEmployee(*highestSalaryEmployee);
+
+    // find the employee with the lowest salary
+    auto lowestSalaryEmployee = min_element(employees.begin(), employees.end(), [](const Employee& a, const Employee& b) {
+        return a.salary < b.salary;
+    });
+
+    cout << "Employee with the lowest salary:" << endl;
+    printEmployee(*lowestSalaryEmployee);
+
+    return 0;
+}
+```
+
