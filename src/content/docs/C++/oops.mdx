@@ -772,28 +772,230 @@ STL (Standard Template Library)
     - `Unordered` containers store elements in an unsorted order.
 
 - `Sequence` containers are further classified into `Vector`, `List`, `Deque`.
-    - `Vector` is a dynamic array that stores elements in a contiguous memory location.
-    - `List` is a doubly linked list that stores elements in a non-contiguous memory location.
-    - `Deque` is a double-ended queue that stores elements in a contiguous memory location.
-    - `Vector` is the fastest container among the three.
-    - `List` is the slowest container among the three.
-    - `Deque` is faster than `List` but slower than `Vector`.
 
-- `Associative` containers are further classified into `Set`, `Map`, `MultiSet`, `MultiMap`.
-    - `Set` is a collection of unique elements.
-        - `Set` is implemented using a binary search tree.
-    - `Map` is a collection of key-value pairs.
-        - `Map` is implemented using a hash table.
-    - `MultiSet` is a collection of elements with duplicate elements.
-    - `MultiMap` is a collection of key-value pairs with duplicate keys.
 
-- `Unordered` containers are further classified into `UnorderedSet`, `UnorderedMap`, `UnorderedMultiSet`, `UnorderedMultiMap`.
-    - `UnorderedSet` is a collection of unique elements.
-        - `UnorderedSet` is implemented using a hash table.
-    - `UnorderedMap` is a collection of key-value pairs.
-        - `UnorderedMap` is implemented using a hash table.
-    - `UnorderedMultiSet` is a collection of elements with duplicate elements.
-    - `UnorderedMultiMap` is a collection of key-value pairs with duplicate keys.
+####### vector
+- Vector is a dynamic array that can grow and shrink in size
+- Elements are stored in contiguous memory locations
+- Provides random access using index `[]`
+- Automatically handles memory management
+
+```cpp
+#include <vector>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Initialize vector
+    vector<int> nums = {1, 2, 3};              // With values
+    vector<string> names(3);                    // Size of 3
+    vector<double> prices(5, 0.0);             // Size 5, all set to 0.0
+
+    // Basic operations
+    nums.push_back(4);                         // Add to end: O(1)
+    nums.pop_back();                           // Remove from end: O(1)
+    nums[0] = 10;                              // Direct access: O(1)
+    
+    // Useful methods
+    int size = nums.size();                    // Current size
+    bool empty = nums.empty();                 // Check if empty
+    nums.clear();                              // Remove all elements
+    
+    // Iteration
+    vector<int> items = {1, 2, 3, 4, 5};
+    for(int item : items) {                    // Range-based loop
+        cout << item << " ";
+    }
+    
+    // Common operations
+    items.insert(items.begin(), 0);            // Insert at start: O(n)
+    items.erase(items.begin());                // Remove from start: O(n)
+    items.resize(10);                          // Resize vector
+    
+    return 0;
+}
+```
+
+Key Points:
+- Fast insertion/removal at the end: O(1)
+- Slow insertion/removal at beginning/middle: O(n)
+- Fast random access: O(1)
+- Automatic memory management
+- Contiguous memory storage
+
+####### list
+- List is a doubly-linked list implementation
+- Elements are stored in non-contiguous memory locations
+- No random access (must traverse from beginning/end)
+- Efficient insertion/deletion at any position
+
+```cpp
+#include <list>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Initialize list
+    list<int> nums = {1, 2, 3};                // With values
+    list<string> names(3, "unknown");          // Size 3, all "unknown"
+
+    // Basic operations
+    nums.push_back(4);                         // Add to end: O(1)
+    nums.push_front(0);                        // Add to front: O(1)
+    nums.pop_back();                           // Remove from end: O(1)
+    nums.pop_front();                          // Remove from front: O(1)
+
+    // Useful methods
+    int size = nums.size();                    // Get size
+    bool empty = nums.empty();                 // Check if empty
+    nums.clear();                              // Remove all elements
+
+    // Iteration
+    list<int> items = {1, 2, 3, 4, 5};
+    for(int item : items) {                    // Range-based loop
+        cout << item << " ";
+    }
+
+    // Common operations
+    auto it = items.begin();
+    advance(it, 2);                            // Move iterator to position
+    items.insert(it, 10);                      // Insert at position: O(1)
+    items.erase(it);                           // Remove at position: O(1)
+    
+    // List-specific operations
+    items.sort();                              // Sort the list
+    items.unique();                            // Remove duplicates
+    items.reverse();                           // Reverse the list
+    
+    return 0;
+}
+```
+####### deque
+
+- Deque (double-ended queue) allows fast insertion/deletion at both ends
+- Elements stored in multiple chunks of contiguous memory
+- Provides random access like vector
+- More flexible than vector but slightly slower for random access
+
+```cpp
+#include <deque>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Initialize deque
+    deque<int> nums = {1, 2, 3};              // With values
+    deque<string> names(3, "unknown");         // Size 3, all "unknown"
+
+    // Basic operations
+    nums.push_back(4);                         // Add to end: O(1)
+    nums.push_front(0);                        // Add to front: O(1)
+    nums.pop_back();                           // Remove from end: O(1)
+    nums.pop_front();                          // Remove from front: O(1)
+    nums[1] = 10;                              // Random access: O(1)
+
+    // Size operations
+    int size = nums.size();                    // Get size
+    bool empty = nums.empty();                 // Check if empty
+    nums.resize(5);                            // Resize deque
+    nums.clear();                              // Remove all elements
+
+    // Iteration
+    deque<int> items = {1, 2, 3, 4, 5};
+    for(const auto& item : items) {            // Range-based loop
+        cout << item << " ";
+    }
+
+    // Insert/Remove operations
+    auto it = items.begin() + 2;               // Iterator to position
+    items.insert(it, 10);                      // Insert at position
+    items.erase(it);                           // Remove at position
+
+    // Access elements
+    int first = items.front();                 // First element
+    int last = items.back();                   // Last element
+    int third = items.at(2);                   // Element at index 2
+    
+    return 0;
+}
+```
+
+Key Points:
+- Fast insertion/deletion at both ends: O(1)
+- Random access: O(1)
+- No reallocation of existing elements
+- Memory stored in chunks, not fully contiguous
+- More complex internal structure than vector
+
+Comparison with Other Containers:
+- More flexible than vector for front operations
+- More memory efficient than list
+- Slower random access than vector
+- Better than vector when frequent push_front needed
+- Better than list when random access needed
+
+Key Points:
+- Fast insertion/deletion anywhere: O(1)
+- No random access: O(n) to reach element
+- More memory overhead than vector
+- Non-contiguous memory storage
+- Bidirectional iteration
+
+####### Associative Containers
+
+####### set
+- Set is a collection of unique elements.
+- Elements are stored in a sorted order.
+- Implemented using a binary search tree.
+
+```cpp
+set<int> nums = {1, 2, 3};
+```
+
+####### map
+- Map is a collection of key-value pairs.
+- Keys are unique and stored in a sorted order.
+- Implemented using a hash table.
+
+```cpp
+map<string, int> nameToAge = {{"Alice", 25}, {"Bob", 30}};
+```
+
+####### multiset
+- Multiset is a collection of elements with duplicate elements.
+- Elements are stored in a sorted order.
+- Implemented using a binary search tree.
+
+```cpp
+multiset<int> nums = {1, 2, 2, 3};
+```
+
+####### multimap
+- Multimap is a collection of key-value pairs with duplicate keys.
+- Keys are stored in a sorted order.
+- Implemented using a hash table.
+
+```cpp
+multimap<string, int> nameToAge = {{"Alice", 25}, {"Alice", 30}};
+```
+
+####### unordered_set
+- UnorderedSet is a collection of unique elements.
+- Elements are stored in an unsorted order.
+- Implemented using a hash table.
+
+```cpp
+unordered_set<int> nums = {1, 2, 3};
+```
+
+####### unordered_map
+- UnorderedMap is a collection of key-value pairs.
+- Keys are stored in an unsorted order.
+- Implemented using a hash table.
+
+```cpp
+unordered_map<string, int> nameToAge = {{"Alice", 25}, {"Bob", 30}};
+```
 
 ## Example
 
