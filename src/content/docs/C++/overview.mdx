@@ -10,25 +10,10 @@ C++ is a powerful programming language that is widely used for system programmin
 
 The OOPs concept was introduced by [Bjarne Stroustrup](https://en.wikipedia.org/wiki/Bjarne_Stroustrup).
 
-## Key Features of C++
-
-1. **Object-Oriented Programming**: C++ supports object-oriented programming, which allows you to create reusable and modular code.
-2. **Memory Management**: C++ provides explicit memory management, allowing you to control how memory is allocated and deallocated.
-3. **Operator Overloading**: C++ allows you to define custom operators for your classes, providing more flexibility in your code.
-4. **Templates**: C++ templates allow you to create generic functions and classes that can operate on different data types.
-5. **Exception Handling**: C++ supports exception handling, which allows you to handle errors and exceptions gracefully.
-
-## Applications of C++
-
-1. **System Programming**: C++ is widely used for system-level programming, such as operating system development, device drivers, and low-level system utilities.
-2. **Game Development**: C++ is the preferred language for game development due to its performance and low-level control over hardware resources.
-3. **Embedded Systems**: C++ is used in embedded systems, such as automotive electronics, aerospace systems, and industrial control systems.
-4. **Financial Applications**: C++ is used in financial applications, such as trading systems, risk management, and high-frequency trading.
-5. **Scientific Computing**: C++ is used in scientific computing, such as numerical simulations, data analysis, and machine learning.
-
 ```txt
 Source Files (.cpp)  -->  Compiler (g++/clang++)  -->  Object Files (.o)  -->  Linker  -->  Executable
 ```
+
 - Source Files (.cpp) are the files that contain the source code of the program.
 - Compiler (g++/clang++) is the program that compiles the source code into object files.
 - Object Files (.o) are the files that contain the compiled code of the program.
@@ -67,15 +52,15 @@ int main() {
 ```
 > `namespace` like Eigen library, crow framework, Qt library, etc.
 
-##### Variables
+### Variables
 ```cpp
 int x = 5;
 ```
-##### Constants
+### Constants
 ```cpp
 const int x = 5;
 ```
-#### Data Types
+## Data Types
 - **Primitive Data Types:** Built-in data types provided by the language.
     - int
     - float
@@ -119,7 +104,8 @@ char grade = 'John'; // n
 char grade = '123'; // 3
 ```
 [Data Types in C++](https://www.geeksforgeeks.org/data-types-in-c/)
-##### Modifiers
+
+### Modifiers
 
 ```cpp
 signed int x = 5; // both positive and negative numbers
@@ -148,7 +134,8 @@ int quantity = 10;
 int total = quantity * roundedPrice; // 109
 double totalPrice = quantity * Price; // 109.98
 ```
-#### Strings
+### Strings
+
 ```cpp
 #include <iostream>
 #include <string>
@@ -170,6 +157,7 @@ int main() {
 - \' : single quote
 
 #### Input and Output
+
 - cin : used to take input from the user
 - cout : used to print the output to the console
 - cerr : used to print the error message to the console
@@ -207,7 +195,7 @@ int main() {
 }
 ```
 
-#### Operators
+### Operators
 
 - Arithmetic Operators: `+`, `-`, `*`, `/`, `%`
 - Assignment Operators: `=`, `+=`, `-=`, `*=`, `/=`, `%=`
@@ -245,7 +233,9 @@ int main() {
 
 }
 ```
-#### Functions
+
+## Functions
+
 ```cpp
 void printMessage() {
     cout << "Hello, World!" << endl;
@@ -320,7 +310,8 @@ int main() {
     return 0;
 }
 ```
-###### Lambda Functions
+### Lambda Functions
+
 - Anonymous function
 - Can be used to create quick and simple functions without a name.
 - Used for short functions that are used only once in the code.
@@ -347,7 +338,8 @@ int main() {
 }
 ```
 
-### Array and Pointer
+## Array and Pointer
+
 - Collection of similar data types.
 - Indexed based.
 - Can store only one type of data.
@@ -411,7 +403,8 @@ int main() {
     return 0;
 }
 ```
-###### Pointer
+### Pointer
+
 - A variable that stores the memory address of another variable.
 - Used to access the memory address of a variable.
 - Can be used to traverse through the array.
@@ -432,7 +425,8 @@ int main() {
     return 0;
 }
 ```
-###### Heap Memory
+### Heap Memory
+
 - Dynamic memory allocation.
 - Used to allocate memory at runtime.
 - Used to create dynamic objects.
@@ -493,7 +487,8 @@ int main() {
 - Rule of thumb: If you use `new`, you must use `delete`.
 :::
 
-###### 2D Array
+#### 2D Array
+
 > Matrix.
 
 ```cpp

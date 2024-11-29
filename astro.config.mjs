@@ -45,8 +45,8 @@ export default defineConfig({
               label: 'Web Dev',
               items: [
                 //   { label: 'HTML', slug: 'web_dev/html' }, 
-                  { label: 'JavaScript', autogenerate: { directory: 'web_dev/Javascript' } },
-                  { label: 'CSS', autogenerate: { directory: 'web_dev/CSS' } },
+                  { label: 'JavaScript' ,badge: 'Finished', autogenerate: { directory: 'web_dev/Javascript' } },
+                  { label: 'CSS' , autogenerate: { directory: 'web_dev/CSS' } },
               ]
           },
           {

@@ -8,7 +8,8 @@ description: "OOPs in C++"
 - `main()` function exist without any class in C++.That means it supports variety of programming styles.
 - Bjarne Stroustrup introduced OOPs in C++ in 1985 [OOPSLA](https://stroustrup.com/oopsla.pdf)
 
-### Class and Object
+## Class and Object
+
 - Class is a blueprint of an object.
 - Object is an instance of a class.
 - Every new object instance is a copy of original class.
@@ -70,13 +71,15 @@ int main() {
 }
 ```
 
-### Constructor
+## Constructor
+
 - Constructor is a special member function of a class that is automatically called when an object is created.
 - It is used to initialize the object.
 - It has the same name as the class and no return type.
 - It can take parameters.
 - It can be parameterized or non-parameterized.
 - If no constructor is defined, compiler will automatically generate a default constructor.
+
 ```cpp
 // default constructor
 class Bread {
@@ -143,7 +146,7 @@ int main() {
     return 0;
 }
 ```
-##### Copy Constructor and Destructor
+### Copy Constructor and Destructor
 
 - Copy constructor is a constructor that creates an object by copying another object.
 - It is used to initialize an object with the values of another object.
@@ -256,7 +259,8 @@ int main() {
 }
 ```
 
-#### Delegation constructor
+### Delegation constructor
+
 - Delegation constructor is a constructor that calls another constructor from the same class.
 
 Suppose you have a class `Bread` and you want to initialize the object with default values and also with some specific values.You can use delegation constructor to avoid code duplication.
@@ -300,7 +304,7 @@ int main() {
 }
 ```
 
-### Getter and Setter
+## Getter and Setter
 
 - Getters and setters provide controlled access to class properties
 
@@ -392,7 +396,7 @@ int main() {
     return 0;
 }
 ```
-###### const and reference
+### const and reference
 
 - `const` is used to prevent the variable from being modified, only give read only access.
 - `&` is used to refer to the original variable.
@@ -434,7 +438,7 @@ int main() {
 
 ```
 
-### Friend Keyword
+## Friend Keyword
 
 - Friend keyword is used to declare a friend function/friend class.
 - Friend function is a function that is not a member of a class but has access to the private members of a class.
@@ -691,7 +695,7 @@ int main() {
 - It is declared in the base class with `= 0`.
 - It is also known as abstract function.
 
-### Inheritance and Final Keyword
+## Inheritance and Final Keyword
 
 - Inheritance is a mechanism that allows a class to inherit the properties and behaviors of another class.
 
@@ -777,7 +781,8 @@ int main() {
     return 0;
 }
 ```
-### Standard Template Library (STL)
+## Standard Template Library (STL)
+
 - STL is a library of generic classes and functions that provide common data structures and algorithms.
 - It is a part of C++ Standard Library.
 
@@ -807,6 +812,8 @@ STL (Standard Template Library)
 - `Containers` are used to store and manage collections of objects.
 - `Algorithms` are used to perform operations on containers.
 - `Iterators` are used to traverse the containers.
+
+### Containers
 
 - `Containers` are classified into `Sequence`, `Associative`, and `Unordered` containers.
     - `Sequence` containers store elements in a linear arrangement.
@@ -842,7 +849,7 @@ list<int> nums = {1, 2, 3};
 deque<int> nums = {1, 2, 3};
 ```  
 
-#### Associative Containers
+### Associative Containers
 
 #### set
 - Set is a collection of unique elements.
@@ -1032,7 +1039,7 @@ int main() {
 }
 ```
 
-- Employee Management System with STL
+### Employee Management System with STL
 
 ```cpp
 #include <iostream>
@@ -1084,7 +1091,7 @@ int main() {
 }
 ```
 
-- Algorithm and Iterator
+### Algorithm and Iterator
 
 ```cpp
 #include<iostream>
