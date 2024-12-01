@@ -125,6 +125,7 @@ npm create vite@latest
   - React does not re-render the entire DOM. It only re-renders the changed parts.
   - This process is called `Reconciliation`.
 - React uses a batching process to optimize the rendering process.
+  - If there are multiple state updates, React will batch them together and render them at once.
 
 ```js
 // Card.jsx
