@@ -58,6 +58,10 @@ export default defineConfig({
               autogenerate: { directory: 'data_science' }
           },
           {
+              label: 'DSA',
+              autogenerate: { directory: 'DSA' }
+          },
+          {
               label: 'Thoughts',
               autogenerate: { directory: 'Thoughts' }
           },
