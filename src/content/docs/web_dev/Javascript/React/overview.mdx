@@ -323,7 +323,7 @@ After the change in state, React will re-render the component.Components are jus
 
 - This process is `recursive`, means when a component contains another component, it will call them as well untill it reaches the end and nothing is left to render.
 
-```ascii
+```text
 Virtual DOM (New)                         Actual DOM (Old)
 ─────────────────                        ─────────────────
        <div>                                  <div>
@@ -343,7 +343,7 @@ Virtual DOM (New)                         Actual DOM (Old)
 
 - Different types of elements will produce different trees: If the root elements are different, React will not try to match these trees.It will rebuild the entire subtree.
 
-```ascii
+```text
 Before Update                After Update
 ─────────────                ────────────
     <div>                      <span>            
