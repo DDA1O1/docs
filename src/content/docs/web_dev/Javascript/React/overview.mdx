@@ -333,3 +333,39 @@ Virtual DOM (New)                         Actual DOM (Old)
     │    │     │    │       Diffing       │      │   │  
   props text  text text    Algorithm    props  text  text
 ```
+- React uses a diffing algorithm to compare the virtual DOM with the actual DOM and update the DOM only if there are changes.
+- Since each object has a element tag, its properties and children, figuring out what has changed between the virtual DOM and the actual DOM is really complex.The complexity of calculating the difference between the two is `O(n^3)`.
+- If your UI has `1000` elements, it will take `1000^3 or 1,000,000,000` operations to figure out the difference.It's way too expensive.
+- To reduce the number of comparisons, React makes `Two Assumptions`.
+  - Two elements of different types will produce different trees.
+  - The developer can hint at which child elements may be the same across re-renders by using `keys`.
+
+- Different types of elements will produce different trees: If the root elements are different, React will not try to match these trees.It will rebuild the entire subtree.
+
+```ascii
+Before Update                After Update
+─────────────                ────────────
+    <div>                      <span>            
+     │                           │
+  ┌──┴──┐                     ┌──┴──┐
+  │     │          =>         │     │
+<p>    <span>              <p>     <a>
+  │      │                   │      │
+ text   text               text    text
+
+React will not try to match these trees
+since root elements are different types
+(div vs span). Entire subtree is rebuilt.
+```
+- Keys: The developer can hint at which child elements may be the same across re-renders by using `keys`.
+
+```jsx
+<ul>
+  <li key="A">First item</li>
+  <li key="B">Second item</li>
+  <li key="C">Third item</li>
+</ul>
+```
+:::note
+Keys should be unique.
+:::
