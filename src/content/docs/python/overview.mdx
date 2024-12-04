@@ -1,0 +1,79 @@
+---
+title: Python Overview
+description: Overview of Python
+---
+
+- Python is a high-level, interpreted programming language that is easy to learn and use.
+- Python is a popular language for web development, data analysis, artificial intelligence, and scientific computing.
+- Python is an interpreted language, which means that it runs on an interpreter and does not need to be compiled before it can be executed.
+- Python is a dynamically typed language, which means that the type of a variable is determined at runtime rather than at compile time.
+
+### Python Syntax
+
+- Python uses indentation to define the scope of loops, functions, and other blocks of code.
+- Python does not use curly braces to define the scope of code blocks, but rather uses indentation.
+
+## Immutable vs Mutable
+
+- Python has two types of data types: mutable and immutable.
+- Mutable objects can be changed after they are created, while immutable objects cannot be changed after they are created.
+
+### Immutable
+
+- Strings
+- Tuples
+- Numbers
+- Frozen Sets
+
+```python
+# Immutable
+string = "Hello, World!"
+string[0] = "H"  # This will raise an error
+```
+
+``` ascii
+                    Python Memory Model
+            ═══════════════════════════════════
+
+Stack (References)          Heap (Objects)
+┌──────────────────┐       ╔════════════════════╗
+│                  │       ║    String Object   ║
+│ str1 ────────────┼─────→║     "Hello"         ║
+│                  │       ║    (id: 1234)      ║
+│                  │       ║                    ║
+│ str2 ────────────┼─┐     ╚════════════════════╝
+│                  │ │     
+│                  │ │     ╔════════════════════╗
+│ tuple1 ──────────┼─┼────→║    Tuple Object    ║
+│                  │ │     ║    (1, 2, 3)       ║
+│                  │ │     ║    (id: 5678)      ║
+│ list1 ───────────┼─┼────→╚════════════════════╝
+│                  │ │     
+│                  │ │     ╔════════════════════╗
+│ dict1 ───────────┼─┼────→║    String Object   ║
+│                  │ └────→║    "Hello"         ║
+│                  │       ║    (id: 9012)      ║
+└──────────────────┘       ╚════════════════════╝
+
+╔════════════════════════════════════════════════════╗
+║            Memory Model Characteristics            ║
+╠════════════════════════════════════════════════════╣
+║ • Objects stored in heap memory                    ║
+║ • References stored in stack memory                ║
+║ • Multiple references can point to same object     ║
+║ • Memory managed by Python's garbage collector     ║
+╚════════════════════════════════════════════════════╝
+```
+
+### Mutable
+
+- Lists
+- Dictionaries
+- Sets
+
+```python
+# Mutable
+list = [1, 2, 3]
+list[0] = 0  # This will not raise an error
+```
+
