@@ -29,6 +29,7 @@ description: Overview of Python
 # Immutable
 string = "Hello, World!"
 string[0] = "H"  # This will raise an error
+
 ```
 
 ``` ascii
@@ -47,16 +48,16 @@ Stack (References)          Heap (Objects)
 │ tuple1 ──────────┼─┼────→║    Tuple Object    ║
 │                  │ │     ║    (1, 2, 3)       ║
 │                  │ │     ║    (id: 5678)      ║
-│ list1 ───────────┼─┼────→╚════════════════════╝
+│                  │ │     ╚════════════════════╝
 │                  │ │     
 │                  │ │     ╔════════════════════╗
-│ dict1 ───────────┼─┼────→║    String Object   ║
-│                  │ └────→║    "Hello"         ║
+│                  │ └────→║    String Object   ║
+│                  │       ║    "Hello"         ║
 │                  │       ║    (id: 9012)      ║
 └──────────────────┘       ╚════════════════════╝
 
 ╔════════════════════════════════════════════════════╗
-║            Memory Model Characteristics            ║
+║            Memory Model Characteristics             ║
 ╠════════════════════════════════════════════════════╣
 ║ • Objects stored in heap memory                    ║
 ║ • References stored in stack memory                ║
