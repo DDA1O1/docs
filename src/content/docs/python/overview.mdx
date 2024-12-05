@@ -57,7 +57,7 @@ Stack (References)          Heap (Objects)
 │                  │ │     ║    (id: 5678)      ║
 │                  │ │     ╚════════════════════╝
 │                  │ │     
-│                  │ │     ╔═════���══════════════╗
+│                  │ │     ╔═══════════════════╗
 │                  │ └────→║    String Object   ║
 │                  │       ║    "Hello"         ║
 │                  │       ║    (id: 9012)      ║
@@ -407,14 +407,387 @@ names = ['Alice', 'Bob']
 ages = [25, 30]
 list(zip(names, ages))   # [('Alice', 25), ('Bob', 30)]
 
-# List Performance
+```
+
+### Tuples
+
+### Tuples
+
+Tuples are immutable sequences in Python, making them ideal for data that shouldn't change.
+
+```python
+# Tuple Creation
+empty = ()
+single = (1,)             # Note the comma
+multiple = (1, 2, 3)
+mixed = (1, "hello", 3.14)
+nested = (1, (2, 3), [4, 5])
+
+# Basic Operations
+tup = (1, 2, 3)
+length = len(tup)         # 3
+concat = tup + (4, 5)     # (1, 2, 3, 4, 5)
+repeat = tup * 2          # (1, 2, 3, 1, 2, 3)
+
+# Indexing and Slicing
+numbers = (0, 1, 2, 3, 4)
+first = numbers[0]        # 0
+last = numbers[-1]        # 4
+subset = numbers[1:4]     # (1, 2, 3)
+reverse = numbers[::-1]   # (4, 3, 2, 1, 0)
+
+# Tuple Methods
+tup = (1, 2, 2, 3, 2)
+count = tup.count(2)      # 3 (counts occurrences)
+index = tup.index(2)      # 1 (first occurrence)
+
+# Tuple Unpacking
+x, y, z = (1, 2, 3)       # x=1, y=2, z=3
+first, *rest = (1, 2, 3, 4)  # first=1, rest=[2, 3, 4]
+
+# Named Tuples
+from collections import namedtuple
+Point = namedtuple('Point', ['x', 'y'])
+p = Point(11, 22)
+print(p.x, p.y)          # 11 22
+
+# Tuple vs List Performance
 """
-Operation    | Average Case | Worst Case
-----------------------------------------
-Access       | O(1)         | O(1)
-Append       | O(1)         | O(1)
-Insert       | O(n)         | O(n)
-Delete       | O(n)         | O(n)
-Search       | O(n)         | O(n)
+Advantages:
+1. Immutable (safer)
+2. Slightly smaller memory
+3. Can be used as dictionary keys
+4. Slightly faster than lists
 """
+
+# Common Use Cases
+# 1. Returning multiple values
+def get_coords():
+    return (3, 4)
+
+# 2. Dictionary keys
+locations = {(0, 0): 'origin', (1, 1): 'point'}
+
+# 3. Data integrity
+constants = (3.14, 2.718, 1.414)
+
+# Tuple Comparison
+t1 = (1, 2, 3)
+t2 = (1, 2, 4)
+t1 < t2                  # True (compares elements)
+
+# Conversion
+list_to_tuple = tuple([1, 2, 3])
+string_to_tuple = tuple("hello")  # ('h','e','l','l','o')
+
+
+# Advanced Operations
+# Zip with tuples
+x = (1, 2, 3)
+y = ('a', 'b', 'c')
+list(zip(x, y))          # [(1,'a'), (2,'b'), (3,'c')]
+
+# Filter and Map
+filtered = tuple(x for x in (1,2,3,4) if x % 2 == 0)  # (2, 4)
+mapped = tuple(map(lambda x: x*2, (1,2,3)))  # (2, 4, 6)
+
+# Nested Tuple Operations
+nested = ((1, 2), (3, 4))
+flattened = tuple(y for x in nested for y in x)  # (1, 2, 3, 4)
+
+# Type Checking
+isinstance((1, 2), tuple)  # True
+type((1, 2)).__name__     # 'tuple'
+```
+
+### Dictionaries
+
+### Dictionaries
+
+Dictionaries are mutable, unordered collections of key-value pairs.
+
+```python
+# Dictionary Creation
+empty = {}
+simple = {'name': 'John', 'age': 30}
+dict_constructor = dict(name='John', age=30)
+from_pairs = dict([('name', 'John'), ('age', 30)])
+dict_comp = {x: x**2 for x in range(5)}  # {0:0, 1:1, 2:4, 3:9, 4:16}
+
+# Basic Operations
+d = {'a': 1, 'b': 2}
+length = len(d)           # 2
+value = d['a']           # 1
+d['c'] = 3               # Add new key-value pair
+del d['b']               # Delete key-value pair
+
+# Dictionary Methods
+# Getting Values
+d = {'a': 1, 'b': 2, 'c': 3}
+value = d.get('a')       # 1
+value = d.get('z', 0)    # 0 (default value if key not found)
+
+# Modifying Dictionaries
+d1 = {'a': 1, 'b': 2}
+d2 = {'b': 3, 'c': 4}
+d1.update(d2)            # d1 = {'a': 1, 'b': 3, 'c': 4}
+
+# Keys, Values, and Items
+keys = d.keys()          # dict_keys(['a', 'b', 'c'])
+values = d.values()      # dict_values([1, 2, 3])
+items = d.items()        # dict_items([('a',1), ('b',2), ('c',3)])
+
+# Common Methods
+d = {'a': 1, 'b': 2}
+popped = d.pop('a')      # 1, d = {'b': 2}
+item = d.popitem()       # ('b', 2), d = {}
+d.clear()                # {}
+
+# Dictionary Comprehension
+squares = {x: x**2 for x in range(5)}
+filtered = {k: v for k, v in d.items() if v > 0}
+
+# Merging Dictionaries
+# Python 3.5+
+d1 = {'a': 1}
+d2 = {'b': 2}
+merged = {**d1, **d2}    # {'a': 1, 'b': 2}
+
+# Python 3.9+
+merged = d1 | d2         # {'a': 1, 'b': 2}
+
+# Nested Dictionaries
+nested = {
+    'user1': {'name': 'John', 'age': 30},
+    'user2': {'name': 'Jane', 'age': 25}
+}
+value = nested['user1']['name']  # 'John'
+
+# Dictionary Views
+d = {'a': 1, 'b': 2}
+keys = d.keys()          # Dynamic view of keys
+d['c'] = 3               # keys now includes 'c'
+
+# Safe Dictionary Access
+# Using get()
+value = d.get('z', 'not found')  # Default if key missing
+
+# Using setdefault()
+d = {'a': 1}
+value = d.setdefault('b', 0)  # Adds 'b': 0 if 'b' missing
+
+# Dictionary Membership
+'a' in d                 # True (key check)
+1 in d.values()          # True (value check)
+
+# Dictionary Iteration
+d = {'a': 1, 'b': 2, 'c': 3}
+
+# Iterate over keys (default)
+for key in d:
+    print(key)
+
+# Iterate over key-value pairs
+for key, value in d.items():
+    print(f"{key}: {value}")
+
+# Iterate over values
+for value in d.values():
+    print(value)
+
+# Dictionary Copying
+# Shallow copy
+d1 = {'a': [1, 2]}
+d2 = d1.copy()
+
+# Deep copy
+import copy
+d3 = copy.deepcopy(d1)
+
+# Advanced Operations
+# Dictionary to JSON
+import json
+json_str = json.dumps(d)  # Convert to JSON string
+d = json.loads(json_str)  # Parse JSON string
+
+# DefaultDict
+from collections import defaultdict
+d = defaultdict(list)     # Default value is empty list
+d['new_key'].append(1)    # No KeyError if key missing
+
+# OrderedDict (Python 3.7+ dicts are ordered by default)
+from collections import OrderedDict
+od = OrderedDict([('a', 1), ('b', 2)])
+
+# Counter
+from collections import Counter
+c = Counter(['a', 'b', 'a'])  # {'a': 2, 'b': 1}
+
+# Type Checking
+isinstance({}, dict)      # True
+type({}).__name__        # 'dict'
+```
+
+### File Handling
+
+Python provides built-in functions and methods for file operations.
+
+```python
+# Basic File Operations
+# Opening Files
+file = open('example.txt', 'r')  # Read mode
+file = open('example.txt', 'w')  # Write mode
+file = open('example.txt', 'a')  # Append mode
+
+# File Modes
+"""
+'r'  - Read (default)
+'w'  - Write (truncates file)
+'a'  - Append
+'x'  - Exclusive creation
+'b'  - Binary mode
+'t'  - Text mode (default)
+'+'  - Read and write
+"""
+
+# Using with Statement (Recommended)
+with open('example.txt', 'r') as file:
+    content = file.read()
+# File automatically closes after with block
+
+# Reading Files
+# Read entire file
+with open('example.txt', 'r') as file:
+    content = file.read()         # Read all as string
+    content = file.read(5)        # Read 5 characters
+    lines = file.readlines()      # Read all lines into list
+    line = file.readline()        # Read one line
+
+# Reading line by line (memory efficient)
+with open('example.txt', 'r') as file:
+    for line in file:
+        print(line.strip())
+
+# Writing Files
+with open('example.txt', 'w') as file:
+    file.write('Hello World\n')   # Write string
+    file.writelines(['Line 1\n', 'Line 2\n'])  # Write multiple lines
+
+# Appending to Files
+with open('example.txt', 'a') as file:
+    file.write('Appended text\n')
+
+# File Position
+with open('example.txt', 'r') as file:
+    file.tell()          # Current position
+    file.seek(0)         # Move to start
+    file.seek(10)        # Move to position 10
+    file.seek(0, 2)      # Move to end
+
+# Binary Files
+with open('example.bin', 'wb') as file:
+    file.write(bytes([1, 2, 3]))
+
+with open('example.bin', 'rb') as file:
+    data = file.read()   # Read bytes
+
+# Error Handling
+try:
+    with open('nonexistent.txt', 'r') as file:
+        content = file.read()
+except FileNotFoundError:
+    print("File not found")
+except PermissionError:
+    print("Permission denied")
+
+# File Properties
+import os
+
+# Check if file exists
+os.path.exists('example.txt')     # True/False
+
+# File size
+os.path.getsize('example.txt')    # Size in bytes
+
+# File timestamps
+os.path.getctime('example.txt')   # Creation time
+os.path.getmtime('example.txt')   # Modification time
+os.path.getatime('example.txt')   # Access time
+
+# File Operations
+os.rename('old.txt', 'new.txt')   # Rename file
+os.remove('file.txt')             # Delete file
+os.mkdir('directory')             # Create directory
+os.rmdir('directory')             # Remove directory
+
+# Working with Paths
+import pathlib
+
+# Create path object
+path = pathlib.Path('example.txt')
+
+# Path operations
+path.exists()            # Check if exists
+path.is_file()          # Check if file
+path.is_dir()           # Check if directory
+path.suffix             # File extension
+path.stem               # Filename without extension
+path.parent             # Parent directory
+
+# CSV Files
+import csv
+
+# Reading CSV
+with open('data.csv', 'r') as file:
+    reader = csv.reader(file)
+    for row in reader:
+        print(row)
+
+# Writing CSV
+with open('data.csv', 'w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(['Name', 'Age'])
+    writer.writerows([['John', 30], ['Jane', 25]])
+
+# JSON Files
+import json
+
+# Reading JSON
+with open('data.json', 'r') as file:
+    data = json.load(file)
+
+# Writing JSON
+with open('data.json', 'w') as file:
+    json.dump(data, file, indent=4)
+
+# Performance Tips
+"""
+1. Use 'with' statement for automatic file closing
+2. Use iteration for large files
+3. Use appropriate buffer size for binary files
+4. Use proper encoding for text files
+"""
+
+# Common Encodings
+"""
+'utf-8'     - Unicode (recommended)
+'ascii'     - ASCII
+'utf-16'    - Unicode 16-bit
+'utf-32'    - Unicode 32-bit
+"""
+
+# Example with Encoding
+with open('file.txt', 'r', encoding='utf-8') as file:
+    content = file.read()
+
+# File-like Objects
+from io import StringIO, BytesIO
+
+# String as file
+str_io = StringIO("Hello World")
+content = str_io.read()
+
+# Bytes as file
+bytes_io = BytesIO(b"Hello World")
+content = bytes_io.read()
 ```
