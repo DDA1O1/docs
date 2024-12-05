@@ -109,4 +109,69 @@ Python has several built-in data types, including integers, floats, strings, lis
 - Iterators : `iter(my_list)`
 - Context Managers : `with open("file.txt", "r") as file:`
 
+### Numbers
 
+- Integers : `1234`, `-1234`
+- Floats : `12.34`, `-12.34`
+- Complex Numbers : `12+34j`, `-12+34j`
+
+```python
+# Number Methods and Operations
+
+# Basic Arithmetic
+x = 10
+y = 3
+
+addition = x + y        # 13
+subtraction = x - y     # 7
+multiplication = x * y  # 30
+division = x / y        # 3.3333...
+floor_division = x // y # 3
+modulus = x % y         # 1
+power = x ** y          # 1000
+
+# Built-in Number Methods
+abs(-5)                # 5 (absolute value)
+round(3.7)             # 4
+round(3.14159, 2)      # 3.14 (round to 2 decimals)
+pow(2, 3)              # 8 (same as 2 ** 3)
+
+# Float Methods
+f = 3.14159
+f.is_integer()         # False
+f.as_integer_ratio()   # (314159, 100000)
+
+# Complex Number Methods
+c = 3 + 4j
+c.real                # 3.0
+c.imag                # 4.0
+abs(c)                # 5.0 (magnitude)
+c.conjugate()         # (3-4j)
+
+# Number Type Conversion
+int("123")            # 123
+float("12.34")        # 12.34
+complex(3, 4)         # 3+4j
+
+# Math Module Functions
+import math
+
+math.ceil(3.7)        # 4
+math.floor(3.7)       # 3
+math.trunc(3.7)       # 3
+math.sqrt(16)         # 4.0
+math.factorial(5)     # 120
+math.gcd(12, 8)       # 4 (greatest common divisor)
+math.pi               # 3.141592653589793
+math.e                # 2.718281828459045
+
+# Number Properties
+float('inf')          # Infinity
+float('-inf')         # Negative Infinity
+float('nan')          # Not a Number
+
+# Binary/Octal/Hex Conversion
+bin(10)               # '0b1010'
+oct(10)               # '0o12'
+hex(10)               # '0xa'
+```
