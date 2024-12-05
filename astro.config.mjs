@@ -65,6 +65,16 @@ export default defineConfig({
               label: 'Thoughts',
               autogenerate: { directory: 'Thoughts' }
           },
+          {
+              label: 'Fun',
+              items: [
+                {
+                  label: 'Lorentz',
+                  link: 'https://lorentz.d1o1.fun/',
+                  attrs: { target: '_blank', style: 'font-style: italic' },
+                },
+              ]
+          },
       ],
   }), tailwind({
     // Disable the default base styles:
