@@ -38,16 +38,16 @@ export default defineConfig({
               autogenerate: { directory: 'Computer_Architecture' },
           },
           {
-              label: 'C++',
-              autogenerate: { directory: 'C++' },
+            label: 'Web Dev',
+            items: [
+              //   { label: 'HTML', slug: 'web_dev/html' }, 
+                { label: 'JavaScript' ,badge: 'Finished', autogenerate: { directory: 'web_dev/Javascript' } },
+                { label: 'CSS' , autogenerate: { directory: 'web_dev/CSS' } },
+            ]
           },
           {
-              label: 'Web Dev',
-              items: [
-                //   { label: 'HTML', slug: 'web_dev/html' }, 
-                  { label: 'JavaScript' ,badge: 'Finished', autogenerate: { directory: 'web_dev/Javascript' } },
-                  { label: 'CSS' , autogenerate: { directory: 'web_dev/CSS' } },
-              ]
+              label: 'C++',
+              autogenerate: { directory: 'C++' },
           },
           {
               label: 'Python',

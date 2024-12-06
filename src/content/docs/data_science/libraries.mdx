@@ -1,0 +1,243 @@
+---
+title: Libraries
+description: Libraries
+---
+
+## NumPy
+NumPy (Numerical Python) is a fundamental library for scientific computing in Python.
+
+### 1D Matrix
+
+```python
+import numpy as np
+
+# Create arrays
+arr = np.array([1, 2, 3, 4, 5])
+arr2 = np.array([6, 7, 8, 9, 10])
+
+# Array Creation Functions
+np.zeros(5)          # [0, 0, 0, 0, 0]
+np.ones(5)           # [1, 1, 1, 1, 1]
+np.arange(0, 10, 2)  # [0, 2, 4, 6, 8]
+np.linspace(0, 1, 5) # 5 evenly spaced numbers from 0 to 1
+
+# Basic Statistics
+arr.mean()     # Average
+arr.std()      # Standard deviation
+arr.min()      # Minimum value
+arr.max()      # Maximum value
+arr.sum()      # Sum of elements
+np.median(arr) # Median value
+
+# Array Operations
+arr + 2        # Add to each element
+arr * 2        # Multiply each element
+np.sqrt(arr)   # Square root
+np.square(arr) # Square each element
+arr + arr2     # Element-wise addition
+arr * arr2     # Element-wise multiplication
+
+# Array Information
+arr.shape      # Dimensions
+arr.size       # Number of elements
+arr.dtype      # Data type
+
+# Indexing & Slicing
+arr[0]         # First element
+arr[-1]        # Last element
+arr[1:4]       # Elements from index 1 to 3
+arr[::2]       # Every second element
+
+# Filtering
+arr[arr > 2]   # Elements greater than 2
+arr[(arr > 2) & (arr < 5)]  # Multiple conditions
+
+# Reshaping & Transforming
+arr.reshape(5,1)  # Convert to 2D array
+arr.repeat(2)     # Repeat each element
+np.concatenate([arr, arr2])  # Join arrays
+
+# Sorting
+np.sort(arr)      # Sort array
+arr.argsort()     # Get sorted indices
+np.argmax(arr)    # Index of maximum value
+np.argmin(arr)    # Index of minimum value
+
+# Mathematical Operations
+np.exp(arr)       # Exponential
+np.log(arr)       # Natural logarithm
+np.sin(arr)       # Sine
+np.cos(arr)       # Cosine
+```
+### 2D Matrix
+
+```python
+import numpy as np
+
+# Create 2D arrays
+arr = np.array([[1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9]])
+arr2 = np.array([[9, 8, 7],
+                 [6, 5, 4],
+                 [3, 2, 1]])
+
+# Creation Functions
+np.zeros((3, 3))      # 3x3 matrix of zeros
+np.ones((3, 3))       # 3x3 matrix of ones
+np.eye(3)             # 3x3 identity matrix
+np.full((3, 3), 5)    # 3x3 matrix filled with 5
+
+# Basic Statistics
+arr.mean()            # Average of all elements
+arr.mean(axis=0)      # Column means
+arr.mean(axis=1)      # Row means
+arr.sum(axis=0)       # Column sums
+arr.sum(axis=1)       # Row sums
+
+# Matrix Operations
+arr + arr2            # Element-wise addition
+arr * arr2            # Element-wise multiplication
+arr.dot(arr2)         # Matrix multiplication
+arr.T                 # Transpose
+np.linalg.inv(arr)    # Inverse
+np.linalg.det(arr)    # Determinant
+
+# Indexing & Slicing
+arr[0, 0]             # First element
+arr[1:]               # Second row onwards
+arr[:, 1]             # Second column
+arr[0:2, 0:2]         # 2x2 sub-matrix
+
+# Shape Manipulation
+arr.reshape(1, 9)     # Reshape to 1x9
+arr.flatten()         # Convert to 1D array
+np.vstack([arr, arr2])# Vertical stack
+np.hstack([arr, arr2])# Horizontal stack
+
+# Filtering
+arr[arr > 5]          # Elements > 5
+arr[arr % 2 == 0]     # Even elements
+
+# Linear Algebra
+eigenvals, eigenvecs = np.linalg.eig(arr)  # Eigenvalues & eigenvectors
+u, s, vh = np.linalg.svd(arr)              # Singular Value Decomposition
+np.linalg.matrix_rank(arr)                 # Matrix rank
+np.trace(arr)                              # Matrix trace
+
+# Broadcasting
+arr + 1               # Add 1 to all elements
+arr * 2               # Multiply all by 2
+arr ** 2              # Square all elements
+
+# Sorting
+np.sort(arr, axis=0)  # Sort each column
+np.sort(arr, axis=1)  # Sort each row
+
+# Advanced Indexing
+mask = arr > 5
+arr[mask]                     # Boolean indexing
+arr[[0, 2], [1, 1]]          # Select specific elements
+np.diag(arr)                 # Get diagonal elements
+np.triu(arr)                 # Upper triangular matrix
+np.tril(arr)                 # Lower triangular matrix
+
+# Statistical Operations
+np.cov(arr)                  # Covariance matrix
+np.corrcoef(arr)             # Correlation matrix
+np.percentile(arr, 75)       # 75th percentile
+np.quantile(arr, [0.25, 0.75])  # Multiple quantiles
+arr.var(axis=0)              # Variance along columns
+arr.std(axis=1)              # Standard deviation along rows
+
+# Matrix Manipulations
+np.pad(arr, 1)               # Pad matrix with zeros
+np.roll(arr, 1, axis=0)      # Roll elements along rows
+np.rot90(arr)                # Rotate matrix 90 degrees
+np.flip(arr, axis=0)         # Flip matrix vertically
+np.flip(arr, axis=1)         # Flip matrix horizontally
+
+# Advanced Linear Algebra
+np.linalg.solve(arr, b)      # Solve linear equations
+np.linalg.norm(arr)          # Matrix norm
+np.linalg.matrix_power(arr, 2)  # Matrix power
+np.linalg.qr(arr)            # QR decomposition
+np.linalg.cholesky(arr)      # Cholesky decomposition
+
+# Element-wise Operations
+np.maximum(arr, arr2)        # Element-wise maximum
+np.minimum(arr, arr2)        # Element-wise minimum
+np.clip(arr, 2, 7)          # Clip values between 2 and 7
+np.round(arr, decimals=1)    # Round to 1 decimal
+np.abs(arr)                  # Absolute values
+
+# Aggregation Functions
+np.argmax(arr, axis=0)       # Index of max in each column
+np.argmin(arr, axis=1)       # Index of min in each row
+np.any(arr > 5, axis=0)      # Test if any element > 5
+np.all(arr > 0, axis=1)      # Test if all elements > 0
+np.count_nonzero(arr > 5)    # Count elements > 5
+
+# Splitting and Combining
+np.hsplit(arr, 3)            # Split horizontally
+np.vsplit(arr, 3)            # Split vertically
+np.tile(arr, (2, 2))         # Repeat array 2x2
+np.repeat(arr, 2, axis=0)    # Repeat rows
+np.repeat(arr, 2, axis=1)    # Repeat columns
+
+# Random Sampling
+np.random.choice(arr.flatten(), 5)  # Random sampling
+np.random.shuffle(arr)        # Shuffle array in-place
+np.random.permutation(arr)    # Shuffled copy of array
+
+# Set Operations
+np.unique(arr)               # Unique elements
+np.intersect1d(arr, arr2)    # Intersection
+np.union1d(arr, arr2)        # Union
+np.setdiff1d(arr, arr2)      # Set difference
+
+# Broadcasting with Row/Column Vectors
+row_means = arr.mean(axis=1, keepdims=True)
+arr - row_means              # Subtract mean from each row
+col_sums = arr.sum(axis=0)
+arr / col_sums              # Normalize columns
+```
+### Random Number Generation
+
+```python
+import numpy as np
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Basic Random Generation
+rand_uniform = np.random.rand(5)        # Uniform [0,1]
+rand_normal = np.random.randn(5)        # Standard normal distribution
+rand_int = np.random.randint(0, 10, 5)  # Random integers [0,10]
+
+# Common Distributions
+normal = np.random.normal(loc=0, scale=1, size=1000)      # Normal (Gaussian)
+uniform = np.random.uniform(low=0, high=10, size=1000)    # Uniform
+poisson = np.random.poisson(lam=5, size=1000)            # Poisson
+binomial = np.random.binomial(n=10, p=0.5, size=1000)    # Binomial
+exponential = np.random.exponential(scale=1.0, size=1000) # Exponential
+
+# Sampling
+data = np.array([1, 2, 3, 4, 5])
+random_sample = np.random.choice(data, size=3, replace=False)  # Without replacement
+weighted_sample = np.random.choice(data, size=3, p=[0.1, 0.2, 0.4, 0.2, 0.1])  # With weights
+
+# Random Matrices
+rand_matrix = np.random.rand(3, 3)          # Uniform random matrix
+normal_matrix = np.random.normal(0, 1, (3, 3))  # Normal random matrix
+
+# Shuffling
+arr = np.array([1, 2, 3, 4, 5])
+np.random.shuffle(arr)                      # In-place shuffle
+shuffled = np.random.permutation(arr)       # Return shuffled copy
+
+# Random Generator Object (newer API)
+rng = np.random.default_rng(42)
+rng_normal = rng.normal(0, 1, 1000)
+rng_choice = rng.choice(data, size=3)
+```
