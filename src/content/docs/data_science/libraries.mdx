@@ -241,3 +241,134 @@ rng = np.random.default_rng(42)
 rng_normal = rng.normal(0, 1, 1000)
 rng_choice = rng.choice(data, size=3)
 ```
+
+## Pandas
+
+```python
+import pandas as pd
+import numpy as np
+
+# Creating DataFrames
+df = pd.DataFrame({
+    'A': [1, 2, 3],
+    'B': ['a', 'b', 'c'],
+    'C': [1.1, 2.2, 3.3]
+})
+
+# From different sources
+df_csv = pd.read_csv('file.csv')
+df_excel = pd.read_excel('file.xlsx')
+df_dict = pd.DataFrame.from_dict(data)
+df_numpy = pd.DataFrame(np.random.randn(3, 3))
+
+# Basic Operations
+df.head()              # First 5 rows
+df.tail()              # Last 5 rows
+df.info()              # DataFrame info
+df.describe()          # Statistical summary
+df.shape              # Dimensions
+df.columns            # Column names
+df.index              # Row indices
+df.dtypes             # Data types
+
+# Selection
+df['A']               # Select column
+df[['A', 'B']]        # Multiple columns
+df.loc[0]             # Select row by label
+df.iloc[0]            # Select row by position
+df.loc[0:2, 'A':'C']  # Select by label range
+df.iloc[0:2, 0:2]     # Select by position range
+
+# Filtering
+df[df['A'] > 2]                # Simple condition
+df[(df['A'] > 2) & (df['C'] < 3)]  # Multiple conditions
+df.query('A > 2 and C < 3')    # Query method
+
+# Missing Data
+df.isna()             # Check missing
+df.dropna()           # Drop missing
+df.fillna(0)          # Fill missing with 0
+df.interpolate()      # Interpolate missing
+
+# Grouping and Aggregation
+df.groupby('A').mean()
+df.groupby(['A', 'B']).sum()
+df.groupby('A').agg(['mean', 'sum'])
+
+# Sorting
+df.sort_values('A')              # Sort by column
+df.sort_values(['A', 'B'])       # Sort by multiple columns
+df.sort_index()                  # Sort by index
+
+# Data Transformation
+df['D'] = df['A'] * 2           # New column
+df.apply(lambda x: x * 2)        # Apply function
+df.applymap(lambda x: str(x))    # Apply to each element
+df['B'] = df['B'].astype(str)   # Change data type
+
+# Merging and Joining
+pd.merge(df1, df2, on='key')    # Merge on key
+pd.concat([df1, df2])           # Concatenate
+df1.join(df2)                   # Join on index
+
+# Time Series
+dates = pd.date_range('20230101', periods=6)
+ts = pd.Series(np.random.randn(6), index=dates)
+ts.resample('M').mean()         # Monthly resampling
+ts.shift(1)                     # Shift values
+ts.rolling(2).mean()            # Rolling average
+
+# String Operations
+df['B'].str.upper()             # Uppercase
+df['B'].str.contains('a')       # Contains
+df['B'].str.replace('a', 'x')   # Replace
+
+# Statistical Methods
+df.corr()                       # Correlation
+df.cov()                        # Covariance
+df.kurt()                       # Kurtosis
+df.skew()                       # Skewness
+
+# Data Cleaning
+df.drop_duplicates()            # Remove duplicates
+df.replace({'A': {1: 10}})      # Replace values
+df.rename(columns={'A': 'X'})   # Rename columns
+df.set_index('A')               # Set index
+
+# Advanced Operations
+df.pivot_table(                 # Pivot table
+    values='A', 
+    index='B', 
+    columns='C', 
+    aggfunc='mean'
+)
+df.melt(                        # Unpivot
+    id_vars=['A'], 
+    value_vars=['B', 'C']
+)
+df.eval('D = A + C')           # Evaluate expression
+
+# Export Data
+df.to_csv('output.csv')
+df.to_excel('output.xlsx')
+df.to_json('output.json')
+
+# Memory Optimization
+df.memory_usage()              # Memory usage
+df.select_dtypes(include=['int64']).astype('int32')  # Downcast
+
+# Window Functions
+df.expanding().mean()          # Expanding window
+df.rolling(window=2).sum()     # Rolling window
+df.ewm(alpha=0.5).mean()      # Exponential weighted
+
+# Categorical Data
+df['cat'] = pd.Categorical(df['B'])
+df['cat'].cat.codes           # Category codes
+df['cat'].cat.categories      # Category names
+
+# Advanced Indexing
+df.set_index(['A', 'B'])      # Multi-index
+df.reset_index()              # Reset index
+df.swaplevel()                # Swap index levels
+```
