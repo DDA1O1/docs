@@ -372,3 +372,471 @@ df.set_index(['A', 'B'])      # Multi-index
 df.reset_index()              # Reset index
 df.swaplevel()                # Swap index levels
 ```
+## Matplotlib
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Basic Line Plot
+x = np.linspace(0, 10, 100)
+plt.plot(x, np.sin(x))
+plt.title('Simple Line Plot')
+plt.xlabel('x')
+plt.ylabel('sin(x)')
+plt.show()
+
+# Multiple Lines
+plt.plot(x, np.sin(x), label='sin')
+plt.plot(x, np.cos(x), label='cos')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Scatter Plot
+x = np.random.rand(50)
+y = np.random.rand(50)
+plt.scatter(x, y, c='red', alpha=0.5)
+plt.show()
+
+# Bar Plot
+categories = ['A', 'B', 'C', 'D']
+values = [4, 3, 2, 1]
+plt.bar(categories, values)
+plt.show()
+
+# Histogram
+data = np.random.randn(1000)
+plt.hist(data, bins=30)
+plt.show()
+
+# Subplots
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+ax1.plot(x, np.sin(x))
+ax2.plot(x, np.cos(x))
+plt.show()
+
+# Customization
+plt.figure(figsize=(10, 6))
+plt.plot(x, np.sin(x), 'r--', linewidth=2, label='sin')
+plt.plot(x, np.cos(x), 'b-.', linewidth=2, label='cos')
+plt.title('Custom Plot', fontsize=14)
+plt.xlabel('X axis', fontsize=12)
+plt.ylabel('Y axis', fontsize=12)
+plt.legend(fontsize=10)
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.show()
+
+# Advanced Plots
+# Heatmap
+data = np.random.rand(10, 10)
+plt.imshow(data, cmap='hot')
+plt.colorbar()
+plt.show()
+
+# 3D Plot
+from mpl_toolkits.mplot3d import Axes3D
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+x = y = np.linspace(-3, 3, 100)
+X, Y = np.meshgrid(x, y)
+Z = np.sin(np.sqrt(X**2 + Y**2))
+ax.plot_surface(X, Y, Z)
+plt.show()
+
+# Pie Chart
+sizes = [30, 20, 25, 15]
+labels = ['A', 'B', 'C', 'D']
+plt.pie(sizes, labels=labels, autopct='%1.1f%%')
+plt.show()
+
+# Box Plot
+data = [np.random.normal(0, std, 100) for std in range(1, 4)]
+plt.boxplot(data)
+plt.show()
+
+# Violin Plot
+plt.violinplot(data)
+plt.show()
+
+# Save Plot
+plt.savefig('plot.png', dpi=300, bbox_inches='tight')
+
+# Style Sheets
+plt.style.use('seaborn')  # Other options: 'ggplot', 'dark_background'
+
+# Animation
+from matplotlib.animation import FuncAnimation
+
+fig, ax = plt.subplots()
+xdata, ydata = [], []
+ln, = ax.plot([], [])
+
+def init():
+    ax.set_xlim(0, 2*np.pi)
+    ax.set_ylim(-1, 1)
+    return ln,
+
+def update(frame):
+    xdata.append(frame)
+    ydata.append(np.sin(frame))
+    ln.set_data(xdata, ydata)
+    return ln,
+
+ani = FuncAnimation(fig, update, frames=np.linspace(0, 2*np.pi, 128),
+                   init_func=init, blit=True)
+plt.show()
+
+# Object-Oriented Interface
+fig, ax = plt.subplots()
+ax.plot(x, np.sin(x))
+ax.set_title('OO Style Plot')
+ax.set_xlabel('x')
+ax.set_ylabel('sin(x)')
+ax.grid(True)
+plt.show()
+
+# Multiple Plot Types
+fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(10, 10))
+
+# Scatter plot
+ax1.scatter(np.random.rand(50), np.random.rand(50))
+ax1.set_title('Scatter')
+
+# Line plot
+ax2.plot(x, np.sin(x))
+ax2.set_title('Line')
+
+# Bar plot
+ax3.bar(['A', 'B', 'C'], [3, 2, 1])
+ax3.set_title('Bar')
+
+# Histogram
+ax4.hist(np.random.randn(1000))
+ax4.set_title('Histogram')
+
+plt.tight_layout()
+plt.show()
+```
+## Seaborn
+
+```python
+import seaborn as sns
+import pandas as pd
+import numpy as np
+
+# Set style
+sns.set_style("whitegrid")
+sns.set_palette("husl")
+
+# Sample data
+tips = sns.load_dataset("tips")
+flights = sns.load_dataset("flights")
+iris = sns.load_dataset("iris")
+
+# Distribution Plots
+# Histogram and KDE
+sns.histplot(data=tips, x="total_bill", kde=True)
+sns.kdeplot(data=tips, x="total_bill", hue="sex")
+
+# Box and Violin Plots
+sns.boxplot(data=tips, x="day", y="total_bill")
+sns.violinplot(data=tips, x="day", y="total_bill", hue="sex")
+
+# Categorical Plots
+# Bar plots
+sns.barplot(data=tips, x="day", y="total_bill")
+sns.countplot(data=tips, x="day")
+
+# Strip and Swarm Plots
+sns.stripplot(data=tips, x="day", y="total_bill", jitter=True)
+sns.swarmplot(data=tips, x="day", y="total_bill")
+
+# Relational Plots
+# Scatter plots
+sns.scatterplot(data=tips, x="total_bill", y="tip", hue="sex")
+sns.relplot(data=tips, x="total_bill", y="tip", col="sex")
+
+# Line plots
+sns.lineplot(data=flights, x="year", y="passengers", ci=None)
+
+# Regression Plots
+# Simple regression
+sns.regplot(data=tips, x="total_bill", y="tip")
+
+# Complex regression
+sns.lmplot(data=tips, x="total_bill", y="tip", 
+           col="sex", row="time", hue="smoker")
+
+# Matrix Plots
+# Correlation matrix
+corr = tips.corr()
+sns.heatmap(corr, annot=True, cmap="coolwarm")
+
+# Pair plots
+sns.pairplot(iris, hue="species")
+
+# Joint plots
+sns.jointplot(data=tips, x="total_bill", y="tip", 
+             kind="reg", height=7)
+
+# Categorical relationships
+# Point plots
+sns.pointplot(data=tips, x="day", y="total_bill", hue="sex")
+
+# Facet Grid
+g = sns.FacetGrid(tips, col="time", row="smoker")
+g.map(sns.scatterplot, "total_bill", "tip")
+
+# Advanced Customization
+# Custom figure size
+plt.figure(figsize=(10, 6))
+sns.boxplot(data=tips, x="day", y="total_bill")
+
+# Custom color palette
+sns.set_palette("Set2")
+sns.scatterplot(data=iris, x="sepal_length", y="sepal_width", 
+                hue="species")
+
+# Statistical Estimation
+# Confidence intervals
+sns.lmplot(data=tips, x="total_bill", y="tip", ci=95)
+
+# Bootstrap resampling
+sns.regplot(data=tips, x="total_bill", y="tip", 
+            n_boot=1000)
+
+# Complex Visualizations
+# Cluster map
+sns.clustermap(corr, annot=True, cmap="coolwarm")
+
+# Distribution visualization
+sns.displot(data=tips, x="total_bill", col="time", 
+            row="sex", kind="kde")
+
+# Multiple plot types
+g = sns.JointGrid(data=tips, x="total_bill", y="tip")
+g.plot_joint(sns.scatterplot)
+g.plot_marginals(sns.histplot)
+
+# Time series
+sns.lineplot(data=flights, x="year", y="passengers", 
+             hue="month", style="month")
+
+# Categorical plots with multiple variables
+sns.catplot(data=tips, x="day", y="total_bill", 
+            kind="violin", hue="sex", split=True)
+
+# Style Themes
+# Available themes: darkgrid, whitegrid, dark, white, ticks
+sns.set_theme(style="darkgrid")
+sns.set_context("notebook", font_scale=1.5)
+
+# Save plot
+plt.savefig('seaborn_plot.png', dpi=300, bbox_inches='tight')
+```
+
+### CRUD with SQLite
+
+```python
+import sqlite3
+from sqlite3 import Error
+
+# Connect to database (creates if not exists)
+def create_connection(db_file):
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+        print(f"Connected to {db_file}, SQLite version: {sqlite3.version}")
+        return conn
+    except Error as e:
+        print(f"Error: {e}")
+    return conn
+
+# Create table
+def create_table(conn):
+    try:
+        sql = '''CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT NOT NULL,
+                    email TEXT UNIQUE,
+                    age INTEGER,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );'''
+        conn.execute(sql)
+        print("Table created successfully")
+    except Error as e:
+        print(f"Error: {e}")
+
+# Insert operations
+def insert_user(conn, user):
+    sql = '''INSERT INTO users(name, email, age)
+             VALUES(?,?,?)'''
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, user)
+        conn.commit()
+        print(f"Inserted user with id: {cur.lastrowid}")
+        return cur.lastrowid
+    except Error as e:
+        print(f"Error: {e}")
+
+# Bulk insert
+def insert_many_users(conn, users):
+    sql = '''INSERT INTO users(name, email, age)
+             VALUES(?,?,?)'''
+    try:
+        cur = conn.cursor()
+        cur.executemany(sql, users)
+        conn.commit()
+        print(f"Inserted {cur.rowcount} users")
+    except Error as e:
+        print(f"Error: {e}")
+
+# Read operations
+def select_all_users(conn):
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users")
+        rows = cur.fetchall()
+        for row in rows:
+            print(row)
+        return rows
+    except Error as e:
+        print(f"Error: {e}")
+
+def select_user_by_id(conn, id):
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE id=?", (id,))
+        row = cur.fetchone()
+        print(row)
+        return row
+    except Error as e:
+        print(f"Error: {e}")
+
+# Update operations
+def update_user(conn, user):
+    sql = '''UPDATE users
+             SET name = ?,
+                 email = ?,
+                 age = ?
+             WHERE id = ?'''
+    try:
+        cur = conn.cursor()
+        cur.execute(sql, user)
+        conn.commit()
+        print(f"Updated user with id: {user[3]}")
+    except Error as e:
+        print(f"Error: {e}")
+
+# Delete operations
+def delete_user(conn, id):
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM users WHERE id=?", (id,))
+        conn.commit()
+        print(f"Deleted user with id: {id}")
+    except Error as e:
+        print(f"Error: {e}")
+
+# Advanced queries
+def advanced_queries(conn):
+    try:
+        cur = conn.cursor()
+        
+        # Filtering
+        cur.execute("SELECT * FROM users WHERE age > 25")
+        
+        # Ordering
+        cur.execute("SELECT * FROM users ORDER BY age DESC")
+        
+        # Aggregation
+        cur.execute("SELECT AVG(age), COUNT(*) FROM users")
+        
+        # Grouping
+        cur.execute("""
+            SELECT age, COUNT(*) 
+            FROM users 
+            GROUP BY age 
+            HAVING COUNT(*) > 1
+        """)
+        
+        # LIKE query
+        cur.execute("SELECT * FROM users WHERE name LIKE 'J%'")
+        
+        # Complex conditions
+        cur.execute("""
+            SELECT * FROM users 
+            WHERE age BETWEEN 20 AND 30 
+            AND email LIKE '%.com'
+        """)
+        
+    except Error as e:
+        print(f"Error: {e}")
+
+# Example usage
+def main():
+    database = "pythonsqlite.db"
+    conn = create_connection(database)
+    
+    if conn is not None:
+        # Create table
+        create_table(conn)
+        
+        # Insert single user
+        user = ('John Doe', 'john@example.com', 25)
+        user_id = insert_user(conn, user)
+        
+        # Insert multiple users
+        users = [
+            ('Jane Doe', 'jane@example.com', 22),
+            ('Bob Smith', 'bob@example.com', 28)
+        ]
+        insert_many_users(conn, users)
+        
+        # Read operations
+        print("\nAll users:")
+        select_all_users(conn)
+        
+        print("\nUser by ID:")
+        select_user_by_id(conn, user_id)
+        
+        # Update user
+        updated_user = ('John Updated', 'john.updated@example.com', 26, user_id)
+        update_user(conn, updated_user)
+        
+        # Delete user
+        delete_user(conn, user_id)
+        
+        # Close connection
+        conn.close()
+    else:
+        print("Error: Cannot create database connection")
+
+if __name__ == '__main__':
+    main()
+
+# Using with pandas
+def sql_with_pandas():
+    import pandas as pd
+    
+    conn = create_connection("pythonsqlite.db")
+    if conn is not None:
+        # Read SQL query into DataFrame
+        df = pd.read_sql_query("SELECT * FROM users", conn)
+        
+        # Write DataFrame to SQL
+        df.to_sql('users_backup', conn, if_exists='replace', index=False)
+        
+        conn.close()
+
+# Using with context manager
+def using_context_manager():
+    with sqlite3.connect("pythonsqlite.db") as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users")
+        rows = cur.fetchall()
+        for row in rows:
+            print(row)
+```
