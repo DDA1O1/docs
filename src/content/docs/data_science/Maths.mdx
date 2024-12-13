@@ -32,7 +32,8 @@ Statistics is a branch of mathematics dealing with data collection, analysis, in
 
 - **Mean**: 
   - Average of all values in a dataset
-  - Formula: x̄ = (∑x) / n
+  - Sample Formula: x̄ = (∑x) / n
+  - Population Formula: μ = (∑x) / N
   - Example: For [2,4,6,8], Mean = (2+4+6+8)/4 = 5
   - Use when:
     - Data is normally distributed
@@ -65,6 +66,114 @@ Statistics is a branch of mathematics dealing with data collection, analysis, in
     - Can have multiple modes
     - May not exist if all values occur once
 
+### Measures of Dispersion
 
+Measures of dispersion describe how spread out data points are from the center. They're crucial for:
+- Understanding data variability
+- Assessing data reliability
+- Comparing datasets
 
+#### Common Measures
+
+- **Variance** (σ²)
+  - Average squared deviation from mean
+  - Formula: σ² = Σ(x - μ)²/n
+  - Use when:
+    - Detailed spread analysis needed
+    - Computing statistical tests
+  - Limitation: Units are squared
+
+- **Standard Deviation** (σ)
+  - Square root of variance
+  - Formula: σ = √(Σ(x - μ)²/n)
+  - Use when:
+    - Need spread in original units
+    - Analyzing normal distributions
+    - Building ML models
+
+#### Variance
+
+Variance measures the average squared distance of data points from their mean, indicating data spread and variability.
+
+##### Key Points
+
+- **Definition**: Average of squared deviations from mean
+- **Population Formula**: σ² = Σ(x - μ)²/N
+- **Sample Formula**: s² = Σ(x - x̄)²/(n-1)
+
+##### Why Use n-1 in Sample Variance?
+
+The use of (n-1) instead of n in sample variance is called **Bessel's Correction**. Here's why it matters:
+
+1. **Degrees of Freedom**
+   - When calculating sample variance, we lose one degree of freedom
+   - This happens because we already used one piece of information (sample mean)
+   - n-1 accounts for this lost degree of freedom
+
+2. **Bias Correction**
+   - Sample variance with n tends to underestimate population variance
+   - Using n-1 makes the estimator unbiased
+   - Formula: s² = Σ(x - x̄)²/(n-1)
+
+3. **Practical Impact**
+   - More noticeable in small samples
+   - Example:
+     - n=5: 20% difference
+     - n=100: 1% difference
+   - Critical for accurate statistical inference
+
+##### Real-World Example of n-1 in Sample Variance
+
+Imagine a battery manufacturing plant:
+
+**Population Data:**
+- All 1000 batteries produced in a day
+- True population mean (μ) = 1.5V
+- Population readings vary between 1.3V to 1.7V
+- True population variance = 0.024V²
+
+**Sample Test:**
+- We test only 5 batteries: [1.3V, 1.4V, 1.5V, 1.6V, 1.7V]
+- Sample mean (x̄) = 1.5V
+
+**Variance Calculations:**
+```python
+# Using n (biased)
+Variance_n = Σ(x - x̄)²/5
+= [(1.3-1.5)² + (1.4-1.5)² + (1.5-1.5)² + (1.6-1.5)² + (1.7-1.5)²]/5
+= 0.02V² # Underestimates true variance (0.024V²)
+
+# Using n-1 (unbiased)
+Variance_n1 = Σ(x - x̄)²/4
+= 0.025V² # Closer to true variance (0.024V²)
+```
+
+**Why This Matters:**
+- Using n: 0.02V² (off by 0.004V²)
+- Using n-1: 0.025V² (off by 0.001V²)
+- n-1 gives estimate closer to true population variance
+
+This example shows how n-1 provides a better estimate of the true population variance. Note that in real situations, we usually don't know the true population variance - that's why we need good estimation methods.
+
+> **Key Point**: Use n-1 for sample variance to get an unbiased estimate of population variance
+
+```text
+# Example with weight data
+mean = 70kg
+std_dev = 5kg
+
+# Coverage ranges
+1σ range = 70 ± 5kg   = 65-75kg   (covers 68%)
+2σ range = 70 ± 10kg  = 60-80kg   (covers 95%)  # Most commonly used
+3σ range = 70 ± 15kg  = 55-85kg   (covers 99.7%)
+
+# Sample of 100 people's weights
+mean = 70kg
+variance = 25kg²  # Standard deviation ≈ 5kg
+
+# Practical Use
+size_range = mean ± (2 × √variance)
+# = 70 ± 10kg
+# = 60kg to 80kg
+```
 
