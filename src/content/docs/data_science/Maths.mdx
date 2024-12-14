@@ -268,3 +268,255 @@ plt.show()
 ```
 
 ![Histogram Output](/images/histogram.png)
+
+### Percentiles and Quartiles
+
+Percentiles and quartiles are measures that divide a dataset into equal portions.
+
+#### Percentiles
+- Divides data into 100 equal parts
+- Pth percentile: Value below which P% of observations fall
+- Common uses:
+  - 50th percentile = median
+  - Used in standardized testing (e.g., "90th percentile")
+
+#### Quartiles
+- Divides data into 4 equal parts
+- Q1 (25th percentile): First quartile
+- Q2 (50th percentile): Median
+- Q3 (75th percentile): Third quartile
+- IQR (Interquartile Range) = Q3 - Q1
+
+#### Example
+
+```python
+import numpy as np
+
+data = [2, 4, 6, 8, 10, 12, 14, 16]
+
+# Quartiles
+Q1 = np.percentile(data, 25)  # = 5
+Q2 = np.percentile(data, 50)  # = 9
+Q3 = np.percentile(data, 75)  # = 13
+IQR = Q3 - Q1                 # = 8
+
+# Any percentile
+p90 = np.percentile(data, 90) # 14.6
+```
+
+### 5 Number Summary
+
+The 5 number summary is a quick way to describe the distribution of a dataset. It consists of the minimum, first quartile, median, third quartile, and maximum.
+
+- Minimum: Smallest value in the dataset
+- First Quartile (Q1): 25th percentile
+- Median: 50th percentile
+- Third Quartile (Q3): 75th percentile
+- Maximum: Largest value in the dataset
+
+#### Example
+
+```python
+import numpy as np
+
+data = [2, 4, 6, 8, 10, 12, 14, 16]
+
+# 5 Number Summary
+summary = np.percentile(data, [0, 25, 50, 75, 100])
+print(summary)  # [2.  5.  9.  13. 16.]
+```
+Outliers are values that fall outside the range of the 5 number summary.
+
+- Lower Outlier: Below (Q1 - 1.5 * IQR)
+- Upper Outlier: Above (Q3 + 1.5 * IQR)
+- Interquartile Range (IQR) = Q3 - Q1
+
+### Example
+
+```python
+import numpy as np
+
+# Sample dataset
+data = [1, 2, 2, 3, 4, 10, 20, 25, 30]
+
+# Calculate 5 number summary
+min_val = np.min(data)
+q1 = np.percentile(data, 25)
+median = np.percentile(data, 50)
+q3 = np.percentile(data, 75)
+max_val = np.max(data)
+
+# Calculate IQR and outlier bounds
+iqr = q3 - q1
+lower_bound = q1 - 1.5 * iqr
+upper_bound = q3 + 1.5 * iqr
+
+# Find outliers
+outliers = [x for x in data if x < lower_bound or x > upper_bound]
+
+print(f"5 Number Summary:")
+print(f"Min: {min_val}")
+print(f"Q1: {q1}")
+print(f"Median: {median}")
+print(f"Q3: {q3}")
+print(f"Max: {max_val}")
+print(f"Outliers: {outliers}")
+```
+### Covariance and Correlation
+
+#### Covariance
+
+Covariance measures how two variables change together. It indicates the direction of the linear relationship between variables.
+
+#### Formula
+- Population Covariance: σxy = Σ((x - μx)(y - μy))/N
+- Sample Covariance: sxy = Σ((x - x̄)(y - ȳ))/(n-1)
+
+#### Interpretation
+- Positive covariance: Variables tend to move in same direction
+- Negative covariance: Variables tend to move in opposite directions
+- Zero covariance: No linear relationship
+
+#### Example
+
+```python
+import numpy as np
+
+# Height (cm) and Weight (kg) data
+height = np.array([170, 175, 160, 180, 165, 172])
+weight = np.array([65, 70, 55, 80, 60, 68])
+
+# Calculate means
+height_mean = np.mean(height)
+weight_mean = np.mean(weight)
+
+# Calculate covariance manually
+n = len(height)
+covariance = sum((height - height_mean) * (weight - weight_mean)) / (n-1)
+
+# Using NumPy
+cov_matrix = np.cov(height, weight)
+covariance_np = cov_matrix[0,1]
+
+print(f"Manual Covariance: {covariance:.2f}")
+print(f"NumPy Covariance: {covariance_np:.2f}")
+
+# Output:
+# Manual Covariance: 58.17
+# NumPy Covariance: 58.17
+```
+
+#### Key Points:
+1. Covariance range: -∞ to +∞
+2. Scale-dependent (affected by units)
+3. Used in:
+   - Principal Component Analysis
+   - Portfolio optimization
+   - Feature selection in ML
+
+#### Limitations:
+1. Not standardized (hard to compare)
+2. Units are product of both variables
+
+For standardized measurement, use correlation instead.
+
+#### Correlation
+
+Correlation measures the strength and direction of the linear relationship between two variables. Unlike covariance, it's standardized between -1 and +1.
+
+#### Pearson Correlation Coefficient
+The most common correlation measure is Pearson's r:
+
+#### Formula
+- Population Correlation: ρxy = Σ((x - μx)(y - μy))/(σxσy)
+- Sample Correlation: r = Σ((x - x̄)(y - ȳ))/√[Σ(x - x̄)²Σ(y - ȳ)²] = Cov(x,y)/(σxσy)
+
+#### Interpretation
+- r = 1: Perfect positive correlation
+- r = -1: Perfect negative correlation  
+- r = 0: No linear correlation
+- |r| > 0.7: Strong correlation
+- 0.3 < |r| < 0.7: Moderate correlation
+- |r| < 0.3: Weak correlation
+
+#### Example
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Sample data
+x = np.array([1, 2, 3, 4, 5])
+y1 = np.array([2, 4, 6, 8, 10])  # Perfect positive
+y2 = np.array([10, 8, 6, 4, 2])  # Perfect negative
+y3 = np.array([2, 5, 4, 5, 3])   # Weak correlation
+
+def plot_correlation(x, y, title):
+    plt.scatter(x, y)
+    plt.title(f'{title} (r = {np.corrcoef(x,y)[0,1]:.2f})')
+    plt.xlabel('X')
+    plt.ylabel('Y')
+
+# Create subplots
+plt.figure(figsize=(15, 5))
+
+plt.subplot(131)
+plot_correlation(x, y1, "Perfect Positive")
+
+plt.subplot(132)
+plot_correlation(x, y2, "Perfect Negative")
+
+plt.subplot(133)
+plot_correlation(x, y3, "Weak")
+
+plt.tight_layout()
+plt.show()
+
+# Calculate correlations
+print(f"Positive correlation: {np.corrcoef(x,y1)[0,1]:.2f}")
+print(f"Negative correlation: {np.corrcoef(x,y2)[0,1]:.2f}")
+print(f"Weak correlation: {np.corrcoef(x,y3)[0,1]:.2f}")
+```
+
+#### Key Properties
+1. Scale-independent (standardized)
+2. Always between -1 and +1
+3. No units
+4. Symmetric: corr(x,y) = corr(y,x)
+
+#### Common Uses
+- Feature selection in ML
+- Financial portfolio analysis
+- Scientific research
+- Quality control
+
+#### Limitations
+1. Only measures linear relationships
+2. Sensitive to outliers
+3. Correlation ≠ causation
+4. Requires numeric data
+
+#### Real-World Example
+```python
+import pandas as pd
+
+# Student data
+data = {
+    'study_hours': [2, 3, 3, 4, 4, 5, 5, 6],
+    'test_score': [65, 70, 75, 80, 85, 85, 90, 95]
+}
+
+df = pd.DataFrame(data)
+
+# Calculate correlation
+correlation = df['study_hours'].corr(df['test_score'])
+
+print(f"Correlation between study hours and test scores: {correlation:.2f}")
+# Output: Correlation between study hours and test scores: 0.97
+```
+
+#### Important Notes
+1. High correlation doesn't imply causation
+2. Always visualize data - don't rely solely on correlation coefficient
+3. Consider non-linear relationships
+4. Check for outliers that might affect correlation
