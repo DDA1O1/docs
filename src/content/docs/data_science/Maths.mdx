@@ -157,16 +157,7 @@ This example shows how n-1 provides a better estimate of the true population var
 
 > **Key Point**: Use n-1 for sample variance to get an unbiased estimate of population variance
 
-```text
-# Example with weight data
-mean = 70kg
-std_dev = 5kg
-
-# Coverage ranges
-1σ range = 70 ± 5kg   = 65-75kg   (covers 68%)
-2σ range = 70 ± 10kg  = 60-80kg   (covers 95%)  # Most commonly used
-3σ range = 70 ± 15kg  = 55-85kg   (covers 99.7%)
-
+```python
 # Sample of 100 people's weights
 mean = 70kg
 variance = 25kg²  # Standard deviation ≈ 5kg
@@ -175,5 +166,105 @@ variance = 25kg²  # Standard deviation ≈ 5kg
 size_range = mean ± (2 × √variance)
 # = 70 ± 10kg
 # = 60kg to 80kg
+
+# Example with weight data
+mean = 70kg
+std_dev = 5kg
+
+# Coverage ranges
+1σ range = 70 ± 5kg   = 65-75kg   (covers 68%)
+2σ range = 70 ± 10kg  = 60-80kg   (covers 95%)  # Most commonly used
+3σ range = 70 ± 15kg  = 55-85kg   (covers 99.7%)
 ```
 
+### Variables
+
+Variables are characteristics that can be measured or categorized. They come in different types:
+
+#### 1. Qualitative (Categorical) Variables
+- **Nominal**
+  - Categories with no order
+  - Example: Colors (red, blue), Gender (male, female)
+  - Analysis: Mode, frequency
+
+- **Ordinal**
+  - Categories with order
+  - Example: Education (high school, bachelor's, master's)
+  - Analysis: Median, percentiles
+
+#### 2. Quantitative (Numerical) Variables
+- **Discrete**
+  - Countable values
+  - Example: Number of children, Test score
+  - Analysis: Mean, standard deviation
+
+- **Continuous**
+  - Infinite possible values
+  - Example: Height, Weight, Time
+  - Analysis: Mean, standard deviation, correlation
+
+#### Variable Relationships
+- **Independent Variable (X)**
+  - Manipulated/controlled variable
+  - Example: Study hours
+
+- **Dependent Variable (Y)**
+  - Outcome variable
+  - Example: Test score
+
+> **Note**: Variable type determines which statistical methods to use
+
+
+### Random Variables
+
+A random variable is a function that assigns numerical values to outcomes of a random experiment.
+
+#### Types of Random Variables
+
+1. **Discrete Random Variables**
+   - Takes countable/finite values
+   - Examples:
+     - Number of heads in coin flips
+     - Count of defective items
+   - Properties:
+     - Probability Mass Function (PMF)
+     - Cumulative Distribution Function (CDF)
+
+2. **Continuous Random Variables**
+   - Takes infinite possible values
+   - Examples:
+     - Height of a person
+     - Time to complete a task
+   - Properties:
+     - Probability Density Function (PDF)
+     - Cumulative Distribution Function (CDF)
+
+### Histogram
+
+A histogram is a graphical representation of the distribution of data. It shows the frequency of each data point in a dataset.
+
+#### Key Points
+
+- **Definition**: Bar chart showing frequency of data points
+- **Purpose**: Visualize data distribution
+- **Components**:
+  - X-axis: Data range (bins)
+  - Y-axis: Frequency (count or percentage)
+  - Bars: Represents frequency of data in each bin
+
+#### Examples
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+data = [1, 2, 2, 3, 3, 3, 4, 4, 5]
+plt.figure(figsize=(8, 4))
+plt.hist(data, bins=5, edgecolor='black')
+plt.title('Simple Histogram')
+plt.xlabel('Values')
+plt.ylabel('Frequency')
+plt.show()
+```
+
+![Histogram Output](/images/histogram.png)
