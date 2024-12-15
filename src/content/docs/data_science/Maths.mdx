@@ -473,10 +473,11 @@ plt.tight_layout()
 plt.show()
 
 # Calculate correlations
-print(f"Positive correlation: {np.corrcoef(x,y1)[0,1]:.2f}")
-print(f"Negative correlation: {np.corrcoef(x,y2)[0,1]:.2f}")
-print(f"Weak correlation: {np.corrcoef(x,y3)[0,1]:.2f}")
+print(f"Positive correlation: {np.corrcoef(x,y1)[0,1]:.2f}") # 1.00
+print(f"Negative correlation: {np.corrcoef(x,y2)[0,1]:.2f}") # -1.00
+print(f"Weak correlation: {np.corrcoef(x,y3)[0,1]:.2f}") # 0.24
 ```
+![Correlation](/images/Pearson_Correlation.png)
 
 #### Key Properties
 1. Scale-independent (standardized)
