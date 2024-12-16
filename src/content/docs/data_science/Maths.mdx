@@ -746,3 +746,194 @@ print(f"P(X ≤ 4) Fair Die: {fair_cdf[3]:.3f}") # 0.667
 print(f"P(X ≤ 4) Loaded Die: {loaded_cdf[3]:.3f}") # 0.400
 ```
 ![Discrete CDF](/images/Discrete_CDF.png)
+
+#### 2. PDF (Probability Density Function)
+
+A PDF describes the probability distribution of a continuous random variable.
+
+### Why PDF for Continuous Random Variables?
+
+1. **Impossible to List All Values**
+   - Continuous variables have infinite possible values
+   - Can't assign individual probabilities like PMF
+
+2. **Zero Individual Probability**
+   - P(X = x) = 0 for any exact value
+   - Example: P(height = exactly 170.000000...cm) = 0
+
+3. **Range Probabilities**
+   - PDF helps calculate probability over intervals
+   - P(a ≤ X ≤ b) = ∫[a to b] f(x)dx
+   - Example: P(170 ≤ height ≤ 175)
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+# Height Distribution in Adult Population
+mean_height = 170  # cm
+std_dev = 10       # cm
+
+# Create height range
+heights = np.linspace(140, 200, 100)
+
+# Calculate PDF using normal distribution
+pdf = norm.pdf(heights, mean_height, std_dev)
+
+# Plot
+plt.figure(figsize=(10, 6))
+plt.plot(heights, pdf)
+plt.title('Height Distribution in Adult Population')
+plt.xlabel('Height (cm)')
+plt.ylabel('Probability Density')
+
+# Calculate probabilities
+# Probability of height between 160-180cm
+prob_160_180 = norm.cdf(180, mean_height, std_dev) - norm.cdf(160, mean_height, std_dev)
+print(f"Probability of height between 160-180cm: {prob_160_180:.2%}")  # ≈ 68%
+
+# Probability of height above 190cm
+prob_above_190 = 1 - norm.cdf(190, mean_height, std_dev)
+print(f"Probability of height above 190cm: {prob_above_190:.2%}")      # ≈ 2.3%
+```
+![Continuous PDF](/images/Continuous_PDF.png)
+
+### Density
+
+Density in statistics refers to how tightly packed data points or probability is in a given interval or region.
+
+```python
+import numpy as np
+from scipy.stats import norm
+import matplotlib.pyplot as plt
+
+mean = 170
+std = 10
+
+# Single point density doesn't tell much
+point_density = norm.pdf(170, mean, std)
+print(f"Density at 170cm: {point_density:.4f}")  # 0.0399
+# This number 0.0399 alone is meaningless without context
+
+# What makes sense is comparing densities
+heights = [150, 160, 170, 180, 190]
+densities = [norm.pdf(h, mean, std) for h in heights]
+
+plt.figure(figsize=(10, 6))
+x = np.linspace(140, 200, 1000)
+y = norm.pdf(x, mean, std)
+
+plt.plot(x, y)
+
+# Plot points for comparison
+for h, d in zip(heights, densities):
+    plt.plot(h, d, 'o', label=f'Height={h}cm\nDensity={d:.4f}')
+
+plt.title('Height Distribution - Comparing Densities')
+plt.xlabel('Height (cm)')
+plt.ylabel('Density')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Now we can see:
+# - 170cm has highest density (most common)
+# - 150cm and 190cm have low density (less common)
+# - Comparison gives meaning to the numbers
+```
+![Density](/images/Density.png)
+
+#### CDF (Cumulative Distribution Function) For Continuous Variables
+
+The Cumulative Distribution Function (CDF) for a continuous random variable X, denoted as F(x), represents the probability that X takes on a value less than or equal to x.
+
+##### Mathematical Definition
+F(x) = P(X ≤ x) = ∫[from -∞ to x] f(t)dt
+
+where f(t) is the probability density function (PDF)
+
+##### Key Properties
+1. **Bounds**
+   - 0 ≤ F(x) ≤ 1 for all x
+   - lim[x→-∞] F(x) = 0
+   - lim[x→∞] F(x) = 1
+
+2. **Continuity**
+   - Right-continuous
+   - Monotonically increasing (never decreases)
+
+3. **Probability Calculations**
+   - P(a < X ≤ b) = F(b) - F(a)
+   - P(X > a) = 1 - F(a)
+
+4. **Relationship to PDF**
+   - F'(x) = f(x) (derivative of CDF is PDF)
+   - F(x) is the integral of f(x)
+
+##### Simple Example: Height Distribution in a Class
+
+Consider heights of students in a class of 100:
+
+**Scenario:**
+- Heights range from 150cm to 190cm
+- CDF tells us probability of height being less than or equal to a value
+
+**Simple Interpretations:**
+- F(160) = 0.2 means 20% of students are 160cm or shorter
+- F(170) = 0.5 means 50% of students are 170cm or shorter
+- F(180) = 0.9 means 90% of students are 180cm or shorter
+
+**Practical Uses:**
+- Finding median height: Where F(x) = 0.5
+- Ordering uniforms: What size covers 80% of students
+- Identifying unusually tall/short: Heights where F(x) < 0.1 or F(x) > 0.9
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+# Parameters
+mean_height = 170  # mean height in cm
+std_dev = 10      # standard deviation in cm
+n_students = 100
+
+# Generate student heights
+np.random.seed(42)  # for reproducibility
+heights = np.random.normal(mean_height, std_dev, n_students)
+
+# Calculate empirical CDF
+heights_sorted = np.sort(heights)
+cumulative_prob = np.arange(1, len(heights) + 1) / len(heights)
+
+# Plot
+plt.figure(figsize=(10, 6))
+
+# Empirical CDF
+plt.plot(heights_sorted, cumulative_prob, 'b-', label='Empirical CDF')
+
+# Add reference lines
+plt.axhline(y=0.2, color='r', linestyle='--', alpha=0.5)
+plt.axhline(y=0.5, color='r', linestyle='--', alpha=0.5)
+plt.axhline(y=0.9, color='r', linestyle='--', alpha=0.5)
+
+# Labels and title
+plt.title('Height Distribution CDF in Class')
+plt.xlabel('Height (cm)')
+plt.ylabel('Cumulative Probability')
+plt.grid(True)
+
+# Find specific values
+height_20 = np.percentile(heights, 20)
+height_50 = np.percentile(heights, 50)
+height_90 = np.percentile(heights, 90)
+
+print(f"20th percentile (F(x) = 0.2): {height_20:.1f}cm")
+print(f"50th percentile (F(x) = 0.5): {height_50:.1f}cm")
+print(f"90th percentile (F(x) = 0.9): {height_90:.1f}cm")
+
+plt.show()
+```
+![Continuous CDF](/images/Continuous_CDF.png)
+
