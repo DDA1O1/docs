@@ -63,7 +63,9 @@ export default defineConfig({
           },
           {
               label: 'Thoughts',
-              autogenerate: { directory: 'Thoughts' }
+              items: [
+                { label: 'Money', slug: 'thoughts/money' },
+              ]
           },
           {
               label: 'Fun',

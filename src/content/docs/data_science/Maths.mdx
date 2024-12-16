@@ -521,3 +521,228 @@ print(f"Correlation between study hours and test scores: {correlation:.2f}")
 2. Always visualize data - don't rely solely on correlation coefficient
 3. Consider non-linear relationships
 4. Check for outliers that might affect correlation
+
+### Spearman Correlation
+
+Spearman correlation measures monotonic relationships between variables (whether they move in the same direction, regardless of the rate of change).
+
+#### Formula
+
+1. First convert values to ranks
+   - rank(x): Rank values of first variable 
+   - rank(y): Rank values of second variable
+
+2. Calculate differences
+   d = rank(x) - rank(y)
+
+3. Square the differences
+   d² = (rank(x) - rank(y))²
+
+4. Sum all squared differences
+   Σd² = sum of all d²
+
+5. Final formula:
+   ρ = 1 - (6 * Σd²)/(n(n² - 1))
+
+Example with numbers:
+x = [1,2,3]
+y = [2,1,3]
+
+ranks_x = [1,2,3]
+ranks_y = [2,1,3]
+
+d = [1-2, 2-1, 3-3] = [-1,1,0]
+d² = [1,1,0]
+Σd² = 2
+n = 3
+
+ρ = 1 - (6 * 2)/(3(9-1))
+  = 1 - 12/24
+  = 0.5
+
+#### Example
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+# Online Store Example
+# X: Product Price
+# Y: Number of Sales
+price = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
+sales = np.array([100, 90, 80, 65, 45, 30, 20, 15, 12, 10])
+
+# Calculate Correlations
+pearson = stats.pearsonr(price, sales)[0]
+spearman = stats.spearmanr(price, sales)[0]
+
+# Plotting
+plt.figure(figsize=(10, 6))
+plt.scatter(price, sales)
+plt.title('Price vs Sales: Non-linear Relationship')
+plt.xlabel('Price ($)')
+plt.ylabel('Number of Sales')
+
+# Add correlation values
+plt.text(20, 30, f'Pearson r: {pearson:.2f}')
+plt.text(20, 20, f'Spearman r: {spearman:.2f}')
+plt.grid(True)
+plt.show()
+
+print(f"Pearson Correlation: {pearson:.2f}")   # -0.89
+print(f"Spearman Correlation: {spearman:.2f}") # -1.00
+```
+![Spearman Correlation](/images/Spearman_Correlation.png)
+
+## Probability
+
+Probability is a measure of the likelihood of an event occurring. It's a fundamental concept in statistics and data science.
+
+#### Additive Rule
+
+#### Mutually Exclusive Events
+Events that cannot occur at the same time.
+
+Formula:
+P(A or B) = P(A) + P(B)
+
+Example:
+- Rolling a die:
+  - P(getting 1 or 2) = P(1) + P(2) = 1/6 + 1/6 = 1/3
+  - Events are mutually exclusive since you can't roll 1 and 2 simultaneously
+
+#### Non-Mutually Exclusive Events 
+Events that can occur at the same time.
+
+Formula:
+P(A or B) = P(A) + P(B) - P(A and B)
+
+Example:
+- Drawing a card:
+  - P(getting King or Heart) = P(King) + P(Heart) - P(King of Heart)
+  - = 4/52 + 13/52 - 1/52 = 16/52
+  - Events overlap since King of Hearts is possible
+
+### Multiplicative Rule
+
+The multiplicative rule calculates probability of multiple events occurring together.
+
+#### Independent Events
+Events where occurrence of one doesn't affect the other.
+
+Formula:
+P(A and B) = P(A) × P(B)
+
+Example:
+- Flipping a coin twice:
+  - P(2 heads) = P(head1) × P(head2) = 1/2 × 1/2 = 1/4
+
+#### Dependent Events
+Events where occurrence of one affects the other.
+
+Formula:
+P(A and B) = P(A) × P(B|A)
+
+Example:
+- Drawing 2 cards without replacement:
+  - P(2 aces) = P(ace1) × P(ace2|ace1) 
+  - = 4/52 × 3/51 = 1/221
+
+### Relationship between PMF, PDF, and CDF
+
+#### 1. PMF (Probability Mass Function)
+
+A PMF describes the probability distribution of a discrete random variable.
+
+#### Definition
+- Maps each value of discrete random variable to its probability
+- P(X = x) gives probability of X taking value x
+- Sum of all probabilities must equal 1
+
+#### Properties
+- 0 ≤ P(X = x) ≤ 1
+- ∑P(X = x) = 1
+- Only for discrete variables
+
+#### Real-World Example: Dice Roll Game
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Fair die PMF
+outcomes = np.array([1, 2, 3, 4, 5, 6])
+probabilities = np.array([1/6] * 6)
+
+# Loaded die PMF (favors 6)
+loaded_prob = np.array([0.1, 0.1, 0.1, 0.1, 0.1, 0.5])
+
+# Plot
+plt.figure(figsize=(10, 5))
+plt.subplot(1, 2, 1)
+plt.bar(outcomes, probabilities)
+plt.title('Fair Die PMF')
+plt.xlabel('Outcome')
+plt.ylabel('Probability')
+
+plt.subplot(1, 2, 2)
+plt.bar(outcomes, loaded_prob)
+plt.title('Loaded Die PMF')
+plt.xlabel('Outcome')
+plt.show()
+
+# Calculate probability of rolling even numbers
+fair_even = sum(probabilities[1::2])    # 0.5
+loaded_even = sum(loaded_prob[1::2])    # 0.7
+
+print(f"P(Even) Fair Die: {fair_even}") # 0.5
+print(f"P(Even) Loaded Die: {loaded_even}") # 0.7
+```
+![PMF](/images/PMF.png)
+
+PMF helps in making probability-based decisions in discrete scenarios like manufacturing defects, customer counts, or game outcomes.
+
+#### CDF (Cumulative Distribution Function) For Discrete Variables
+
+CDF gives the probability that a random variable X is less than or equal to a value x.
+
+#### Formula
+F(x) = P(X ≤ x) = ∑ P(X = t) for all t ≤ x
+
+#### Example: Die Roll
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define probabilities
+outcomes = np.arange(1, 7)  # [1,2,3,4,5,6]
+fair_prob = np.ones(6) / 6  # [1/6, 1/6, 1/6, 1/6, 1/6, 1/6]
+loaded_prob = np.array([0.1, 0.1, 0.1, 0.1, 0.1, 0.5])
+
+# Calculate CDFs
+fair_cdf = np.cumsum(fair_prob)
+loaded_cdf = np.cumsum(loaded_prob)
+
+# Create plot
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+
+# Plot fair die CDF
+ax1.step(outcomes, fair_cdf, where='post')
+ax1.set(title='Fair Die CDF', xlabel='Outcome', ylabel='Cumulative Probability')
+ax1.grid(True)
+
+# Plot loaded die CDF
+ax2.step(outcomes, loaded_cdf, where='post')
+ax2.set(title='Loaded Die CDF', xlabel='Outcome')
+ax2.grid(True)
+
+plt.tight_layout()
+plt.show()
+
+# Print probabilities for X ≤ 4
+print(f"P(X ≤ 4) Fair Die: {fair_cdf[3]:.3f}") # 0.667
+print(f"P(X ≤ 4) Loaded Die: {loaded_cdf[3]:.3f}") # 0.400
+```
+![Discrete CDF](/images/Discrete_CDF.png)
