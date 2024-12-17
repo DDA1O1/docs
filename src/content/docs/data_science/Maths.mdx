@@ -1436,3 +1436,137 @@ plt.ylabel('Density')
    - Linear combination of normal variables is normal
    - Independent of sample size (unlike t-distribution)
 
+#### Standard Normal Distribution
+
+The Standard Normal Distribution is a special case of the normal distribution where μ = 0 and σ = 1. It's often denoted as N(0,1) and serves as a reference distribution.
+
+##### Properties
+- Mean (μ) = 0
+- Standard Deviation (σ) = 1
+- PDF: f(z) = (1/√(2π)) * e^(-z²/2)
+- Symmetric around zero
+- Total area = 1
+
+##### Z-Table Areas
+- z = ±1: 68% of data
+- z = ±2: 95% of data
+- z = ±3: 99.7% of data
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+def plot_standard_normal():
+    z = np.linspace(-4, 4, 100)
+    pdf = norm.pdf(z, 0, 1)
+    
+    plt.figure(figsize=(10, 6))
+    plt.plot(z, pdf, 'b-', label='PDF')
+    
+    # Shade regions
+    colors = ['red', 'blue', 'green']
+    alphas = [0.1, 0.1, 0.1]
+    for i, (c, a) in enumerate(zip(colors, alphas), 1):
+        mask = (z >= -i) & (z <= i)
+        plt.fill_between(z[mask], pdf[mask], color=c, alpha=a,
+                        label=f'±{i}σ ({norm.cdf(i)-norm.cdf(-i):.1%})')
+    
+    plt.title('Standard Normal Distribution')
+    plt.xlabel('Z-Score')
+    plt.ylabel('Probability Density')
+    plt.grid(True)
+    plt.legend()
+    return plt
+
+# Example usage
+plot = plot_standard_normal()
+plt.show()
+```
+![Standard Normal Distribution](/images/Standard_Normal_Distribution.png)
+
+##### Common Z-Score Values
+```python
+# Key probability points
+z_scores = {
+    0.90: 1.28,  # 90% confidence
+    0.95: 1.96,  # 95% confidence
+    0.99: 2.58   # 99% confidence
+}
+
+# Example: Finding probabilities
+def get_z_probability(z):
+    return norm.cdf(z) - norm.cdf(-z)
+
+print(f"P(-1 < Z < 1): {get_z_probability(1):.4f}")  # 0.6827
+print(f"P(-2 < Z < 2): {get_z_probability(2):.4f}")  # 0.9545
+print(f"P(-3 < Z < 3): {get_z_probability(3):.4f}")  # 0.9973
+```
+
+##### Applications
+
+1. **Standardization**
+   ```python
+   def standardize(x, mu, sigma):
+       return (x - mu) / sigma
+   
+# Example: Test scores
+scores = [75, 82, 90, 68, 95]
+mu = np.mean(scores)
+sigma = np.std(scores)
+z_scores = [standardize(x, mu, sigma) for x in scores]
+```
+
+2. **Hypothesis Testing**
+   ```python
+   def z_test(sample_mean, pop_mean, pop_std, n):
+       z = (sample_mean - pop_mean) / (pop_std / np.sqrt(n))
+       p_value = 2 * (1 - norm.cdf(abs(z)))  # Two-tailed
+       return z, p_value
+   ```
+
+3. **Confidence Intervals**
+   ```python
+   def confidence_interval(mean, std, n, confidence=0.95):
+       z = norm.ppf((1 + confidence) / 2)
+       margin = z * (std / np.sqrt(n))
+       return mean - margin, mean + margin
+   ```
+
+##### Key Uses
+1. Reference for normalizing data
+2. Base for statistical inference
+3. Quality control limits
+4. Risk assessment
+5. Hypothesis testing
+
+##### Transformation
+To convert between normal distributions:
+- From N(μ,σ) to N(0,1): Z = (X - μ) / σ
+- From N(0,1) to N(μ,σ): X = Zσ + μ
+
+```python
+# Example: Converting between distributions
+def transform_distribution(x, from_params, to_params):
+    """
+    Transform value between normal distributions
+    from_params: tuple of (mean, std) of original distribution
+    to_params: tuple of (mean, std) of target distribution
+    """
+    from_mean, from_std = from_params
+    to_mean, to_std = to_params
+    
+    # First standardize
+    z = (x - from_mean) / from_std
+    # Then transform to new distribution
+    return z * to_std + to_mean
+
+# Example usage
+x = 85  # Score from N(75, 10)
+new_x = transform_distribution(x, (75, 10), (100, 15))
+print(f"Score of {x} transforms to {new_x:.1f}")
+// Score of 85 transforms to 115.0
+```
+
+
+
