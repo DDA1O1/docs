@@ -929,11 +929,349 @@ height_20 = np.percentile(heights, 20)
 height_50 = np.percentile(heights, 50)
 height_90 = np.percentile(heights, 90)
 
-print(f"20th percentile (F(x) = 0.2): {height_20:.1f}cm")
-print(f"50th percentile (F(x) = 0.5): {height_50:.1f}cm")
-print(f"90th percentile (F(x) = 0.9): {height_90:.1f}cm")
+print(f"20th percentile (F(x) = 0.2): {height_20:.1f}cm") # 162.6cm
+print(f"50th percentile (F(x) = 0.5): {height_50:.1f}cm") # 168.7cm
+print(f"90th percentile (F(x) = 0.9): {height_90:.1f}cm") # 180.1cm
 
 plt.show()
 ```
 ![Continuous CDF](/images/Continuous_CDF.png)
 
+### Types of Probability Distributions
+
+#### Bernoulli Distribution
+
+The Bernoulli distribution models binary outcomes - experiments with exactly two possible results (success/failure).
+
+##### Properties
+- **Parameter**: p (probability of success)
+- **Possible Values**: x ∈ {0,1}
+  - x = 1 (success): probability = p
+  - x = 0 (failure): probability = 1-p
+- **PMF**: P(X = x) = p^x * (1-p)^(1-x)
+- **Mean**: E(X) = p
+- **Variance**: Var(X) = p(1-p)
+
+##### Common Applications
+- Coin flips (heads/tails)
+- Quality control (defective/non-defective)
+- Email (spam/not spam)
+- Medical tests (positive/negative)
+
+##### Example Implementation
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+class BernoulliTrial:
+    def __init__(self, p):
+        self.p = p
+    
+    def pmf(self, x):
+        return self.p if x == 1 else (1-self.p)
+    
+    def simulate(self, n_trials):
+        return np.random.binomial(n=1, p=self.p, size=n_trials)
+
+# Example: Biased coin (p=0.7)
+b = BernoulliTrial(p=0.7)
+trials = b.simulate(1000)
+
+# Results
+success_rate = np.mean(trials)
+print(f"Theoretical probability: 0.7")
+print(f"Observed probability: {success_rate:.3f}")
+
+# Visualize
+plt.figure(figsize=(8, 4))
+plt.bar(['Failure (0)', 'Success (1)'], 
+        [1-success_rate, success_rate])
+plt.title('Bernoulli Distribution (p=0.7)')
+plt.ylabel('Probability')
+plt.ylim(0, 1)
+```
+![Bernoulli Distribution](/images/Bernoulli_Distribution.png)
+
+##### Real-World Example: Email Spam Detection
+
+```python
+# Simple spam detector
+class SpamDetector:
+    def __init__(self, spam_probability=0.3):
+        self.b = BernoulliTrial(spam_probability)
+    
+    def classify_email(self):
+        return "Spam" if self.b.simulate(1)[0] else "Not Spam"
+
+# Simulate email classification
+detector = SpamDetector()
+n_emails = 100
+classifications = [detector.classify_email() for _ in range(n_emails)]
+
+spam_ratio = classifications.count("Spam") / n_emails
+print(f"Classified {spam_ratio:.1%} emails as spam")
+// Classified 26.0% emails as spam
+```
+
+##### Key Points
+1. **Independence**: Each trial is independent
+2. **Memory-less**: Previous outcomes don't affect next trial
+3. **Fixed probability**: p remains constant across trials
+
+##### Relationship to Other Distributions
+- Foundation for Binomial distribution (n Bernoulli trials)
+- Special case of Binomial where n=1
+- Building block for more complex probability models
+
+#### Binomial Distribution
+
+The Binomial distribution models the number of successes in n independent Bernoulli trials.
+
+##### Properties
+- **Parameters**: 
+  - n (number of trials)
+  - p (probability of success)
+- **PMF**: P(X = k) = C(n,k) * p^k * (1-p)^(n-k)
+- **Mean**: E(X) = np
+- **Variance**: Var(X) = np(1-p)
+
+##### Example Implementation
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import binom
+
+class BinomialDistribution:
+    def __init__(self, n, p):
+        self.n = n
+        self.p = p
+    
+    def pmf(self, k):
+        return binom.pmf(k, self.n, self.p)
+    
+    def simulate(self, n_trials):
+        return np.random.binomial(self.n, self.p, n_trials)
+
+# Example: Rolling a fair die 10 times, counting 6s
+n, p = 10, 1/6  # 10 rolls, P(6) = 1/6
+b = BinomialDistribution(n, p)
+
+# Calculate PMF for all possible values
+k = np.arange(0, n+1)
+probabilities = [b.pmf(ki) for ki in k]
+
+# Plot
+plt.figure(figsize=(10, 5))
+plt.bar(k, probabilities)
+plt.title(f'Binomial Distribution (n={n}, p={p:.2f})')
+plt.xlabel('Number of Successes (k)')
+plt.ylabel('Probability')
+plt.grid(True, alpha=0.3)
+
+# Expected value and variance
+mean = n * p
+var = n * p * (1-p)
+print(f"Expected number of 6s: {mean:.2f}") # 1.67
+print(f"Variance: {var:.2f}") # 1.39
+```
+![Binomial Distribution](/images/Binomial_Distribution.png)
+
+##### Real-World Example: Quality Control
+
+```python
+# Manufacturing defect inspection
+class QualityControl:
+    def __init__(self, batch_size=20, defect_rate=0.05):
+        self.binom = BinomialDistribution(batch_size, defect_rate)
+    
+    def inspect_batch(self):
+        return self.binom.simulate(1)[0]
+    
+    def is_batch_acceptable(self, max_defects=2):
+        defects = self.inspect_batch()
+        return {
+            'defects': defects,
+            'acceptable': defects <= max_defects
+        }
+
+# Simulate batch inspections
+qc = QualityControl()
+n_batches = 1000
+inspections = [qc.is_batch_acceptable() for _ in range(n_batches)]
+
+acceptance_rate = sum(i['acceptable'] for i in inspections) / n_batches
+print(f"Batch acceptance rate: {acceptance_rate:.1%}")
+// Batch acceptance rate: 92.7%
+```
+
+##### Common Applications
+1. Quality control in manufacturing
+2. A/B testing success counts
+3. Survey response modeling
+4. Genetic inheritance patterns
+
+##### Key Points
+1. Sum of independent Bernoulli trials
+2. Requires fixed probability p
+3. Trials must be independent
+4. Only whole numbers (discrete)
+
+#### Poisson Distribution
+
+The Poisson distribution models the number of events occurring in a fixed interval when these events happen at a constant average rate and independently of each other.
+
+##### Properties
+- **Parameter**: λ (lambda) - average number of events per interval
+- **PMF**: P(X = k) = (λ^k * e^-λ) / k!
+- **Mean**: E(X) = λ
+- **Variance**: Var(X) = λ
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import poisson
+
+class PoissonDistribution:
+    def __init__(self, lambda_param):
+        self.lambda_param = lambda_param
+    
+    def pmf(self, k):
+        return poisson.pmf(k, self.lambda_param)
+    
+    def simulate(self, n_samples):
+        return np.random.poisson(self.lambda_param, n_samples)
+
+# Example: Website visits per hour (average 5 visits)
+lambda_param = 5
+p = PoissonDistribution(lambda_param)
+
+# Calculate PMF for values 0 to 12
+k = np.arange(0, 13)
+probabilities = [p.pmf(ki) for ki in k]
+
+# Visualization
+plt.figure(figsize=(10, 6))
+plt.bar(k, probabilities)
+plt.title(f'Poisson Distribution (λ={lambda_param})')
+plt.xlabel('Number of Events (k)')
+plt.ylabel('Probability')
+plt.grid(True, alpha=0.3)
+```
+![Poisson Distribution](/images/Poisson_Distribution.png)
+
+##### Common Applications
+1. **Customer Service**
+   - Number of customers arriving per hour
+   - Support tickets received per day
+   - Phone calls to call center
+
+2. **Web Traffic**
+   - Page views per minute
+   - Server requests per second
+   - Error occurrences per day
+
+3. **Quality Control**
+   - Defects per unit area
+   - Flaws per length of material
+   - Errors per page
+
+4. **Natural Phenomena**
+   - Radioactive decay events
+   - Mutations in DNA sequence
+   - Natural disasters per year
+
+##### Real-World Example: Server Monitoring
+
+```python
+class ServerMonitor:
+    def __init__(self, avg_requests_per_minute=30):
+        self.poisson = PoissonDistribution(avg_requests_per_minute)
+    
+    def simulate_minute(self):
+        return self.poisson.simulate(1)[0]
+    
+    def check_load(self, threshold=50):
+        requests = self.simulate_minute()
+        return {
+            'requests': requests,
+            'overloaded': requests > threshold,
+            'utilization': requests / threshold
+        }
+
+# Monitor server for an hour
+monitor = ServerMonitor()
+hour_data = [monitor.check_load() for _ in range(60)]
+
+# Analysis
+overloaded_minutes = sum(minute['overloaded'] for minute in hour_data)
+avg_utilization = np.mean([minute['utilization'] for minute in hour_data])
+
+print(f"Minutes overloaded: {overloaded_minutes}") // Minutes overloaded: 0
+print(f"Average utilization: {avg_utilization:.1%}") // Average utilization: 56.5%
+```
+
+##### Key Characteristics
+
+1. **Independence**
+   - Events occur independently
+   - Past events don't influence future events
+
+2. **Rate Consistency**
+   - Average rate (λ) remains constant
+   - No systematic variation in event frequency
+
+3. **Rare Events**
+   - Individual events are rare relative to opportunities
+   - Many opportunities for events to occur
+
+4. **No Upper Limit**
+   - Can theoretically take any non-negative integer value
+   - Practical limits depend on λ
+
+##### Relationship to Other Distributions
+
+1. **Binomial Distribution**
+   - Poisson is limit of binomial as n→∞, p→0, np=λ
+   - Used when events are rare but opportunities numerous
+
+2. **Exponential Distribution**
+   - Time between Poisson events follows exponential distribution
+   - If events are Poisson(λ), waiting times are Exp(1/λ)
+
+##### Assumptions and Limitations
+
+1. **Rate Stability**
+   - Assumes constant average rate
+   - May not fit if rate varies significantly
+
+2. **Independence**
+   - Events must be independent
+   - Not suitable for contagious or clustered events
+
+3. **No Simultaneous Events**
+   - Events occur one at a time
+   - May need modifications for concurrent events
+
+4. **Memory-less Property**
+   - Future events independent of past
+   - May not suit events with temporal dependencies
+
+```python
+# Example: Testing Poisson assumptions
+def test_rate_stability(data, window_size=10):
+    """Test if event rate is stable over time"""
+    windows = np.array_split(data, len(data)//window_size)
+    means = [np.mean(w) for w in windows]
+    return np.std(means) / np.mean(means)  # CV should be small
+
+# Generate sample data
+p = PoissonDistribution(lambda_param=5)
+data = p.simulate(1000)
+
+stability_metric = test_rate_stability(data)
+print(f"Rate stability metric: {stability_metric:.3f}")
+# Lower values indicate more stable rate 
+// Rate stability metric: 0.138
+```
