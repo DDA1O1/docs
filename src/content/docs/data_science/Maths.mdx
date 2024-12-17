@@ -1284,7 +1284,7 @@ The Normal (or Gaussian) distribution is a continuous probability distribution t
 - **Parameters**: 
   - μ (mean): Center of distribution
   - σ (standard deviation): Spread of distribution
-- **PDF**: f(x) = (1/(σ√(2π))) * e^(-(x-μ)²/(2σ²))
+- **PDF**: f(x) = (1/(σ√(2��))) * e^(-(x-μ)²/(2σ²))
 - **Mean = Median = Mode**: All equal to μ
 - **68-95-99.7 Rule**:
   - 68% of data within μ ± 1σ
@@ -1568,5 +1568,222 @@ print(f"Score of {x} transforms to {new_x:.1f}")
 // Score of 85 transforms to 115.0
 ```
 
+#### Uniform Distribution
 
+The Uniform Distribution is a probability distribution where all outcomes in a given interval are equally likely to occur. It comes in two forms: discrete and continuous.
 
+##### Types of Uniform Distributions
+
+1. **Continuous Uniform Distribution**
+   - Defined over continuous interval [a,b]
+   - Also called "rectangular distribution"
+   - Every point in interval has equal probability density
+
+2. **Discrete Uniform Distribution**
+   - Defined over finite set of equally spaced values
+   - Each value has equal probability
+   - Example: Fair die (values 1-6)
+
+##### Mathematical Properties
+
+1. **Continuous Uniform**
+   - **PDF**: f(x) = 1/(b-a) for a ≤ x ≤ b, 0 otherwise
+   - **CDF**: F(x) = (x-a)/(b-a) for a ≤ x ≤ b
+   - **Mean**: μ = (a + b)/2
+   - **Variance**: σ² = (b - a)²/12
+   - **Median**: (a + b)/2
+   - **Mode**: Any value in [a,b]
+   - **Skewness**: 0 (symmetric)
+   - **Kurtosis**: 9/5 (platykurtic)
+
+2. **Discrete Uniform**
+   - **PMF**: P(X = x) = 1/n for each x in {x₁, ..., xₙ}
+   - **Mean**: (x₁ + xₙ)/2
+   - **Variance**: (n² - 1)/12 where n is number of values
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import uniform
+
+class UniformDistribution:
+    def __init__(self, a=0, b=1):
+        self.a = a
+        self.b = b
+        self.mean = (a + b) / 2
+        self.variance = (b - a)**2 / 12
+        self.std = np.sqrt(self.variance)
+    
+    def pdf(self, x):
+        """Probability Density Function"""
+        return np.where((x >= self.a) & (x <= self.b), 
+                       1/(self.b - self.a), 0)
+    
+    def cdf(self, x):
+        """Cumulative Distribution Function"""
+        return np.clip((x - self.a)/(self.b - self.a), 0, 1)
+    
+    def simulate(self, n_samples):
+        """Generate random samples"""
+        return np.random.uniform(self.a, self.b, n_samples)
+
+# Visualization of PDF and CDF
+def plot_uniform_distribution(a=0, b=1):
+    dist = UniformDistribution(a, b)
+    x = np.linspace(a-0.5, b+0.5, 1000)
+    
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
+    
+    # PDF
+    ax1.plot(x, dist.pdf(x))
+    ax1.fill_between(x, dist.pdf(x), alpha=0.3)
+    ax1.set_title('Probability Density Function')
+    ax1.grid(True)
+    
+    # CDF
+    ax2.plot(x, dist.cdf(x))
+    ax2.set_title('Cumulative Distribution Function')
+    ax2.grid(True)
+    
+    plt.tight_layout()
+    plt.show()
+
+plot_uniform_distribution(0, 1)
+```
+![Uniform Distribution](/images/Uniform_Distribution.png)
+
+##### Applications and Examples
+
+1. **Random Number Generation**
+```python
+def random_number_generator(a, b, n=1):
+    """Generate n random numbers between a and b"""
+    uniform = UniformDistribution(a, b)
+    return uniform.simulate(n)
+
+# Generate 5 random numbers between 0 and 10
+numbers = random_number_generator(0, 10, 5)
+print(f"Random numbers: {numbers}")
+```
+
+2. **Simulation of Wait Times**
+```python
+class ServiceSimulator:
+    def __init__(self, min_time=5, max_time=15):
+        self.uniform = UniformDistribution(min_time, max_time)
+    
+    def simulate_service_times(self, n_customers):
+        times = self.uniform.simulate(n_customers)
+        return {
+            'times': times,
+            'average_wait': np.mean(times),
+            'total_time': np.sum(times)
+        }
+
+# Simulate service times for 10 customers
+simulator = ServiceSimulator()
+results = simulator.simulate_service_times(10)
+print(f"Average wait time: {results['average_wait']:.2f} minutes")
+// Average wait time: 10.21 minutes
+```
+
+3. **Quality Control Bounds**
+```python
+class QualityControl:
+    def __init__(self, target, tolerance):
+        self.lower = target - tolerance
+        self.upper = target + tolerance
+        self.uniform = UniformDistribution(self.lower, self.upper)
+    
+    def check_production(self, n_items):
+        measurements = self.uniform.simulate(n_items)
+        in_spec = np.logical_and(
+            measurements >= self.lower,
+            measurements <= self.upper
+        )
+        return {
+            'measurements': measurements,
+            'pass_rate': np.mean(in_spec),
+            'failures': np.sum(~in_spec)
+        }
+
+# Check 100 items with target 10 and tolerance ±0.5
+qc = QualityControl(target=10, tolerance=0.5)
+inspection = qc.check_production(100)
+print(f"Pass rate: {inspection['pass_rate']:.1%}")
+// Pass rate: 100.0%
+```
+
+##### Statistical Properties and Relationships
+
+1. **Sum of Uniform Variables**
+   - Sum tends toward normal distribution (CLT)
+   - Special case: Irwin-Hall distribution
+
+2. **Order Statistics**
+   - Minimum: a + (b-a)U₁/₍ₙ₊₁₎
+   - Maximum: a + (b-a)Uₙ/₍ₙ₊₁₎
+   - Where U follows Beta distribution
+
+```python
+def demonstrate_sum_convergence(n_vars=12, n_samples=1000):
+    """Demonstrate convergence to normal as we sum uniforms"""
+    sums = np.sum([np.random.uniform(0, 1, n_samples) 
+                   for _ in range(n_vars)], axis=0)
+    
+    plt.figure(figsize=(8, 4))
+    plt.hist(sums, bins=30, density=True)
+    plt.title(f'Sum of {n_vars} Uniform Variables')
+    plt.xlabel('Sum')
+    plt.ylabel('Density')
+    return plt
+
+demonstrate_sum_convergence()
+```
+![Sum of Uniform Variables](/images/Sum_of_Uniform_Variables.png)
+
+##### Hypothesis Testing with Uniform Distribution
+
+The uniform distribution is often used in:
+1. Testing random number generators
+2. Goodness-of-fit tests
+3. P-value calculations
+
+```python
+def test_uniformity(data, alpha=0.05):
+    """
+    Kolmogorov-Smirnov test for uniformity
+    """
+    from scipy import stats
+    
+    ks_stat, p_value = stats.kstest(data, 'uniform')
+    return {
+        'statistic': ks_stat,
+        'p_value': p_value,
+        'uniform': p_value > alpha
+    }
+
+# Test random numbers for uniformity
+data = np.random.uniform(0, 1, 1000)
+results = test_uniformity(data)
+print(f"Uniformity test p-value: {results['p_value']:.3f}")
+// Uniformity test p-value: 0.999
+```
+
+##### Key Points and Best Practices
+
+1. **When to Use**
+   - Random sampling
+   - Simple probability models
+   - Null hypothesis testing
+   - Initial approximations
+
+2. **Limitations**
+   - Assumes equal probability
+   - May oversimplify real phenomena
+   - Sensitive to interval bounds
+
+3. **Common Mistakes**
+   - Assuming uniformity without testing
+   - Ignoring boundary effects
+   - Misinterpreting discrete vs continuous
