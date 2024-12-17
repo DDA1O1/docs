@@ -1275,3 +1275,164 @@ print(f"Rate stability metric: {stability_metric:.3f}")
 # Lower values indicate more stable rate 
 // Rate stability metric: 0.138
 ```
+
+#### Normal Distribution/Gaussian Distribution
+
+The Normal (or Gaussian) distribution is a continuous probability distribution that is symmetric around its mean, showing a characteristic "bell-shaped" curve.
+
+##### Properties
+- **Parameters**: 
+  - μ (mean): Center of distribution
+  - σ (standard deviation): Spread of distribution
+- **PDF**: f(x) = (1/(σ√(2π))) * e^(-(x-μ)²/(2σ²))
+- **Mean = Median = Mode**: All equal to μ
+- **68-95-99.7 Rule**:
+  - 68% of data within μ ± 1σ
+  - 95% of data within μ ± 2σ
+  - 99.7% of data within μ ± 3σ
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+class NormalDistribution:
+    def __init__(self, mu=0, sigma=1):
+        self.mu = mu
+        self.sigma = sigma
+    
+    def pdf(self, x):
+        return norm.pdf(x, self.mu, self.sigma)
+    
+    def simulate(self, n_samples):
+        return np.random.normal(self.mu, self.sigma, n_samples)
+
+# Example: Height Distribution
+mu, sigma = 170, 10  # mean=170cm, std=10cm
+normal = NormalDistribution(mu, sigma)
+
+# Generate x values and corresponding probabilities
+x = np.linspace(mu - 4*sigma, mu + 4*sigma, 100)
+y = normal.pdf(x)
+
+# Plot
+plt.figure(figsize=(10, 6))
+plt.plot(x, y, 'b-', label='PDF')
+
+# Add standard deviation ranges
+for i, pct in [(1, 0.68), (2, 0.95), (3, 0.997)]:
+    plt.fill_between(x, y, 
+                     where=(x >= mu-i*sigma) & (x <= mu+i*sigma),
+                     alpha=0.2,
+                     label=f'±{i}σ ({pct:.1%})')
+
+plt.title('Normal Distribution of Heights')
+plt.xlabel('Height (cm)')
+plt.ylabel('Probability Density')
+plt.legend()
+plt.grid(True)
+```
+![Normal Distribution](/images/Normal_Distribution.png)
+
+##### Common Applications
+
+1. **Physical Measurements**
+   - Height, weight
+   - Manufacturing dimensions
+   - Measurement errors
+
+2. **Natural Phenomena**
+   - IQ scores
+   - Blood pressure
+   - Test scores
+
+3. **Financial Markets**
+   - Stock returns
+   - Price fluctuations
+   - Risk modeling
+
+##### Real-World Example: Quality Control
+
+```python
+class ProductionLine:
+    def __init__(self, target_length=100, tolerance=0.5):
+        self.normal = NormalDistribution(target_length, tolerance/3)
+        self.tolerance = tolerance
+        
+    def produce_item(self):
+        length = self.normal.simulate(1)[0]
+        return {
+            'length': length,
+            'in_spec': abs(length - self.normal.mu) <= self.tolerance
+        }
+    
+    def analyze_batch(self, size=1000):
+        batch = [self.produce_item() for _ in range(size)]
+        defect_rate = 1 - sum(item['in_spec'] for item in batch) / size
+        return f"Defect rate: {defect_rate:.2%}"
+
+# Simulate production
+line = ProductionLine()
+print(line.analyze_batch())  # Expected ≈ 0.20% defect rate
+```
+
+##### Z-Score (Standard Score)
+
+Z-score measures how many standard deviations away from the mean a data point is:
+- Formula: z = (x - μ) / σ
+- Standardizes any normal distribution to N(0,1)
+- Useful for comparing values from different distributions
+
+```python
+def calculate_z_score(x, mu, sigma):
+    return (x - mu) / sigma
+
+# Example
+height = 185  # cm
+z = calculate_z_score(height, mu=170, sigma=10)
+print(f"Z-score for {height}cm: {z:.2f}")  # 1.50
+print(f"Percentile: {norm.cdf(z):.2%}")    # 93.32%
+```
+
+##### Central Limit Theorem (CLT)
+
+The CLT states that the sampling distribution of the mean approaches a normal distribution as sample size increases, regardless of the underlying distribution:
+
+```python
+def demonstrate_clt(distribution, sample_size, n_samples):
+    means = [np.mean(distribution(sample_size)) 
+             for _ in range(n_samples)]
+    return means
+
+# Example with uniform distribution
+uniform_samples = lambda n: np.random.uniform(0, 1, n)
+sample_means = demonstrate_clt(uniform_samples, 30, 1000)
+
+plt.figure(figsize=(10, 6))
+plt.hist(sample_means, bins=30, density=True)
+plt.title('Sampling Distribution of Mean (n=30)')
+plt.xlabel('Sample Mean')
+plt.ylabel('Density')
+```
+![Central Limit Theorem](/images/Central_Limit_Theorem.png)
+
+##### Key Points
+
+1. **Symmetry**
+   - Perfectly symmetric around mean
+   - Skewness = 0
+   - Kurtosis = 3
+
+2. **Standardization**
+   - Any normal distribution can be standardized
+   - Z-scores allow comparison across distributions
+
+3. **Empirical Rule**
+   - 68-95-99.7 rule for data distribution
+   - Useful for quick probability estimates
+
+4. **Properties**
+   - Sum of normal variables is normal
+   - Linear combination of normal variables is normal
+   - Independent of sample size (unlike t-distribution)
+
