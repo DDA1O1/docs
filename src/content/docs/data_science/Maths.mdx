@@ -855,7 +855,7 @@ where f(t) is the probability density function (PDF)
 
 ##### Key Properties
 1. **Bounds**
-   - 0 ≤ F(x) ≤ 1 for all x
+   - 0 ≤ F(x) ��� 1 for all x
    - lim[x→-∞] F(x) = 0
    - lim[x→∞] F(x) = 1
 
@@ -1930,5 +1930,89 @@ print(f"Typical range: ${stats['typical_range'][0]:,.0f} to ${stats['typical_ran
 
 > **Remember**: Log normal distributions are perfect for things that grow by percentages (like money) or can't be negative (like sizes or times).
 
+#### Power Law Distribution/Pareto Distribution
+
+The Power Law Distribution (also known as Pareto Distribution) describes situations where a small number of items dominate the majority of outcomes. It's often called the "80/20 rule" - where 80% of effects come from 20% of causes.
+
+##### Key Properties
+- Long tail distribution (many small values, few very large ones)
+- No typical scale (looks similar at different scales)
+- Formula: P(x) ∝ x^(-α) where α > 0
+- Common α values: 2-3 for natural phenomena
+
+##### Real-World Examples
+1. Wealth distribution (few people own most wealth)
+2. City populations (few cities have most people)
+3. Website traffic (few pages get most visits)
+4. Social media followers (few accounts have most followers)
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_power_law(alpha=2, n_samples=1000):
+    # Generate power law data
+    x = np.random.pareto(alpha, n_samples) + 1
+    
+    # Plot on log-log scale
+    plt.figure(figsize=(10, 6))
+    plt.hist(x, bins=50, density=True, alpha=0.7)
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.title(f'Power Law Distribution (α={alpha})')
+    plt.xlabel('Value (log scale)')
+    plt.ylabel('Frequency (log scale)')
+    plt.grid(True)
+    return plt
+
+# Example usage
+plot_power_law()
+plt.show()
+```
+![Power Law Distribution](/images/Power_Law_Distribution.png)
+
+##### Simple Example: Website Traffic
+```python
+def simulate_website_traffic(n_pages=100):
+    """Simulate daily views for website pages"""
+    # Generate power law distributed views
+    views = np.random.pareto(2, n_pages) * 100
+    
+    # Sort and analyze
+    sorted_views = np.sort(views)[::-1]  # Descending order
+    total_views = np.sum(views)
+    
+    # Find 80/20 point
+    cumsum = np.cumsum(sorted_views)
+    pages_for_80 = np.searchsorted(cumsum, 0.8 * total_views) + 1
+    
+    return {
+        'top_pages': sorted_views[:5],
+        'pages_for_80_percent': pages_for_80,
+        'percent_pages': (pages_for_80 / n_pages) * 100
+    }
+
+# Example
+traffic = simulate_website_traffic()
+print(f"Top 5 page views: {traffic['top_pages'].astype(int)}")
+print(f"{traffic['pages_for_80_percent']} pages ({traffic['percent_pages']:.1f}%) " 
+      f"generate 80% of traffic")
+// Top 5 page views: [449 396 388 277 272]
+// 40 pages (40.0%) generate 80% of traffic
+```
+
+##### When to Use
+1. Analyzing extreme inequalities
+2. Modeling natural phenomena
+3. Risk assessment
+4. Network analysis
+
+##### Key Points
+- No "typical" or "average" value
+- Extreme values are more common than in normal distribution
+- Often indicates self-reinforcing processes
+- Important for risk management (extreme events more likely)
+
+> **Note**: Power laws appear in many natural and social systems. If you see huge differences between largest and smallest values, consider using a power law distribution.
 
 
