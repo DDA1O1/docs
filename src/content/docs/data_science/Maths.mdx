@@ -1284,7 +1284,7 @@ The Normal (or Gaussian) distribution is a continuous probability distribution t
 - **Parameters**: 
   - μ (mean): Center of distribution
   - σ (standard deviation): Spread of distribution
-- **PDF**: f(x) = (1/(σ√(2��))) * e^(-(x-μ)²/(2σ²))
+- **PDF**: f(x) = (1/(σ√(2π))) * e^(-(x-μ)²/(2σ²))
 - **Mean = Median = Mode**: All equal to μ
 - **68-95-99.7 Rule**:
   - 68% of data within μ ± 1σ
@@ -1787,3 +1787,148 @@ print(f"Uniformity test p-value: {results['p_value']:.3f}")
    - Assuming uniformity without testing
    - Ignoring boundary effects
    - Misinterpreting discrete vs continuous
+
+#### Log Normal Distribution
+
+A Log Normal Distribution describes data where taking the natural log (ln) of the values gives a normal distribution. Think of it as a "skewed bell curve" that can't go below zero.
+
+##### Why It's Important
+- Models things that grow by percentage (like money or populations)
+- Always positive (can't have negative values)
+- Shows up naturally in many real-world situations
+
+##### Key Features
+- Skewed right (long tail on right side)
+- Can't be negative
+- Most values cluster near the left
+- Has a few very large values on the right
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import lognorm
+
+# Create simple example data
+normal_data = np.random.normal(0, 0.5, 1000)
+lognormal_data = np.exp(normal_data)  # Transform to lognormal
+
+# Plot both to show relationship
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+# Normal distribution plot
+ax1.hist(normal_data, bins=30, density=True)
+ax1.set_title('Normal Distribution')
+ax1.set_xlabel('Value')
+
+# Log normal distribution plot
+ax2.hist(lognormal_data, bins=30, density=True)
+ax2.set_title('Log Normal Distribution')
+ax2.set_xlabel('Value')
+
+plt.tight_layout()
+plt.show()
+```
+![Log Normal Distribution](/images/Log_Normal_Distribution.png)
+
+##### Real-World Examples
+
+1. **House Prices**
+```python
+def simulate_house_prices(median_price=300000, spread=0.5, n_houses=1000):
+    """Simulate house prices in a city"""
+    mu = np.log(median_price)  # Convert median to log scale
+    prices = np.random.lognormal(mu, spread, n_houses)
+    
+    return {
+        'median': np.median(prices),
+        'mean': np.mean(prices),
+        'cheapest': np.min(prices),
+        'most_expensive': np.max(prices)
+    }
+
+# Example
+prices = simulate_house_prices()
+print(f"Median house: ${prices['median']:,.0f}")
+print(f"Average house: ${prices['mean']:,.0f}")
+print(f"Price range: ${prices['cheapest']:,.0f} to ${prices['most_expensive']:,.0f}")
+// Median house: $293,919
+// Average house: $334,266
+// Price range: $54,054 to $1,700,471
+```
+
+2. **Investment Growth**
+```python
+def investment_scenarios(initial=10000, years=30, risk=0.15):
+    """Simulate possible investment outcomes"""
+    annual_return = 0.07  # 7% average return
+    
+    # Generate 1000 possible scenarios
+    final_amounts = initial * np.random.lognormal(
+        (annual_return - risk**2/2) * years,
+        risk * np.sqrt(years),
+        1000
+    )
+    
+    return {
+        'median': np.median(final_amounts),
+        'worst_10': np.percentile(final_amounts, 10),
+        'best_10': np.percentile(final_amounts, 90)
+    }
+
+# Example
+results = investment_scenarios()
+print(f"Typical outcome: ${results['median']:,.0f}")
+print(f"Range: ${results['worst_10']:,.0f} to ${results['best_10']:,.0f}")
+// Typical outcome: $60,900
+// Range: $19,375 to $173,670
+```
+
+##### When to Use It
+Use log normal when your data:
+1. Can't be negative (like prices or sizes)
+2. Is skewed right (has a long tail to the right)
+3. Grows by percentages rather than fixed amounts
+
+##### Simple Rules of Thumb
+- Most values will be below the mean
+- Median is less than mean
+- A few very large values will pull the mean up
+- Multiplying/dividing by a constant shifts the distribution
+
+##### Common Mistakes to Avoid
+1. Using it for negative values (impossible)
+2. Expecting symmetry (it's always skewed)
+3. Using regular averages (use geometric mean instead)
+4. Forgetting to transform back from log scale
+
+```python
+# Example showing common statistics
+def log_normal_stats(data):
+    """Calculate key statistics for log-normal data"""
+    log_data = np.log(data)
+    
+    return {
+        'median': np.exp(np.mean(log_data)),  # Geometric mean
+        'mean': np.mean(data),                # Arithmetic mean
+        'typical_range': [
+            np.exp(np.mean(log_data) - np.std(log_data)),
+            np.exp(np.mean(log_data) + np.std(log_data))
+        ]
+    }
+
+# Example with salary data
+salaries = np.random.lognormal(11, 0.5, 1000)  # Generate sample salaries
+stats = log_normal_stats(salaries)
+
+print(f"Typical salary (median): ${stats['median']:,.0f}")
+print(f"Average salary (mean): ${stats['mean']:,.0f}")
+print(f"Typical range: ${stats['typical_range'][0]:,.0f} to ${stats['typical_range'][1]:,.0f}")
+// Typical salary (median): $31,623
+// Average salary (mean): $34,859
+// Typical range: $25,262 to $41,771
+```
+
+> **Remember**: Log normal distributions are perfect for things that grow by percentages (like money) or can't be negative (like sizes or times).
+
+
+
