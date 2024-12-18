@@ -855,7 +855,7 @@ where f(t) is the probability density function (PDF)
 
 ##### Key Properties
 1. **Bounds**
-   - 0 ≤ F(x) ��� 1 for all x
+   - 0 ≤ F(x) ≤ 1 for all x
    - lim[x→-∞] F(x) = 0
    - lim[x→∞] F(x) = 1
 
@@ -2015,4 +2015,92 @@ print(f"{traffic['pages_for_80_percent']} pages ({traffic['percent_pages']:.1f}%
 
 > **Note**: Power laws appear in many natural and social systems. If you see huge differences between largest and smallest values, consider using a power law distribution.
 
+#### Estimates
 
+Estimates are predictions or approximations of unknown values in data science. They help us make informed decisions based on available data.
+
+##### Types of Estimates
+
+1. **Point Estimate**
+   - Single value prediction
+   - Example: Sample mean (x̄) estimates population mean (μ)
+   ```python
+   data = [1, 2, 3, 4, 5]
+   point_estimate = np.mean(data)  # = 3
+   ```
+
+2. **Interval Estimate**
+   - Range of likely values
+   - Common form: Confidence Intervals
+   ```python
+   def confidence_interval(data, confidence=0.95):
+       mean = np.mean(data)
+       std = np.std(data, ddof=1)
+       margin = 1.96 * (std / np.sqrt(len(data)))  # 95% CI
+       return mean - margin, mean + margin
+   ```
+
+##### Common Estimators
+
+1. **Mean (Average)**
+   - Estimates central tendency
+   - Best for symmetric data
+   ```python
+   mean = sum(data) / len(data)
+   ```
+
+2. **Median**
+   - Estimates central value
+   - Better for skewed data
+   ```python
+   median = sorted(data)[len(data)//2]
+   ```
+
+3. **Sample Variance**
+   - Estimates data spread
+   - Uses n-1 for unbiased estimate
+   ```python
+   variance = sum((x - mean)**2 for x in data) / (len(data) - 1)
+   ```
+
+##### Properties of Good Estimators
+
+1. **Unbiased**
+   - Average estimate equals true value
+   - Example: Sample mean is unbiased
+
+2. **Consistent**
+   - More data = better estimate
+   - Example: Law of large numbers
+
+3. **Efficient**
+   - Minimum variance among similar estimators
+   - Example: Sample mean vs single observation
+
+##### Real-World Example
+
+```python
+class SalesEstimator:
+    def __init__(self, sales_data):
+        self.data = sales_data
+    
+    def daily_estimate(self):
+        mean = np.mean(self.data)
+        ci = confidence_interval(self.data)
+        return {
+            'point_estimate': mean,
+            'confidence_interval': ci,
+            'reliability': 'High' if (ci[1]-ci[0]) < mean*0.2 else 'Low'
+        }
+
+# Usage
+sales = [100, 120, 80, 95, 110, 105, 90]
+estimator = SalesEstimator(sales)
+forecast = estimator.daily_estimate()
+print(f"Expected sales: {forecast['point_estimate']:.0f}")
+print(f"Range: {forecast['confidence_interval'][0]:.0f} to {forecast['confidence_interval'][1]:.0f}")
+// Expected sales: 100
+// Range: 90 to 110
+```
+
+> **Key Point**: Choose estimators based on your data type and what you're trying to predict.
