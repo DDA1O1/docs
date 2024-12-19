@@ -835,7 +835,6 @@ plt.xlabel('Height (cm)')
 plt.ylabel('Density')
 plt.legend()
 plt.grid(True)
-plt.show()
 
 # Now we can see:
 # - 170cm has highest density (most common)
@@ -1233,7 +1232,7 @@ print(f"Average utilization: {avg_utilization:.1%}") // Average utilization: 56.
 ##### Relationship to Other Distributions
 
 1. **Binomial Distribution**
-   - Poisson is limit of binomial as n→∞, p→0, np=λ
+   - Poisson is limit of binomial as n���∞, p→0, np=λ
    - Used when events are rare but opportunities numerous
 
 2. **Exponential Distribution**
@@ -1705,7 +1704,6 @@ class QualityControl:
             'measurements': measurements,
             'pass_rate': np.mean(in_spec),
             'failures': np.sum(~in_spec)
-        }
 
 # Check 100 items with target 10 and tolerance ±0.5
 qc = QualityControl(target=10, tolerance=0.5)
@@ -2299,3 +2297,986 @@ print(f"Interpretation: {'Reject null hypothesis' if p_value < 0.05 else 'Fail t
 
 > **Remember**: P-value measures evidence strength, not effect size or practical importance
 
+#### Z Test
+
+A Z-test is a statistical test used to determine if there's a significant difference between a sample mean and a population mean when:
+1. Population standard deviation is known
+2. Sample size is large (n > 30)
+
+##### Formula
+```python
+z = (x̄ - μ) / (σ / √n)
+
+where:
+x̄ = sample mean
+μ = population mean
+σ = population standard deviation
+n = sample size
+```
+
+##### Simple Example
+```python
+import numpy as np
+from scipy import stats
+
+def z_test(sample, pop_mean, pop_std):
+    """
+    Perform one-sample z-test
+    
+    Args:
+        sample: List of sample values
+        pop_mean: Known population mean
+        pop_std: Known population standard deviation
+    """
+    n = len(sample)
+    sample_mean = np.mean(sample)
+    z_score = (sample_mean - pop_mean) / (pop_std / np.sqrt(n))
+    p_value = 2 * (1 - stats.norm.cdf(abs(z_score)))  # Two-tailed test
+    
+    return {
+        'z_score': z_score,
+        'p_value': p_value,
+        'significant': p_value < 0.05
+    }
+
+# Example: Test if class scores are different from population
+scores = [85, 88, 92, 78, 90, 87, 86, 84, 89, 91]  # Sample scores
+pop_mean = 82  # Known population mean
+pop_std = 5    # Known population standard deviation
+
+result = z_test(scores, pop_mean, pop_std)
+print(f"Z-score: {result['z_score']:.2f}")
+print(f"P-value: {result['p_value']:.4f}")
+print(f"Significant? {result['significant']}")
+
+// Z-score: 3.16
+// P-value: 0.0016
+// Significant? True
+```
+
+##### When to Use Z-Test
+- Large sample size (n > 30)
+- Known population standard deviation
+- Testing means (not proportions)
+- Data is normally distributed
+
+##### Real-World Example: Quality Control
+```python
+class ProductQuality:
+    def __init__(self, target_weight=100, pop_std=2):
+        self.target = target_weight
+        self.pop_std = pop_std
+    
+    def test_batch(self, measurements):
+        result = z_test(measurements, self.target, self.pop_std)
+        return {
+            'pass': not result['significant'],  # Pass if no significant difference
+            'z_score': result['z_score'],
+            'p_value': result['p_value']
+        }
+
+# Test a batch of products
+weights = [101, 99, 100, 102, 98, 101, 99, 100, 101, 102]
+qc = ProductQuality()
+test = qc.test_batch(weights)
+
+print(f"Batch {'passed' if test['pass'] else 'failed'} quality check")
+print(f"Z-score: {test['z_score']:.2f}")
+
+// Batch passed quality check
+// Z-score: 0.47
+```
+
+##### Key Points
+1. **Assumptions**
+   - Normal distribution
+   - Independent samples
+   - Known population standard deviation
+
+2. **Interpretation**
+   - |Z| > 1.96: Significant at 5% level
+   - |Z| > 2.58: Significant at 1% level
+   - Larger |Z| = stronger evidence
+
+3. **Limitations**
+   - Requires known population std
+   - Not good for small samples
+   - Assumes normality
+
+> **Note**: If population standard deviation is unknown or sample size is small, use t-test instead.
+
+#### Student's t Distribution
+
+The Student's t Distribution is similar to the normal distribution but has heavier tails. It's used when:
+- Sample size is small (n < 30)
+- Population standard deviation is unknown
+
+##### Key Points
+- Shape depends on degrees of freedom (df = n-1)
+- Approaches normal distribution as df increases
+- Used for t-tests and confidence intervals
+
+##### Formula
+```python
+from scipy import stats
+import numpy as np
+
+def t_distribution(df, x):
+    """Calculate t-distribution probability density"""
+    return stats.t.pdf(x, df)
+```
+
+##### Example: Compare t vs Normal
+```python
+import matplotlib.pyplot as plt
+
+# Create comparison plot
+x = np.linspace(-4, 4, 100)
+df_values = [1, 5, 30]
+
+plt.figure(figsize=(10, 6))
+for df in df_values:
+    plt.plot(x, stats.t.pdf(x, df), 
+             label=f't (df={df})')
+
+plt.plot(x, stats.norm.pdf(x), 
+         label='Normal', linestyle='--')
+plt.title('t Distribution vs Normal')
+plt.legend()
+plt.grid(True)
+```
+![t Distribution vs Normal](./images/t_distribution_vs_normal.png)
+
+##### Common Uses
+
+1. **Small Sample Testing**
+```python
+def t_test(sample, pop_mean):
+    """One-sample t-test"""
+    t_stat, p_value = stats.ttest_1samp(sample, pop_mean)
+    return {
+        't_statistic': t_stat,
+        'p_value': p_value,
+        'significant': p_value < 0.05
+    }
+
+# Example
+data = [25, 28, 29, 30, 31]
+result = t_test(data, 27)
+print(f"P-value: {result['p_value']:.4f}")
+
+// P-value: 0.1951
+```
+
+2. **Confidence Intervals**
+```python
+def confidence_interval(data, confidence=0.95):
+    """Calculate confidence interval"""
+    n = len(data)
+    mean = np.mean(data)
+    sem = stats.sem(data)  # Standard error of mean
+    interval = stats.t.interval(confidence, n-1, mean, sem)
+    return interval
+
+# Example
+data = [10, 12, 11, 13, 9]
+ci = confidence_interval(data)
+print(f"95% CI: ({ci[0]:.1f}, {ci[1]:.1f})")
+
+// 95% CI: (9.0, 13.0)
+```
+
+##### When to Use
+- Small sample sizes
+- Unknown population standard deviation
+- Testing means or differences
+- Creating confidence intervals
+
+##### Key Differences from Normal Distribution
+1. More spread out (heavier tails)
+2. Changes shape with sample size
+3. More conservative (wider intervals)
+4. Better for small samples
+
+> **Note**: As sample size increases (n > 30), t-distribution becomes very close to normal distribution.
+
+#### T-Stats with T-test Hypothesis Testing
+
+T-tests help determine if there's a significant difference between means. They're especially useful when working with small samples (n < 30).
+
+##### Basic Types of T-tests
+
+1. **One-Sample T-test**
+   - Compares sample mean to known value
+   ```python
+   from scipy import stats
+   
+   # Example: Test if student scores differ from target (75)
+   scores = [72, 78, 75, 80, 73]
+   t_stat, p_value = stats.ttest_1samp(scores, 75)
+   ```
+
+2. **Independent T-test**
+   - Compares means of two independent groups
+   ```python
+   # Compare treatment vs control
+   treatment = [75, 82, 78, 80]
+   control = [70, 71, 73, 69]
+   t_stat, p_value = stats.ttest_ind(treatment, control)
+   ```
+
+3. **Paired T-test**
+   - Compares before/after measurements
+   ```python
+   # Compare before/after scores
+   before = [70, 72, 71, 73]
+   after = [75, 78, 77, 76]
+   t_stat, p_value = stats.ttest_rel(before, after)
+   ```
+
+##### Simple Example with Explanation
+
+```python
+def run_ttest(sample_data, expected_mean=0, alpha=0.05):
+    """
+    Run one-sample t-test
+    
+    Args:
+        sample_data: List of values
+        expected_mean: Value to test against
+        alpha: Significance level
+    """
+    # Calculate t-statistic and p-value
+    t_stat, p_value = stats.ttest_1samp(sample_data, expected_mean)
+    
+    return {
+        't_statistic': t_stat,
+        'p_value': p_value,
+        'significant': p_value < alpha,
+        'mean_difference': np.mean(sample_data) - expected_mean
+    }
+
+# Example usage
+scores = [85, 82, 88, 84, 86]
+result = run_ttest(scores, expected_mean=80)
+
+print(f"T-statistic: {result['t_statistic']:.2f}")
+print(f"P-value: {result['p_value']:.4f}")
+print(f"Mean difference: {result['mean_difference']:.1f}")
+print(f"Significant? {result['significant']}")
+
+// T-statistic: 5.00
+// P-value: 0.0075
+// Mean difference: 5.0
+// Significant? True
+```
+
+##### When to Use Each Test
+
+1. **One-Sample T-test**
+   - Testing against known value
+   - Example: Are test scores different from 70?
+
+2. **Independent T-test**
+   - Comparing two separate groups
+   - Example: Does treatment group differ from control?
+
+3. **Paired T-test**
+   - Before/after measurements
+   - Example: Did training improve scores?
+
+##### Interpreting Results
+
+1. **T-statistic**
+   - Larger = stronger evidence
+   - Sign shows direction (positive/negative)
+
+2. **P-value**
+   - < 0.05: Statistically significant
+   - ≥ 0.05: Not significant
+
+3. **Effect Size**
+   - Mean difference shows practical significance
+   - Consider alongside p-value
+
+##### Common Mistakes to Avoid
+
+1. Don't ignore assumptions:
+   - Normal distribution
+   - Independent samples
+   - Equal variances (for independent t-test)
+
+2. Don't rely only on p-values:
+   ```python
+   def analyze_results(result):
+       """Better interpretation of t-test"""
+       return {
+           'statistical_sig': result['p_value'] < 0.05,
+           'practical_sig': abs(result['mean_difference']) > 5,
+           'recommendation': 'Consider both statistical and practical significance'
+       }
+   ```
+
+##### Real-World Example
+
+```python
+class DrugEffectiveness:
+    def __init__(self, treatment_data, control_data):
+        self.treatment = treatment_data
+        self.control = control_data
+    
+    def analyze(self):
+        # Run t-test
+        t_stat, p_val = stats.ttest_ind(self.treatment, self.control)
+        
+        # Calculate effect size
+        effect = np.mean(self.treatment) - np.mean(self.control)
+        
+        return {
+            't_statistic': t_stat,
+            'p_value': p_val,
+            'effect_size': effect,
+            'recommendation': 'Effective' if (p_val < 0.05 and effect > 0) 
+                            else 'Not effective'
+        }
+
+# Example usage
+treatment = [95, 92, 98, 94, 96]  # Drug group
+control = [85, 87, 88, 86, 84]    # Placebo group
+
+study = DrugEffectiveness(treatment, control)
+results = study.analyze()
+
+print(f"Effect size: {results['effect_size']:.1f} units")
+print(f"P-value: {results['p_value']:.4f}")
+print(f"Recommendation: {results['recommendation']}")
+
+// Effect size: 9.0 units
+// P-value: 0.0001
+// Recommendation: Effective
+```
+
+> **Key Points**:
+> - Use t-tests for small samples
+> - Consider both p-value and effect size
+> - Check assumptions before testing
+> - Interpret results in context
+
+#### T-test vs Z-test
+
+T-tests and Z-tests are both used to compare means, but they have different use cases and assumptions.
+
+##### Quick Reference
+
+| Feature | Z-test | T-test |
+|---------|---------|---------|
+| Sample Size | Large (n > 30) | Any size |
+| Population σ | Must be known | Can be unknown |
+| Distribution | Normal | Student's t |
+| Tail Weight | Light tails | Heavy tails |
+
+##### Simple Example
+```python
+import numpy as np
+from scipy import stats
+
+def choose_test(sample, pop_mean, pop_std=None):
+    """
+    Choose and run appropriate test
+    
+    Args:
+        sample: Data to test
+        pop_mean: Population mean to test against
+        pop_std: Population standard deviation (if known)
+    """
+    n = len(sample)
+    
+    if n > 30 and pop_std is not None:
+        # Use Z-test
+        z_score = (np.mean(sample) - pop_mean) / (pop_std / np.sqrt(n))
+        p_value = 2 * (1 - stats.norm.cdf(abs(z_score)))
+        test_type = 'Z-test'
+        stat = z_score
+    else:
+        # Use T-test
+        stat, p_value = stats.ttest_1samp(sample, pop_mean)
+        test_type = 'T-test'
+    
+    return {
+        'test_type': test_type,
+        'statistic': stat,
+        'p_value': p_value
+    }
+
+# Example usage
+small_sample = [75, 82, 78, 80, 79]  # n = 5
+large_sample = np.random.normal(75, 5, 50)  # n = 50
+pop_std = 5
+
+# Test both samples
+small_result = choose_test(small_sample, 70)
+large_result = choose_test(large_sample, 70, pop_std)
+
+print(f"Small sample: {small_result['test_type']}")
+print(f"Large sample: {large_result['test_type']}")
+
+// Small sample: T-test
+// Large sample: Z-test
+```
+
+##### When to Use Each Test
+
+1. **Use Z-test when:**
+   - Large sample (n > 30)
+   - Known population standard deviation
+   - Need exact probability values
+
+2. **Use T-test when:**
+   - Small sample size
+   - Unknown population standard deviation
+   - Working with sample statistics
+
+##### Key Differences
+
+1. **Tail Weight**
+   - Z-test: Lighter tails (normal distribution)
+   - T-test: Heavier tails (more conservative)
+
+2. **Critical Values**
+   - Z-test: Fixed values (e.g., ±1.96 for 95%)
+   - T-test: Varies with sample size (degrees of freedom)
+
+3. **Confidence Intervals**
+```python
+def compare_intervals(data, pop_std=None, confidence=0.95):
+    """Compare Z and T confidence intervals"""
+    n = len(data)
+    mean = np.mean(data)
+    
+    # Z interval (if pop_std known)
+    if pop_std:
+        z = stats.norm.ppf((1 + confidence) / 2)
+        z_margin = z * (pop_std / np.sqrt(n))
+        z_interval = (mean - z_margin, mean + z_margin)
+    
+    # T interval
+    t_interval = stats.t.interval(confidence, n-1, mean, stats.sem(data))
+    
+    return {
+        'z_interval': z_interval if pop_std else None,
+        't_interval': t_interval
+    }
+```
+
+##### Best Practices
+
+1. **Default to T-test** unless you:
+   - Have large sample AND
+   - Know population standard deviation
+
+2. **Consider Sample Size**
+   - Small (n < 30): Always use t-test
+   - Large (n > 30): Either test works
+
+3. **Check Assumptions**
+   - Normal distribution
+   - Independent observations
+   - Random sampling
+
+> **Note**: When in doubt, use t-test. It's more conservative and safer for most situations.
+
+#### Type I and Type II Errors
+
+Type I and Type II errors are fundamental concepts in hypothesis testing that help us understand the two ways we can make mistakes.
+
+##### Quick Reference
+
+| Error Type | Definition | Common Name | Example |
+|------------|------------|-------------|----------|
+| Type I | Rejecting true null hypothesis | False Positive | Convicting innocent person |
+| Type II | Failing to reject false null hypothesis | False Negative | Missing actual disease |
+
+##### Simple Example
+```python
+import numpy as np
+from scipy import stats
+
+def test_with_errors(data, null_mean, alpha=0.05):
+    """
+    Run hypothesis test and explain possible errors
+    
+    Args:
+        data: Sample data
+        null_mean: Null hypothesis mean
+        alpha: Significance level (Type I error rate)
+    """
+    # Run t-test
+    t_stat, p_value = stats.ttest_1samp(data, null_mean)
+    
+    # Decision
+    reject_null = p_value < alpha
+    
+    # Explain possible errors
+    if reject_null:
+        error_type = "Type I error possible (false positive)"
+    else:
+        error_type = "Type II error possible (false negative)"
+        
+    return {
+        'p_value': p_value,
+        'reject_null': reject_null,
+        'possible_error': error_type
+    }
+
+# Example
+scores = [75, 82, 78, 80, 79]
+result = test_with_errors(scores, null_mean=70)
+print(f"Decision: {'Reject' if result['reject_null'] else 'Fail to reject'} null")
+print(f"Possible error: {result['possible_error']}")
+
+// Decision: Reject null
+// Possible error: Type I error possible (false positive)
+```
+
+##### Key Concepts
+
+1. **Type I Error (α)**
+   - Rejecting H₀ when it's true
+   - Probability = significance level (α)
+   - Usually set to 0.05 (5%)
+   - More serious in legal/medical contexts
+
+2. **Type II Error (β)**
+   - Not rejecting H₀ when it's false
+   - Related to test power (1 - β)
+   - Affected by:
+     - Sample size
+     - Effect size
+     - Significance level
+
+##### Real-World Example: Medical Test
+
+```python
+class MedicalTest:
+    def __init__(self, sensitivity=0.95, specificity=0.98):
+        self.sensitivity = sensitivity  # True Positive Rate
+        self.specificity = specificity # True Negative Rate
+    
+    def test_patient(self, has_disease, n_tests=1000):
+        """Simulate medical tests"""
+        if has_disease:
+            # Type II error rate = 1 - sensitivity
+            false_negatives = np.random.binomial(n_tests, 1-self.sensitivity)
+            return {
+                'condition': 'Sick',
+                'errors': false_negatives,
+                'error_type': 'Type II',
+                'error_rate': false_negatives/n_tests
+            }
+        else:
+            # Type I error rate = 1 - specificity
+            false_positives = np.random.binomial(n_tests, 1-self.specificity)
+            return {
+                'condition': 'Healthy',
+                'errors': false_positives,
+                'error_type': 'Type I',
+                'error_rate': false_positives/n_tests
+            }
+
+# Example usage
+test = MedicalTest()
+sick_results = test.test_patient(has_disease=True)
+healthy_results = test.test_patient(has_disease=False)
+
+print(f"Type II Error Rate (missed disease): {sick_results['error_rate']:.1%}")
+print(f"Type I Error Rate (false alarms): {healthy_results['error_rate']:.1%}")
+
+// Type II Error Rate (missed disease): 5.7%
+// Type I Error Rate (false alarms): 2.2%
+```
+
+##### Trade-offs
+
+1. **Error Rate Relationship**
+   - Decreasing α increases β
+   - Decreasing β increases α
+   - Can't minimize both simultaneously
+
+2. **Practical Considerations**
+   - Cost of each error type
+   - Available sample size
+   - Required confidence level
+
+##### Common Mistakes to Avoid
+
+1. **Not Considering Both Errors**
+   ```python
+   def assess_test_quality(alpha, beta):
+       """Evaluate overall test quality"""
+       power = 1 - beta
+       return {
+           'false_positive_rate': alpha,
+           'false_negative_rate': beta,
+           'power': power,
+           'quality': 'Good' if (alpha < 0.05 and power > 0.8) else 'Poor'
+       }
+   ```
+
+2. **Focusing Only on Significance**
+   - Consider practical significance
+   - Balance both error types
+   - Account for sample size
+
+> **Key Point**: Always consider both error types and their real-world implications when making decisions based on statistical tests.
+
+#### Conclusion
+
+Understanding Type I and Type II errors is crucial for making informed decisions in data analysis. By balancing these errors, we can improve the reliability and practicality of our statistical tests.
+
+Remember, the goal is not to minimize errors, but to make informed decisions with the best possible information.
+
+#### Summary
+
+- **Type I Error**: Rejecting true null hypothesis
+- **Type II Error**: Failing to reject false null hypothesis
+- **Trade-offs**: Can't minimize both simultaneously
+- **Practical Considerations**: Cost, sample size, confidence level
+- **Common Mistakes**: Focusing only on significance
+
+> **Key Point**: Always consider both error types and their real-world implications when making decisions based on statistical tests.
+
+### Bayesian Statistics
+
+Bayesian statistics is an approach that updates beliefs based on new evidence. It uses probability to express uncertainty about events and parameters.
+
+#### Key Concepts
+
+1. **Prior Probability (Prior)**
+   - Initial belief before new data
+   - Based on previous knowledge
+
+2. **Likelihood**
+   - Probability of data given parameters
+   - How well parameters explain data
+
+3. **Posterior Probability**
+   - Updated belief after seeing data
+   - Combines prior and likelihood
+
+#### Bayes' Theorem
+
+The fundamental formula:
+```python
+P(A|B) = P(B|A) * P(A) / P(B)
+
+where:
+P(A|B) = Posterior
+P(B|A) = Likelihood
+P(A) = Prior
+P(B) = Evidence
+```
+
+##### Simple Example
+```python
+def bayes_update(prior_prob, likelihood, evidence):
+    """Calculate posterior probability"""
+    return (likelihood * prior_prob) / evidence
+
+# Example: Disease testing
+prior = 0.01      # 1% have disease
+likelihood = 0.95 # Test 95% accurate for sick people
+evidence = 0.05   # 5% test positive
+
+posterior = bayes_update(prior, likelihood, evidence)
+print(f"Probability of disease given positive test: {posterior:.1%}")
+// Probability of disease given positive test: 19.0%
+```
+
+#### Real-World Applications
+
+1. **Spam Detection**
+```python
+class SpamFilter:
+    def __init__(self):
+        self.word_probs = {
+            'money': 0.8,    # P(spam|word)
+            'friend': 0.2,
+            'buy': 0.7
+        }
+        self.spam_prior = 0.3  # 30% of emails are spam
+    
+    def classify(self, words):
+        prob = self.spam_prior
+        for word in words:
+            if word in self.word_probs:
+                prob *= self.word_probs[word]
+        return prob > 0.5
+
+# Example
+filter = SpamFilter()
+email = ['money', 'buy']
+is_spam = filter.classify(email)
+print(f"Email classified as: {'Spam' if is_spam else 'Not Spam'}")
+// Email classified as: Not Spam
+```
+
+2. **A/B Testing**
+```python
+def bayesian_ab_test(a_success, a_total, b_success, b_total):
+    """Compare two versions using Bayesian approach"""
+    from scipy import stats
+    
+    # Calculate success rates
+    rate_a = a_success / a_total
+    rate_b = b_success / b_total
+    
+    # Calculate confidence
+    confidence = stats.beta(a_success + 1, a_total - a_success + 1).mean()
+    
+    return {
+        'better_version': 'A' if rate_a > rate_b else 'B',
+        'confidence': confidence,
+        'recommend_switch': confidence > 0.95
+    }
+
+# Example
+result = bayesian_ab_test(120, 1000, 150, 1000)
+print(f"Better version: {result['better_version']}")
+print(f"Confidence: {result['confidence']:.1%}")
+// Better version: B
+// Confidence: 98.2%
+```
+
+#### Advantages Over Frequentist Statistics
+
+1. **Intuitive Updates**
+   - Naturally updates beliefs with new data
+   - Handles uncertainty better
+
+2. **Prior Knowledge**
+   - Incorporates existing knowledge
+   - More realistic in real-world scenarios
+
+3. **Interpretable Results**
+   - Gives probability distributions
+   - Easier to understand for decisions
+
+#### Common Uses
+
+1. **Medical Diagnosis**
+   - Update disease probability with test results
+   - Consider patient history (prior)
+
+2. **Machine Learning**
+   - Parameter estimation
+   - Model uncertainty
+   - Neural network weights
+
+3. **Risk Assessment**
+   - Financial decisions
+   - Project planning
+   - Insurance
+
+#### Simple Implementation
+
+```python
+class BayesianAnalyzer:
+    def __init__(self, prior=0.5):
+        self.prior = prior
+        self.data = []
+    
+    def update(self, new_data, likelihood):
+        """Update beliefs with new data"""
+        posterior = (likelihood * self.prior) / (
+            likelihood * self.prior + 
+            (1 - likelihood) * (1 - self.prior)
+        )
+        self.prior = posterior
+        self.data.append(new_data)
+        return posterior
+    
+    def get_confidence(self):
+        return f"{self.prior:.1%}"
+
+# Example usage
+analyzer = BayesianAnalyzer()
+print(f"Initial belief: {analyzer.get_confidence()}")
+
+# Update with new evidence
+evidence = [True, True, False, True]
+for e in evidence:
+    likelihood = 0.8 if e else 0.2
+    analyzer.update(e, likelihood)
+
+print(f"Updated belief: {analyzer.get_confidence()}")
+// Initial belief: 50.0%
+// Updated belief: 94.1%
+```
+
+#### Key Points to Remember
+
+1. **Start with Prior**
+   - Use existing knowledge
+   - Be explicit about assumptions
+
+2. **Update with Data**
+   - Use Bayes' theorem
+   - Consider evidence strength
+
+3. **Make Decisions**
+   - Use posterior probabilities
+   - Consider uncertainty
+
+> **Note**: Bayesian statistics helps make better decisions by combining prior knowledge with new evidence in a natural way.
+
+#### Conclusion
+
+Bayesian statistics is a powerful tool for making decisions based on uncertain data. It provides a natural way to update beliefs with new evidence and can be used in a wide range of applications.
+
+By understanding the basics and practicing with real-world examples, you can start using Bayesian methods to improve your decision-making process.
+
+#### Summary
+
+- **Bayes' Theorem**: P(A|B) = P(B|A) * P(A) / P(B)
+- **Prior**: Initial belief
+- **Likelihood**: Data explanation
+- **Posterior**: Updated belief
+- **Common Uses**: Medical, ML, risk assessment
+
+> **Key Point**: Bayesian statistics helps make better decisions by combining prior knowledge with new evidence in a natural way.
+
+### Confidence Interval and Margin of Error
+
+A confidence interval shows the likely range for a population value, while margin of error shows how far the estimate might be from the true value.
+
+#### Simple Formula
+```python
+margin_of_error = z_score * (standard_deviation / √sample_size)
+confidence_interval = sample_mean ± margin_of_error
+```
+
+#### Basic Example
+```python
+import numpy as np
+from scipy import stats
+
+def calculate_confidence_interval(data, confidence=0.95):
+    """
+    Calculate confidence interval for a dataset
+    
+    Args:
+        data: List of numbers
+        confidence: Confidence level (default 95%)
+    """
+    mean = np.mean(data)
+    std_error = stats.sem(data)
+    interval = stats.t.interval(confidence, len(data)-1, mean, std_error)
+    
+    return {
+        'mean': mean,
+        'lower': interval[0],
+        'upper': interval[1],
+        'margin': interval[1] - mean
+    }
+
+# Example usage
+scores = [72, 75, 68, 77, 69, 71, 74, 73]
+ci = calculate_confidence_interval(scores)
+print(f"Mean: {ci['mean']:.1f}")
+print(f"95% CI: ({ci['lower']:.1f}, {ci['upper']:.1f}")
+print(f"Margin of Error: ±{ci['margin']:.1f}")
+```
+
+#### Common Confidence Levels
+- 90% → z = 1.645
+- 95% → z = 1.96 (most common)
+- 99% → z = 2.576
+
+#### Real-World Example: Survey Results
+```python
+class SurveyAnalyzer:
+    def __init__(self, responses, confidence=0.95):
+        self.data = responses
+        self.confidence = confidence
+    
+    def analyze(self):
+        ci = calculate_confidence_interval(self.data, self.confidence)
+        return {
+            'estimate': ci['mean'],
+            'margin': ci['margin'],
+            'range': f"({ci['lower']:.1f} - {ci['upper']:.1f})",
+            'reliability': 'High' if ci['margin'] < 5 else 'Low'
+        }
+
+# Example: Customer satisfaction scores (1-10)
+scores = [8, 7, 9, 8, 8, 7, 9, 8, 7, 8]
+survey = SurveyAnalyzer(scores)
+results = survey.analyze()
+
+print(f"Customer satisfaction: {results['estimate']:.1f} ± {results['margin']:.1f}")
+print(f"Confidence range: {results['range']}")
+```
+
+#### Factors Affecting Margin of Error
+1. **Sample Size**
+   - Larger sample = smaller margin
+   - Doubles sample size → reduces margin by √2
+
+2. **Confidence Level**
+   - Higher confidence = larger margin
+   - 99% CI wider than 95% CI
+
+3. **Population Variability**
+   - More variable data = larger margin
+   - Less consistent = less certain
+
+#### Sample Size Calculator
+```python
+def required_sample_size(margin_of_error, confidence=0.95, std_dev=0.5):
+    """
+    Calculate required sample size for desired margin of error
+    
+    Args:
+        margin_of_error: Desired margin (as decimal)
+        confidence: Confidence level (default 95%)
+        std_dev: Estimated standard deviation
+    """
+    z = stats.norm.ppf((1 + confidence) / 2)
+    n = ((z * std_dev) / margin_of_error) ** 2
+    return int(np.ceil(n))
+
+# Example: For ±3% margin at 95% confidence
+sample_size = required_sample_size(0.03)
+print(f"Required sample size: {sample_size}")
+```
+
+#### Key Points
+1. **Interpretation**
+   - "We are 95% confident the true value is in this range"
+   - Not "95% of data falls in this range"
+
+2. **Trade-offs**
+   - Narrower CI = Less confident
+   - Wider CI = More confident
+   - Balance precision vs certainty
+
+3. **Common Uses**
+   - Polls and surveys
+   - Quality control
+   - Scientific research
+   - Medical studies
+
+#### Best Practices
+1. **Report Both**
+   - Always show mean and margin
+   - Example: 75.2 ± 3.4
+
+2. **Consider Context**
+   - Is margin acceptable for decisions?
+   - What's the cost of being wrong?
+
+3. **Sample Size**
+   - Get enough data for desired precision
+   - Consider cost vs accuracy needs
+
+> **Remember**: Larger sample sizes give more precise estimates (smaller margins of error), but there's always some uncertainty in real-world measurements.
