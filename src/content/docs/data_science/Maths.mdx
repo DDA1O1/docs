@@ -3280,3 +3280,128 @@ print(f"Required sample size: {sample_size}")
    - Consider cost vs accuracy needs
 
 > **Remember**: Larger sample sizes give more precise estimates (smaller margins of error), but there's always some uncertainty in real-world measurements.
+
+#### Chi-Square Test
+
+The Chi-Square Test helps determine if there's a relationship between categorical variables or if observed data matches expected patterns.
+
+##### Types of Chi-Square Tests
+
+1. **Independence Test**
+   - Tests if two variables are related
+   - Example: Is gender related to voting preference?
+
+2. **Goodness of Fit**
+   - Tests if data matches expected distribution
+   - Example: Are dice rolls fair?
+
+##### Simple Example
+```python
+from scipy import stats
+import numpy as np
+
+def chi_square_test(observed, expected=None):
+    """
+    Run chi-square test
+    
+    Args:
+        observed: Observed frequencies
+        expected: Expected frequencies (optional)
+    """
+    if expected is None:
+        # Assume equal distribution
+        expected = [sum(observed) / len(observed)] * len(observed)
+    
+    chi2, p_value = stats.chisquare(observed, expected)
+    
+    return {
+        'chi_square': chi2,
+        'p_value': p_value,
+        'significant': p_value < 0.05
+    }
+
+# Example: Test if dice is fair
+rolls = [10, 8, 12, 9, 11, 10]  # Frequencies of 1-6
+result = chi_square_test(rolls)
+print(f"P-value: {result['p_value']:.3f}")
+print(f"Fair dice? {'No' if result['significant'] else 'Yes'}")
+```
+
+##### Real-World Example: Survey Analysis
+```python
+class SurveyAnalyzer:
+    def __init__(self, responses):
+        self.data = np.array(responses)
+    
+    def test_independence(self, var1, var2):
+        """Test if two variables are independent"""
+        contingency = np.array([
+            [sum((var1 == i) & (var2 == j)) 
+             for j in set(var2)] 
+            for i in set(var1)
+        ])
+        
+        chi2, p_val, _, _ = stats.chi2_contingency(contingency)
+        
+        return {
+            'chi_square': chi2,
+            'p_value': p_val,
+            'related': p_val < 0.05
+        }
+
+# Example: Test if education level relates to job satisfaction
+education = [1, 2, 2, 3, 2, 1, 3, 2, 2, 1]  # 1=HS, 2=College, 3=Graduate
+satisfaction = [1, 2, 2, 3, 2, 1, 3, 2, 1, 1]  # 1=Low, 2=Med, 3=High
+
+analyzer = SurveyAnalyzer(list(zip(education, satisfaction)))
+result = analyzer.test_independence(education, satisfaction)
+
+print(f"Related? {'Yes' if result['related'] else 'No'}")
+```
+
+##### When to Use
+1. **Independence Test**
+   - Comparing categorical variables
+   - Testing relationships
+   - Survey analysis
+
+2. **Goodness of Fit**
+   - Testing distributions
+   - Quality control
+   - Validating models
+
+##### Key Points
+1. **Assumptions**
+   - Independent observations
+   - Large enough sample
+   - Expected frequencies > 5
+
+2. **Interpretation**
+   - Small p-value = significant relationship
+   - Large chi-square = stronger relationship
+
+3. **Limitations**
+   - Only for categorical data
+   - Doesn't show strength/direction
+   - Sensitive to sample size
+
+##### Common Applications
+```python
+def common_applications():
+    return {
+        'market_research': [
+            'Brand preference vs age group',
+            'Product choice vs income level'
+        ],
+        'quality_control': [
+            'Defect patterns',
+            'Process consistency'
+        ],
+        'medical_research': [
+            'Treatment effectiveness',
+            'Risk factor analysis'
+        ]
+    }
+```
+
+> **Remember**: Chi-square tests help find patterns in categorical data but don't tell you about the strength or direction of relationships.
