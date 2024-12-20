@@ -1,0 +1,252 @@
+---
+title: Machine Learning
+---
+
+## Supervised Learning
+
+Supervised learning is a type of machine learning where models learn from labeled data to make predictions on new, unseen data.
+
+### Key Concepts
+
+1. **Input Data (X)**: Features or predictors
+2. **Output Data (y)**: Labels or target values
+3. **Training**: Model learns patterns from X → y mapping
+4. **Prediction**: Model predicts y for new X
+
+### Types of Supervised Learning
+
+#### 1. Classification
+- Predicts categorical outputs
+- Examples: Yes/No, Cat/Dog/Bird
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+# Email Spam Classification
+class SpamClassifier:
+    def __init__(self):
+        self.model = RandomForestClassifier()
+        
+    def train(self, emails, labels):
+        """
+        Train spam classifier
+        
+        Args:
+            emails: List of email features (word counts, etc.)
+            labels: 1 for spam, 0 for not spam
+        """
+        self.model.fit(emails, labels)
+    
+    def predict(self, email):
+        """Predict if email is spam"""
+        prediction = self.model.predict([email])[0]
+        return "Spam" if prediction == 1 else "Not Spam"
+
+# Example Usage
+features = [[1, 0, 2], [0, 0, 0], [3, 1, 4]]  # Word counts: [money, friend, buy]
+labels = [1, 0, 1]  # 1=spam, 0=not spam
+
+classifier = SpamClassifier()
+classifier.train(features, labels)
+
+new_email = [2, 0, 3]  # New email features
+result = classifier.predict(new_email)
+print(f"Email classified as: {result}")
+```
+
+#### 2. Regression
+- Predicts continuous numerical values
+- Examples: Price, Temperature, Age
+
+```python
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+class HousePricePredictor:
+    def __init__(self):
+        self.model = LinearRegression()
+        
+    def train(self, features, prices):
+        """
+        Train house price predictor
+        
+        Args:
+            features: Array of [size, bedrooms, age]
+            prices: Array of house prices
+        """
+        self.model.fit(features, prices)
+    
+    def predict(self, house):
+        """Predict house price"""
+        return self.model.predict([house])[0]
+
+# Example Usage
+features = [
+    [1500, 3, 10],  # size, bedrooms, age
+    [2000, 4, 5],
+    [1200, 2, 15]
+]
+prices = [300000, 450000, 250000]
+
+predictor = HousePricePredictor()
+predictor.train(features, prices)
+
+new_house = [1800, 3, 8]
+price = predictor.predict(new_house)
+print(f"Predicted price: ${price:,.2f}")
+```
+
+### Common Algorithms
+
+1. **Linear Models**
+   - Linear Regression
+   - Logistic Regression
+   - Use: Simple, interpretable predictions
+
+2. **Tree-Based Models**
+   - Decision Trees
+   - Random Forests
+   - Use: Complex patterns, non-linear relationships
+
+3. **Neural Networks**
+   - Deep Learning
+   - Multi-layer Perceptron
+   - Use: Image, text, complex patterns
+
+### Real-World Applications
+
+#### 1. Credit Card Fraud Detection
+```python
+class FraudDetector:
+    def __init__(self):
+        self.model = RandomForestClassifier()
+        
+    def train(self, transactions, fraud_labels):
+        """
+        Train fraud detector
+        
+        Args:
+            transactions: Features [amount, time, location_code, etc.]
+            fraud_labels: 1 for fraud, 0 for legitimate
+        """
+        self.model.fit(transactions, fraud_labels)
+    
+    def check_transaction(self, transaction):
+        """Check if transaction is fraudulent"""
+        risk_score = self.model.predict_proba([transaction])[0][1]
+        return {
+            'risk_score': risk_score,
+            'flag_for_review': risk_score > 0.7
+        }
+
+# Example
+detector = FraudDetector()
+transaction = [1000, 3, 45]  # amount, time, location
+result = detector.check_transaction(transaction)
+print(f"Risk Score: {result['risk_score']:.2%}")
+```
+
+#### 2. Medical Diagnosis
+```python
+class DiseasePredictor:
+    def __init__(self):
+        self.model = RandomForestClassifier()
+        
+    def train(self, patient_data, diagnoses):
+        """
+        Train disease predictor
+        
+        Args:
+            patient_data: Features [symptoms, age, history, etc.]
+            diagnoses: Disease labels
+        """
+        self.model.fit(patient_data, diagnoses)
+    
+    def predict_risk(self, patient):
+        """Predict disease risk"""
+        probability = self.model.predict_proba([patient])[0][1]
+        return {
+            'risk_level': 'High' if probability > 0.7 else 'Low',
+            'probability': probability
+        }
+
+# Example
+symptoms = [1, 0, 1, 0]  # fever, cough, fatigue, pain
+result = DiseasePredictor().predict_risk(symptoms)
+print(f"Risk Level: {result['risk_level']}")
+```
+
+### Best Practices
+
+1. **Data Quality**
+   - Clean, representative data
+   - Balanced classes
+   - Proper feature scaling
+
+2. **Model Selection**
+   - Start simple
+   - Use cross-validation
+   - Consider interpretability needs
+
+3. **Evaluation**
+   - Use appropriate metrics
+   - Test on unseen data
+   - Monitor performance
+
+### Common Challenges
+
+1. **Overfitting**
+   - Model learns noise in training data
+   - Solution: Regularization, cross-validation
+
+2. **Underfitting**
+   - Model too simple for data
+   - Solution: More features, complex model
+
+3. **Data Issues**
+   - Missing values
+   - Imbalanced classes
+   - Noisy labels
+
+### Performance Metrics
+
+#### Classification
+```python
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+
+def evaluate_classifier(y_true, y_pred):
+    """Calculate classification metrics"""
+    return {
+        'accuracy': accuracy_score(y_true, y_pred),
+        'precision': precision_score(y_true, y_pred),
+        'recall': recall_score(y_true, y_pred)
+    }
+```
+
+#### Regression
+```python
+from sklearn.metrics import mean_squared_error, r2_score
+
+def evaluate_regression(y_true, y_pred):
+    """Calculate regression metrics"""
+    return {
+        'mse': mean_squared_error(y_true, y_pred),
+        'r2': r2_score(y_true, y_pred)
+    }
+```
+
+### When to Use
+
+1. **Classification**
+   - Spam detection
+   - Disease diagnosis
+   - Customer churn prediction
+   - Image recognition
+
+2. **Regression**
+   - Price prediction
+   - Sales forecasting
+   - Temperature estimation
+   - Resource consumption
+
+> **Remember**: Success in supervised learning depends heavily on data quality and proper model selection for your specific problem.
