@@ -63,7 +63,7 @@ export default defineConfig({
           },
           {
               label: 'Thoughts',
-              autogenerate: { directory: 'thoughts' }
+              autogenerate: { directory: 'Thoughts' }
           },
           {
               label: 'Fun',
