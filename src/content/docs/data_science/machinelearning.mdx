@@ -2,7 +2,219 @@
 title: Machine Learning
 ---
 
-## Supervised Learning
+## Types of Machine Learning
+
+Machine learning can be divided into three main categories based on how models learn from data.
+
+### 1. Supervised Learning
+Models learn from labeled data to make predictions.
+
+#### How it Works
+- Input: Data with known answers (labels)
+- Process: Model learns patterns between features and labels
+- Output: Predictions for new data
+
+#### Types
+1. **Classification** (Predicts categories)
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+# Disease Classification Example
+class DiseaseClassifier:
+    def __init__(self):
+        self.model = RandomForestClassifier()
+    
+    def train(self, symptoms, diagnoses):
+        """Train with patient symptoms and known diagnoses"""
+        self.model.fit(symptoms, diagnoses)
+    
+    def predict(self, patient_symptoms):
+        """Predict disease category"""
+        return self.model.predict([patient_symptoms])[0]
+
+# Example Usage
+symptoms = [
+    [1, 0, 1],  # Patient 1: [fever, cough, fatigue]
+    [0, 1, 0],  # Patient 2
+    [1, 1, 1]   # Patient 3
+]
+diagnoses = ['flu', 'cold', 'flu']
+
+classifier = DiseaseClassifier()
+classifier.train(symptoms, diagnoses)
+new_patient = [1, 0, 1]
+prediction = classifier.predict(new_patient)
+```
+
+2. **Regression** (Predicts numbers)
+```python
+from sklearn.linear_model import LinearRegression
+
+# House Price Prediction
+class PricePredictor:
+    def __init__(self):
+        self.model = LinearRegression()
+    
+    def train(self, features, prices):
+        """Train with house features and known prices"""
+        self.model.fit(features, prices)
+    
+    def predict(self, house_features):
+        """Predict house price"""
+        return self.model.predict([house_features])[0]
+
+# Example Usage
+features = [
+    [1500, 3],  # [size, bedrooms]
+    [2000, 4],
+    [1200, 2]
+]
+prices = [300000, 450000, 250000]
+
+predictor = PricePredictor()
+predictor.train(features, prices)
+new_house = [1800, 3]
+price = predictor.predict(new_house)
+```
+
+### 2. Unsupervised Learning
+Models find patterns in unlabeled data.
+
+#### How it Works
+- Input: Data without labels
+- Process: Model discovers inherent patterns
+- Output: Groups or structures in data
+
+#### Types
+1. **Clustering** (Groups similar items)
+```python
+from sklearn.cluster import KMeans
+
+class CustomerSegmentation:
+    def __init__(self, n_clusters=3):
+        self.model = KMeans(n_clusters=n_clusters)
+    
+    def segment(self, customer_data):
+        """Group customers by behavior"""
+        return self.model.fit_predict(customer_data)
+
+# Example Usage
+customers = [
+    [100, 20],  # [spending, visits]
+    [500, 50],
+    [50, 10]
+]
+segmentation = CustomerSegmentation()
+segments = segmentation.segment(customers)
+```
+
+2. **Dimensionality Reduction** (Simplifies data)
+```python
+from sklearn.decomposition import PCA
+
+class ImageCompressor:
+    def __init__(self, n_components=2):
+        self.model = PCA(n_components=n_components)
+    
+    def compress(self, images):
+        """Reduce image dimensions"""
+        return self.model.fit_transform(images)
+
+# Example Usage
+images = [
+    [1, 2, 3, 4],  # Each row is a flattened image
+    [2, 3, 4, 5],
+    [3, 4, 5, 6]
+]
+compressor = ImageCompressor()
+compressed = compressor.compress(images)
+```
+
+### 3. Reinforcement Learning
+Models learn through trial and error with rewards.
+
+#### How it Works
+- Input: Environment state
+- Process: Agent takes actions and receives rewards
+- Output: Optimal action policy
+
+```python
+class GameAgent:
+    def __init__(self, states, actions):
+        self.q_table = {}  # State-action values
+        
+    def choose_action(self, state):
+        """Choose best action for current state"""
+        if state not in self.q_table:
+            self.q_table[state] = [0] * len(self.actions)
+        return np.argmax(self.q_table[state])
+    
+    def learn(self, state, action, reward, next_state):
+        """Update knowledge based on reward"""
+        old_value = self.q_table[state][action]
+        next_max = np.max(self.q_table[next_state])
+        self.q_table[state][action] = old_value + 0.1 * (reward + 0.9 * next_max - old_value)
+
+# Example Usage
+agent = GameAgent(states=['start', 'middle', 'end'], actions=['left', 'right'])
+state = 'start'
+action = agent.choose_action(state)
+```
+
+### Key Differences
+
+1. **Supervised vs Unsupervised**
+   - Supervised: Has correct answers to learn from
+   - Unsupervised: Finds patterns without answers
+
+2. **Supervised vs Reinforcement**
+   - Supervised: Learns from static examples
+   - Reinforcement: Learns from dynamic interaction
+
+3. **Unsupervised vs Reinforcement**
+   - Unsupervised: Finds structure in data
+   - Reinforcement: Learns optimal behavior
+
+### When to Use Each
+
+1. **Use Supervised Learning When**
+   - You have labeled data
+   - Need specific predictions
+   - Have clear input-output pairs
+
+2. **Use Unsupervised Learning When**
+   - Data isn't labeled
+   - Want to discover patterns
+   - Need to reduce data complexity
+
+3. **Use Reinforcement Learning When**
+   - Have interactive environment
+   - Can define clear rewards
+   - Need adaptive behavior
+
+### Common Applications
+
+1. **Supervised Learning**
+   - Spam detection
+   - Disease diagnosis
+   - Price prediction
+   - Image recognition
+
+2. **Unsupervised Learning**
+   - Customer segmentation
+   - Anomaly detection
+   - Feature extraction
+   - Recommendation systems
+
+3. **Reinforcement Learning**
+   - Game playing
+   - Robot navigation
+   - Resource management
+   - Trading strategies
+
+> **Remember**: Choose the learning type based on your data availability and problem requirements. Each type has its strengths and ideal use cases.
+
+### Supervised Learning
 
 Supervised learning is a type of machine learning where models learn from labeled data to make predictions on new, unseen data.
 
