@@ -938,7 +938,7 @@ import numpy as np
 
 # Sample data
 X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
-y = np.array([6, 8, 9, 11])
+y = np.array([2, 3, 4, 5])
 
 # Ridge regression
 ridge = Ridge(alpha=1.0)
@@ -1005,12 +1005,6 @@ def find_best_alpha(X, y, alphas):
             best_alpha = alpha
             
     return best_alpha, best_score
-
-# Example usage
-alphas = [0.001, 0.01, 0.1, 1, 10, 100]
-best_alpha, best_score = find_best_alpha(X_scaled, y, alphas)
-print(f"Best alpha: {best_alpha}")
-print(f"Best score: {best_score:.2f}")
 ```
 
 #### When to Use Each
@@ -1054,7 +1048,7 @@ Polynomial regression handles curved relationships by adding powers of X (like X
    - b: Base value (intercept)
    - x: Input feature
    - x²,x³: Powers of x
-   - m₁,m���,m₃: Coefficients
+   - m₁,m₂,m₃: Coefficients
 
 #### Simple Implementation
 ```python
@@ -1318,4 +1312,443 @@ def house_price_pipeline():
 - Add steps as needed
 - Great for reproducibility
 
+### Ridge Regression
 
+Ridge regression prevents overfitting by adding a penalty for large coefficients. Think of it as making the model prefer smaller, more reasonable numbers.
+
+#### How it Works
+
+1. **Basic Formula**
+   ```
+   Cost = MSE + α * (sum of squared coefficients)
+   ```
+   - MSE: Regular error term
+   - α (alpha): Controls penalty strength
+   - Higher α = smaller coefficients
+
+#### Simple Implementation
+```python
+from sklearn.linear_model import Ridge
+import numpy as np
+
+def ridge_regression(X, y, alpha=1.0):
+    # Create and fit model
+    model = Ridge(alpha=alpha)
+    model.fit(X, y)
+    
+    return model
+
+# Example usage
+X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
+y = np.array([2, 3, 4, 5])
+
+model = ridge_regression(X, y)
+print("Coefficients:", model.coef_)
+```
+
+#### Visual Example: Effect of Alpha
+```python
+def plot_ridge_coefficients(X, y):
+    alphas = [0.1, 1.0, 10.0, 100.0]
+    coefficients = []
+    
+    for alpha in alphas:
+        model = Ridge(alpha=alpha)
+        model.fit(X, y)
+        coefficients.append(model.coef_)
+    
+    # Plot how coefficients change with alpha
+    plt.figure(figsize=(10, 6))
+    for i in range(X.shape[1]):
+        plt.plot(alphas, [c[i] for c in coefficients], 
+                label=f'Feature {i+1}')
+    
+    plt.xscale('log')
+    plt.xlabel('Alpha')
+    plt.ylabel('Coefficient Value')
+    plt.legend()
+    plt.title('Ridge Coefficients vs Alpha')
+    plt.show()
+```
+
+#### Real-World Example: House Price Prediction
+```python
+def house_price_ridge():
+    # Sample data with multiple features
+    data = {
+        'size': [1000, 1500, 1200, 1700, 2000],
+        'bedrooms': [2, 3, 2, 3, 4],
+        'age': [5, 10, 15, 8, 3],
+        'price': [200000, 300000, 250000, 350000, 450000]
+    }
+    
+    # Prepare data
+    X = np.array([[s, b, a] for s, b, a in 
+                  zip(data['size'], data['bedrooms'], data['age'])])
+    y = np.array(data['price'])
+    
+    # Compare different alphas
+    alphas = [0.1, 1.0, 10.0]
+    for alpha in alphas:
+        model = ridge_regression(X, y, alpha)
+        print(f"\nAlpha = {alpha}")
+        print("Size impact: ${:,.2f}".format(model.coef_[0]))
+        print("Bedroom impact: ${:,.2f}".format(model.coef_[1]))
+        print("Age impact: ${:,.2f}".format(model.coef_[2]))
+```
+
+#### Finding Best Alpha
+```python
+from sklearn.model_selection import cross_val_score
+
+def find_best_alpha(X, y, alphas=[0.1, 1.0, 10.0, 100.0]):
+    best_score = -float('inf')
+    best_alpha = None
+    
+    for alpha in alphas:
+        model = Ridge(alpha=alpha)
+        scores = cross_val_score(model, X, y, cv=5)
+        avg_score = scores.mean()
+        
+        print(f"Alpha {alpha}: Score = {avg_score:.3f}")
+        
+        if avg_score > best_score:
+            best_score = avg_score
+            best_alpha = alpha
+    
+    return best_alpha, best_score
+```
+
+#### When to Use Ridge
+
+**Good For:**
+- Many correlated features
+- All features might be important
+- Want to reduce coefficient size
+- Prevent overfitting
+
+**Not Good For:**
+- Feature selection (use Lasso instead)
+- Very sparse data
+- When you need exactly zero coefficients
+
+#### Key Points
+- Keeps all features
+- Reduces impact of less important features
+- Need to scale features first
+- Choose alpha using cross-validation
+- More stable than Lasso
+
+#### Common Workflow
+```python
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+def ridge_workflow(X, y):
+    # Create pipeline
+    pipeline = Pipeline([
+        ('scaler', StandardScaler()),
+        ('ridge', Ridge(alpha=1.0))
+    ])
+    
+    # Fit and predict
+    pipeline.fit(X, y)
+    
+    return pipeline
+```
+
+### Lasso Regression
+
+Lasso regression helps select important features by setting some coefficients to exactly zero. Think of it as a feature selector that removes less important variables.
+
+#### How it Works
+
+1. **Basic Formula**
+   ```
+   Cost = MSE + α * (sum of absolute coefficients)
+   ```
+   - MSE: Regular error term
+   - α (alpha): Controls feature selection
+   - Higher α = more coefficients become zero
+
+#### Simple Implementation
+```python
+from sklearn.linear_model import Lasso
+import numpy as np
+
+def lasso_regression(X, y, alpha=1.0):
+    # Create and fit model
+    model = Lasso(alpha=alpha)
+    model.fit(X, y)
+    
+    return model
+
+# Example usage
+X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
+y = np.array([2, 3, 4, 5])
+
+model = lasso_regression(X, y)
+print("Coefficients:", model.coef_)
+```
+
+#### Visual Example: Feature Selection
+```python
+def plot_lasso_path(X, y):
+    alphas = np.logspace(-4, 1, 100)
+    coefs = []
+    
+    for alpha in alphas:
+        model = Lasso(alpha=alpha)
+        model.fit(X, y)
+        coefs.append(model.coef_)
+    
+    # Plot coefficient paths
+    plt.figure(figsize=(10, 6))
+    for feature_idx in range(X.shape[1]):
+        plt.plot(alphas, [c[feature_idx] for c in coefs],
+                label=f'Feature {feature_idx+1}')
+    
+    plt.xscale('log')
+    plt.xlabel('Alpha')
+    plt.ylabel('Coefficient Value')
+    plt.legend()
+    plt.title('Lasso Path: Coefficients vs Alpha')
+    plt.show()
+```
+
+#### Real-World Example: House Price Features
+```python
+def house_price_lasso():
+    # Sample data with many features
+    data = {
+        'size': [1000, 1500, 1200, 1700, 2000],
+        'bedrooms': [2, 3, 2, 3, 4],
+        'age': [5, 10, 15, 8, 3],
+        'bathrooms': [1, 2, 1, 2, 2],
+        'garage': [1, 1, 0, 2, 2],
+        'price': [200000, 300000, 250000, 350000, 450000]
+    }
+    
+    # Prepare data
+    features = ['size', 'bedrooms', 'age', 'bathrooms', 'garage']
+    X = np.array([[data[f][i] for f in features] 
+                  for i in range(len(data['price']))])
+    y = np.array(data['price'])
+    
+    # Try different alphas
+    alphas = [0.1, 1.0, 10.0]
+    for alpha in alphas:
+        model = lasso_regression(X, y, alpha)
+        print(f"\nAlpha = {alpha}")
+        for feature, coef in zip(features, model.coef_):
+            if abs(coef) > 0:  # Only show non-zero coefficients
+                print(f"{feature}: ${coef:,.2f}")
+```
+
+#### Finding Important Features
+```python
+def identify_important_features(X, y, feature_names, alpha=1.0):
+    # Fit Lasso
+    model = Lasso(alpha=alpha)
+    model.fit(X, y)
+    
+    # Get non-zero coefficients
+    important_features = []
+    for name, coef in zip(feature_names, model.coef_):
+        if abs(coef) > 0:
+            important_features.append((name, coef))
+    
+    # Sort by absolute coefficient value
+    important_features.sort(key=lambda x: abs(x[1]), reverse=True)
+    
+    return important_features
+
+# Example usage
+features = ['size', 'bedrooms', 'age', 'bathrooms', 'garage']
+important = identify_important_features(X, y, features)
+for feature, impact in important:
+    print(f"{feature}: ${impact:,.2f}")
+```
+
+#### When to Use Lasso
+
+**Good For:**
+- Feature selection
+- Many irrelevant features
+- Want simpler models
+- Need to identify key variables
+
+**Not Good For:**
+- Correlated features (use Ridge)
+- When all features matter
+- Small datasets
+
+#### Key Points
+- Eliminates unimportant features
+- Produces sparse models
+- Scale features before using
+- Try multiple alpha values
+- Good for feature selection
+
+#### Complete Workflow
+```python
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+def lasso_workflow(X, y, alpha=1.0):
+    # Create pipeline
+    pipeline = Pipeline([
+        ('scaler', StandardScaler()),
+        ('lasso', Lasso(alpha=alpha))
+    ])
+    
+    # Find best alpha using cross-validation
+    alphas = [0.1, 1.0, 10.0]
+    best_alpha, best_score = find_best_alpha(X, y, alphas)
+    
+    # Update pipeline with best alpha
+    pipeline.set_params(lasso__alpha=best_alpha)
+    pipeline.fit(X, y)
+    
+    return pipeline, best_alpha
+```
+
+### Elastic Net Regression
+
+Elastic Net combines Ridge and Lasso regression to get the best of both worlds. It can both select features and handle correlated variables.
+
+#### How it Works
+
+1. **Basic Formula**
+   ```
+   Cost = MSE + α * (r * L1 + (1-r) * L2)
+   ```
+   - MSE: Regular error term
+   - α: Overall penalty strength
+   - r: Mix ratio (1 = Lasso, 0 = Ridge)
+   - L1: Sum of absolute coefficients (Lasso)
+   - L2: Sum of squared coefficients (Ridge)
+
+#### Simple Implementation
+```python
+from sklearn.linear_model import ElasticNet
+import numpy as np
+
+def elastic_net(X, y, alpha=1.0, l1_ratio=0.5):
+    # Create and fit model
+    model = ElasticNet(alpha=alpha, l1_ratio=l1_ratio)
+    model.fit(X, y)
+    
+    return model
+
+# Example usage
+X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
+y = np.array([2, 3, 4, 5])
+
+model = elastic_net(X, y)
+print("Coefficients:", model.coef_)
+```
+
+#### Real-World Example: House Prices
+```python
+def house_price_elastic():
+    # Sample data
+    data = {
+        'size': [1000, 1500, 1200, 1700, 2000],
+        'bedrooms': [2, 3, 2, 3, 4],
+        'age': [5, 10, 15, 8, 3],
+        'bathrooms': [1, 2, 1, 2, 2],
+        'price': [200000, 300000, 250000, 350000, 450000]
+    }
+    
+    # Prepare data
+    features = ['size', 'bedrooms', 'age', 'bathrooms']
+    X = np.array([[data[f][i] for f in features] 
+                  for i in range(len(data['price']))])
+    y = np.array(data['price'])
+    
+    # Try different combinations
+    alphas = [0.1, 1.0]
+    l1_ratios = [0.2, 0.5, 0.8]
+    
+    for alpha in alphas:
+        for l1_ratio in l1_ratios:
+            model = elastic_net(X, y, alpha, l1_ratio)
+            print(f"\nAlpha={alpha}, L1 ratio={l1_ratio}")
+            for feature, coef in zip(features, model.coef_):
+                print(f"{feature}: ${coef:,.2f}")
+```
+
+#### Finding Best Parameters
+```python
+from sklearn.model_selection import GridSearchCV
+
+def find_best_params(X, y):
+    # Parameter grid
+    param_grid = {
+        'alpha': [0.1, 0.5, 1.0],
+        'l1_ratio': [0.1, 0.5, 0.7, 0.9]
+    }
+    
+    # Create model
+    model = ElasticNet()
+    
+    # Grid search
+    grid = GridSearchCV(model, param_grid, cv=5)
+    grid.fit(X, y)
+    
+    print("Best parameters:", grid.best_params_)
+    return grid.best_estimator_
+```
+
+#### Complete Pipeline
+```python
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+def elastic_net_pipeline(X, y):
+    # Create pipeline
+    pipeline = Pipeline([
+        ('scaler', StandardScaler()),
+        ('elastic', ElasticNet())
+    ])
+    
+    # Parameter grid
+    param_grid = {
+        'elastic__alpha': [0.1, 1.0, 10.0],
+        'elastic__l1_ratio': [0.1, 0.5, 0.9]
+    }
+    
+    # Find best parameters
+    grid = GridSearchCV(pipeline, param_grid, cv=5)
+    grid.fit(X, y)
+    
+    return grid.best_estimator_
+```
+
+#### When to Use Elastic Net
+
+**Good For:**
+- Correlated features
+- Feature selection needed
+- Want balance between Ridge and Lasso
+- Medium to large datasets
+
+**Not Good For:**
+- Very small datasets
+- When you need simple interpretation
+- When pure Ridge or Lasso works well
+
+#### Key Points
+- Combines Ridge and Lasso benefits
+- More flexible than either alone
+- Two parameters to tune (α and r)
+- Scale features before using
+- Good default choice for regression
+
+#### Quick Tips
+1. Start with l1_ratio = 0.5
+2. Try different alpha values
+3. Use cross-validation
+4. Scale your features
+5. Check feature importance
