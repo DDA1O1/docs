@@ -1054,7 +1054,7 @@ Polynomial regression handles curved relationships by adding powers of X (like X
    - b: Base value (intercept)
    - x: Input feature
    - x²,x³: Powers of x
-   - m₁,m₂,m₃: Coefficients
+   - m₁,m���,m₃: Coefficients
 
 #### Simple Implementation
 ```python
@@ -1182,4 +1182,140 @@ def find_best_degree(X, y, max_degree=10):
 - Scale features if needed
 - Use cross-validation
 - Balance complexity vs accuracy
+
+### Pipeline in Polynomial Regression
+
+A pipeline combines multiple steps (like scaling, polynomial features, and regression) into one clean workflow. Think of it as an assembly line for your data.
+
+#### Basic Pipeline Structure
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+
+def create_poly_pipeline(degree=2):
+    return Pipeline([
+        ('scale', StandardScaler()),                # Step 1: Scale features
+        ('poly', PolynomialFeatures(degree=degree)), # Step 2: Create polynomial
+        ('regression', LinearRegression())          # Step 3: Fit regression
+    ])
+
+# Simple usage
+X = np.array([[1], [2], [3], [4]])
+y = np.array([1, 4, 9, 16])  # y = x²
+
+model = create_poly_pipeline(degree=2)
+model.fit(X, y)
+```
+
+#### Complete Example with Cross-Validation
+```python
+from sklearn.model_selection import cross_val_score
+
+def find_best_polynomial(X, y, max_degree=5):
+    best_score = float('-inf')
+    best_degree = 1
+    
+    for degree in range(1, max_degree + 1):
+        # Create pipeline
+        pipeline = create_poly_pipeline(degree)
+        
+        # Get cross-validation scores
+        scores = cross_val_score(pipeline, X, y, cv=5)
+        avg_score = scores.mean()
+        
+        print(f"Degree {degree}: Score = {avg_score:.3f}")
+        
+        if avg_score > best_score:
+            best_score = avg_score
+            best_degree = degree
+    
+    return best_degree, best_score
+
+# Example usage
+best_degree, best_score = find_best_polynomial(X, y)
+print(f"\nBest degree: {best_degree}")
+```
+
+#### Real-World Example: House Price Prediction
+```python
+def house_price_pipeline():
+    # Sample data
+    house_data = {
+        'size': [1000, 1500, 1200, 1700, 2000],
+        'price': [200000, 300000, 250000, 350000, 450000]
+    }
+    X = np.array(house_data['size']).reshape(-1, 1)
+    y = np.array(house_data['price'])
+    
+    # Create and fit pipeline
+    pipeline = create_poly_pipeline(degree=2)
+    pipeline.fit(X, y)
+    
+    # Make predictions
+    sizes = np.linspace(min(X), max(X), 100).reshape(-1, 1)
+    predictions = pipeline.predict(sizes)
+    
+    # Plot results
+    plt.scatter(X, y, color='blue', label='Actual')
+    plt.plot(sizes, predictions, color='red', label='Predicted')
+    plt.xlabel('House Size (sq ft)')
+    plt.ylabel('Price ($)')
+    plt.legend()
+    plt.show()
+```
+
+#### Benefits of Using Pipeline
+
+1. **Cleaner Code**
+   - All steps in one place
+   - No data leakage
+   - Easy to reproduce
+
+2. **Automatic Order**
+   - Steps run in correct sequence
+   - No manual data passing
+   - Handles transformations automatically
+
+3. **Easy Cross-Validation**
+   ```python
+   from sklearn.model_selection import GridSearchCV
+   
+   # Search for best parameters
+   param_grid = {
+       'poly__degree': [1, 2, 3, 4],
+       'regression__fit_intercept': [True, False]
+   }
+   
+   grid_search = GridSearchCV(
+       create_poly_pipeline(), 
+       param_grid, 
+       cv=5
+   )
+   grid_search.fit(X, y)
+   ```
+
+#### Common Pipeline Steps
+
+1. **Data Scaling**
+   - StandardScaler
+   - MinMaxScaler
+   - RobustScaler
+
+2. **Feature Creation**
+   - PolynomialFeatures
+   - Custom transformers
+
+3. **Model Fitting**
+   - LinearRegression
+   - Ridge
+   - Lasso
+
+#### Key Points
+- Always scale before polynomial features
+- Use cross-validation to avoid overfitting
+- Start with simple pipelines
+- Add steps as needed
+- Great for reproducibility
+
 
