@@ -1041,3 +1041,145 @@ elastic.fit(X_train, y_train)
 - Try different alpha values
 - Use cross-validation
 
+### Simple Polynomial Regression
+
+Polynomial regression handles curved relationships by adding powers of X (like X², X³) to linear regression. Think of it as making linear regression flexible enough to fit curves.
+
+#### How it Works
+
+1. **Basic Idea**
+   ```
+   y = b + m₁x + m₂x² + m₃x³ + ...
+   ```
+   - b: Base value (intercept)
+   - x: Input feature
+   - x²,x³: Powers of x
+   - m₁,m₂,m₃: Coefficients
+
+#### Simple Implementation
+```python
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+def polynomial_regression(X, y, degree=2):
+    # Convert X to polynomial features
+    poly = PolynomialFeatures(degree=degree)
+    X_poly = poly.fit_transform(X.reshape(-1, 1))
+    
+    # Fit model
+    model = LinearRegression()
+    model.fit(X_poly, y)
+    
+    return model, poly
+
+# Example usage
+X = np.array([1, 2, 3, 4, 5])
+y = np.array([2, 4, 8, 16, 32])  # Exponential pattern
+
+model, poly = polynomial_regression(X, y, degree=2)
+```
+
+#### Visual Example
+```python
+import matplotlib.pyplot as plt
+
+def plot_polynomial_fit(X, y, degree):
+    # Fit model
+    model, poly = polynomial_regression(X, y, degree)
+    
+    # Generate smooth points for curve
+    X_smooth = np.linspace(X.min(), X.max(), 100)
+    X_smooth_poly = poly.transform(X_smooth.reshape(-1, 1))
+    y_smooth = model.predict(X_smooth_poly)
+    
+    # Plot
+    plt.scatter(X, y, color='blue', label='Data')
+    plt.plot(X_smooth, y_smooth, color='red', label=f'Degree {degree}')
+    plt.legend()
+    plt.show()
+    
+    return model
+
+# Example with different degrees
+degrees = [1, 2, 3]
+for degree in degrees:
+    plot_polynomial_fit(X, y, degree)
+```
+
+#### Real World Example: Temperature Curve
+```python
+# Daily temperature data
+hours = np.array([0, 4, 8, 12, 16, 20, 24])
+temp = np.array([15, 13, 18, 25, 23, 18, 15])
+
+def fit_temperature_curve():
+    # Fit polynomial model
+    model, poly = polynomial_regression(hours, temp, degree=3)
+    
+    # Generate smooth curve
+    hours_smooth = np.linspace(0, 24, 100)
+    hours_poly = poly.transform(hours_smooth.reshape(-1, 1))
+    temp_smooth = model.predict(hours_poly)
+    
+    # Plot
+    plt.scatter(hours, temp, label='Actual')
+    plt.plot(hours_smooth, temp_smooth, 'r-', label='Predicted')
+    plt.xlabel('Hour of Day')
+    plt.ylabel('Temperature (°C)')
+    plt.legend()
+    plt.show()
+```
+
+#### Choosing the Right Degree
+
+1. **Too Low (Underfitting)**
+   - Line too rigid
+   - Misses important patterns
+   - High error on both training and test
+
+2. **Too High (Overfitting)**
+   - Line too wiggly
+   - Fits noise in data
+   - Perfect on training, bad on test
+
+```python
+def find_best_degree(X, y, max_degree=10):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    best_score = -float('inf')
+    best_degree = 1
+    
+    for degree in range(1, max_degree + 1):
+        model, poly = polynomial_regression(X_train, y_train, degree)
+        
+        # Transform test data
+        X_test_poly = poly.transform(X_test.reshape(-1, 1))
+        score = model.score(X_test_poly, y_test)
+        
+        if score > best_score:
+            best_score = score
+            best_degree = degree
+    
+    return best_degree, best_score
+```
+
+#### When to Use
+
+**Good For:**
+- Curved relationships
+- Temperature cycles
+- Growth patterns
+- Physical processes
+
+**Not Good For:**
+- Linear relationships (use simple linear)
+- Too many features
+- Very noisy data
+
+#### Key Points
+- Start with low degrees (2 or 3)
+- Check for overfitting
+- Scale features if needed
+- Use cross-validation
+- Balance complexity vs accuracy
+
