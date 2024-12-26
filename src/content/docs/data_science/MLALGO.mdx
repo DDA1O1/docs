@@ -1752,3 +1752,156 @@ def elastic_net_pipeline(X, y):
 3. Use cross-validation
 4. Scale your features
 5. Check feature importance
+
+### Types of Cross-Validation
+
+Cross-validation helps test how well your model works on new data by splitting your data in different ways.
+
+#### K-Fold Cross-Validation
+```python
+from sklearn.model_selection import KFold
+import numpy as np
+
+def k_fold_example(X, y, k=5):
+    # Create K-Fold splitter
+    kf = KFold(n_splits=k, shuffle=True)
+    
+    scores = []
+    for fold, (train_idx, test_idx) in enumerate(kf.split(X)):
+        # Split data
+        X_train, X_test = X[train_idx], X[test_idx]
+        y_train, y_test = y[train_idx], y[test_idx]
+        
+        # Train and evaluate
+        model = LinearRegression()
+        model.fit(X_train, y_train)
+        score = model.score(X_test, y_test)
+        scores.append(score)
+        
+        print(f"Fold {fold+1} Score: {score:.3f}")
+    
+    print(f"Average Score: {np.mean(scores):.3f}")
+```
+
+#### Leave-One-Out Cross-Validation
+```python
+from sklearn.model_selection import LeaveOneOut
+
+def leave_one_out_example(X, y):
+    # Good for small datasets
+    loo = LeaveOneOut()
+    scores = []
+    
+    for train_idx, test_idx in loo.split(X):
+        X_train, X_test = X[train_idx], X[test_idx]
+        y_train, y_test = y[train_idx], y[test_idx]
+        
+        model = LinearRegression()
+        model.fit(X_train, y_train)
+        score = model.score(X_test, y_test)
+        scores.append(score)
+    
+    return np.mean(scores)
+```
+
+#### Stratified K-Fold
+```python
+from sklearn.model_selection import StratifiedKFold
+
+def stratified_kfold_example(X, y, k=5):
+    # Good for imbalanced classification
+    skf = StratifiedKFold(n_splits=k, shuffle=True)
+    
+    for fold, (train_idx, test_idx) in enumerate(skf.split(X, y)):
+        X_train, X_test = X[train_idx], X[test_idx]
+        y_train, y_test = y[train_idx], y[test_idx]
+        
+        # Check distribution
+        print(f"Fold {fold+1} distribution:")
+        print(f"Train: {np.bincount(y_train)}")
+        print(f"Test: {np.bincount(y_test)}\n")
+```
+
+#### Time Series Split
+```python
+from sklearn.model_selection import TimeSeriesSplit
+
+def time_series_split_example(X, y, n_splits=5):
+    # Good for time series data
+    tscv = TimeSeriesSplit(n_splits=n_splits)
+    
+    for fold, (train_idx, test_idx) in enumerate(tscv.split(X)):
+        print(f"Fold {fold+1}:")
+        print(f"Train: index {min(train_idx)} to {max(train_idx)}")
+        print(f"Test: index {min(test_idx)} to {max(test_idx)}\n")
+```
+
+#### Complete Example
+```python
+def compare_cv_methods(X, y):
+    # Sample data
+    X = np.array([[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]])
+    y = np.array([2, 4, 5, 4, 5, 6, 7, 6, 8, 9])
+    
+    # 1. K-Fold
+    print("K-Fold CV:")
+    k_fold_example(X, y)
+    
+    # 2. Leave-One-Out
+    print("\nLeave-One-Out CV:")
+    loo_score = leave_one_out_example(X, y)
+    print(f"Score: {loo_score:.3f}")
+    
+    # 3. Time Series
+    print("\nTime Series CV:")
+    time_series_split_example(X, y)
+```
+
+#### When to Use Each Method
+
+1. **K-Fold (Default Choice)**
+   - General purpose
+   - Medium to large datasets
+   - Random data order
+
+2. **Leave-One-Out**
+   - Very small datasets
+   - When you need exact results
+   - Computationally expensive
+
+3. **Stratified K-Fold**
+   - Classification problems
+   - Imbalanced classes
+   - Need to maintain class ratios
+
+4. **Time Series Split**
+   - Time series data
+   - Sequential data
+   - When order matters
+
+#### Quick Implementation
+```python
+from sklearn.model_selection import cross_val_score
+
+def quick_cv(model, X, y, cv_type='kfold', n_splits=5):
+    if cv_type == 'kfold':
+        cv = KFold(n_splits=n_splits, shuffle=True)
+    elif cv_type == 'loo':
+        cv = LeaveOneOut()
+    elif cv_type == 'stratified':
+        cv = StratifiedKFold(n_splits=n_splits, shuffle=True)
+    elif cv_type == 'timeseries':
+        cv = TimeSeriesSplit(n_splits=n_splits)
+    
+    scores = cross_val_score(model, X, y, cv=cv)
+    print(f"Scores: {scores}")
+    print(f"Mean: {scores.mean():.3f}")
+    print(f"Std: {scores.std():.3f}")
+```
+
+#### Key Points
+- Always shuffle data (except time series)
+- Use stratified for classification
+- K-Fold is good default choice
+- Consider data size and type
+- Check score distribution
