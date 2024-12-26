@@ -1,0 +1,25 @@
+---
+title: Get Started
+description: Get started building your docs site with Starlight.
+template: splash
+hero:
+  tagline: Welcome to Docs!
+  image:
+    file: ../../assets/1.gif
+  actions:
+    - text: Guide
+      link: /guides/overview/
+      icon: right-arrow
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+
+<CardGrid stagger>
+	<Card title="Update content" icon="pencil">
+		Edit the content in <code>src/content/docs</code>.
+		<br />Click Edit link below.
+	</Card>
+</CardGrid>
+
+<script src='/disableClick.js'></script>

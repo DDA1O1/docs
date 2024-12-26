@@ -1,0 +1,329 @@
+---
+title: "Overview"
+description: "Overview"
+---
+import TimeComplexityChart from '@/components/TimeComplexityChart.astro';
+
+## DSA
+
+- It's all about how to store, organize data and which algorithm to use, to achieve a desired outcome.
+- To know which algorithm to use which would be independent of the `CPU` speed and `architecture`. Essentially, it's about the `efficiency` of the algorithm irrespective of the hardware.
+- How many `Fundamental Operations` we are performing to achieve the desired outcome.
+```txt
+                   ┌─────────────────┐
+                   │     INPUT       │
+                   │  (Data/Problem) │
+                   └────────┬────────┘
+                            │
+                            ▼
+           ┌─────────────────────────────┐
+           │       ALGORITHMS            │
+           │                             │
+           │  ┌─────────┐   ┌─────────┐  │
+           │  │Sorting  │   │Searching│  │
+           │  └─────────┘   └─────────┘  │
+           │  ┌─────────┐   ┌─────────┐  │
+           │  │Graph    │   │Dynamic  │  │
+           │  │Analysis │   │Program. │  │
+           │  └─────────┘   └─────────┘  │
+           └──────────┬──────────────────┘
+                      │
+                      ▼
+                ┌──────────────┐
+                │   OUTPUT     │
+                │  (Solution)  │
+                └──────────────┘
+```
+Suppose you want to write a code where you have read, write and response for 10000 users per second in a database.
+      - input handling: 5 operations/user/second
+      - database write: 10 operations/user/second
+      - response handling: 5 operations/user/second
+      - total operations: 20 operations/user/second
+      - time complexity: O(20)
+      - space complexity: O(1)
+Now you need a server to handle that can handle 200000 operations per second.any normal server can handle this task without overheating.
+Code optimization becomes necessary only when you found yourself in constraints.Where the cpu can only do 500000 operations per second.
+
+:::note[Code Optimization vs Readability]
+- Prioritize code readability over performance optimization in most scenarios
+- Performance optimization should only be your primary focus when:
+  - Working with strict hardware constraints
+  - Building performance-critical systems
+  - Dealing with high-scale applications
+  - Operating in resource-limited environments
+- Remember: Readable code is easier to maintain, debug, and collaborate on
+:::
+
+### Time and Space Complexity
+
+#### Time Complexity
+   - How runtime grows with input size
+   - Expressed in Big O(n) notation cause we are considering the worst case scenario neither the best(Omega Ω) nor the average(Theta Θ).
+   - **Big O(n)** is the upper bound of the time complexity.
+   - **Do not Include Constants and lower values when counting the fundamental operations.**
+
+```javascript
+// O(1)
+function constantTime(n) {
+    return n * 2;
+}
+```
+- Here the fundamental operation is the multiplication and we are performing it only once.Hence, it's O(1).
+
+```javascript
+// O(n)
+function linearTime(n) {
+    for (let i = 0; i < n; i++) {
+        console.log(i);
+    }
+}
+```
+- Here the fundamental operation is the loop and we are performing it `n` times.Hence, it's O(n).
+
+```javascript
+// O(n^2)
+function quadraticTime(n) {
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            console.log(i, j);
+        }
+    }
+}
+```
+Suppose if we give the input `n` as 10 then the number of operations would be `10 * 10 = 100`.
+- Here the fundamental operation is the nested loop and we are performing it `n * n` times.Hence, it's O(n^2).
+
+```javascript
+// O(log n)
+function logarithmicTime(n) {
+    for (let i = 1; i < n; i = i * 2) {
+        console.log(i);
+    }
+}
+```
+Suppose if we give the input `n` as 10 then the number of operations would be `log2(10) = 3.32`.
+- Here the fundamental operation is the loop and we are performing it `log2(n)` times.Hence, it's O(log n).
+
+#### Space Complexity
+   - Memory usage relative to input size
+   - Also expressed in Big O notation
+   - Includes:
+     - Input space
+     - Auxiliary space (extra space used)
+- **Do not reduce any space complexity even if the space is not used without knowing why the space is created at the first place.**
+
+```javascript
+// O(n)
+const arr = [1, 2, 3, 4, 5];
+```
+- Space used is directly proportional to the input size.
+
+```javascript
+// O(1)
+function findSum(arr) {
+    let sum = 0;
+    for (let i = 0; i < arr.length; i++) {
+        sum += arr[i];
+    }
+    return sum;
+}
+```
+- Use the same amount of extra space regardless of the input size.
+
+```javascript
+// O(n^2)
+function createMatrix(n) {
+        const matrix = [];
+    for (let i = 0; i < n; i++) {
+        matrix.push(Array(n).fill(0));
+    }
+    return matrix;
+}
+console.log(createMatrix(3)); // [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+```
+- Space used is directly proportional to the square of the input size.
+
+<TimeComplexityChart />
+
+
+#### Analyzing Efficiency
+
+When evaluating an algorithm, consider:
+- Best case scenario
+- Average case scenario
+- Worst case scenario (most commonly used)
+
+#### Trade-offs
+
+- Time vs Space: Often need to balance between speed and memory usage
+- Readability vs Performance: Sometimes simpler code is preferred over slightly better performance
+- Development time vs Optimization: Consider if optimization is worth the development effort
+
+#### Time and Space Complexity
+
+#### Basic Data Structures
+
+- Strings
+- Arrays
+- Objects
+- Stacks
+- Queues
+- Linked Lists
+
+#### Advanced Data Structures
+
+- Trees
+- Graphs
+- Heaps
+
+#### Basic Algorithms
+
+- Sorting
+   - Bubble Sort
+   - Insertion Sort
+   - Selection Sort
+   - Merge Sort
+   - Quick Sort
+- Searching
+   - Linear Search
+   - Binary Search
+   - Depth-First Search (DFS)
+   - Breadth-First Search (BFS)
+- Recursion
+
+#### Advanced Algorithms
+
+- Dynamic Programming
+    - Overlapping Subproblems
+    - Optimal Substructure
+    - Memoization
+    - Tabulation
+- Greedy Algorithms
+    - Local Optimization
+    - No Backtracking
+- Backtracking
+    - Explore all possible solutions
+    - Explore all paths
+    - Shortest path
+    - Minimum Spanning Tree
+
+#### Big O
+- space and time Complexity
+- Scalability
+- Rules and Graph
+- few exercises to Practice
+
+## Strings 
+- Basic Nature, Immutable, Operations, Methods, etc.
+- Indexing, Slicing, Iteration, etc.
+- String Compression, Encoding, etc.
+- case conversion, trim, split, join, replace, search, match, etc.
+- Replace, Remove, Extract, etc.
+- Pattern Matching, Regular Expressions, etc.
+- substring, substr, reverse, sort, etc.
+- Anagram, Palindrome, etc.
+- String Rotation, etc.
+- leetcode problems easy
+
+## Arrays
+- undderstrading array
+    -dynamic vs static Arrays
+
+- memory allocation(access & storage)
+- operations
+    - accessing and updationg
+    - insertion and deletion
+    - search
+    - traversal
+- methods
+    - push, pop, shift, unshift, etc.
+    - sort, reverse, etc.
+    - concat, slice, splice, etc.
+    - map, filter, reduce, etc.
+    - find, findIndex, includes, etc.
+    - some, every, etc.
+    - join, split, etc.
+    - fill, copyWithin, etc.
+- Multidimensional Arrays
+    - 2D Arrays
+    - 3D Arrays,matrices
+    - Sparse Matrices
+    - operations, methods, etc.
+- manupulate
+    - rotate, spiral, etc.
+    - search in 2D
+    - shuffle
+    - randomization
+    - grouping anagrams
+    - find duplicates, missing number, etc.
+- patterns
+    - sliding window
+    - two pointers
+    - fast and slow pointers
+    - merge intervals
+    - etc.
+- searching and sorting
+    - linear search
+    - binary search
+    - bubble sort
+    - insertion sort
+    - selection sort
+    - merge sort
+    - quick sort
+    - heap sort
+    - counting sort
+    - radix sort
+    - etc.
+- leetcode problems easy to moderate
+
+## Linked List
+- understand the basics
+
+
+- Nodes 
+- Pointers
+- single, double, circular, etc.
+
+- Implementations
+    - singly linked list
+    - doubly linked list
+    - circular linked list
+    - etc.
+
+    - node with value and next pointer
+    - head, tail, length
+    - utility functions(isEmpty, get, set, insert, delete, etc.)
+        - traverse
+        - search
+        - insert
+        - delete
+        - etc.
+    - constructors
+
+- Advanced techniques
+    - two pointer technique
+    - reverse
+    - merge two sorted lists
+    - remove duplicates
+    - etc.
+
+- patterns
+    - Detecting cycle
+    - finding middle
+    - etc.
+
+- leetcode problems easy to moderate
+
+## Stacks and Queues
+- stack(lifo)
+- queue(fifo)
+
+- basic operations
+    - circular
+    - add, remove, front, rear, etc.
+    - underflow, overflow
+-bfs, round robin
+- balancing symbol , reverse a queue
+- thread safe implementation
+- leetcode problems easy to moderate
+

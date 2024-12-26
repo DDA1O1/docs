@@ -1,0 +1,1907 @@
+---
+title: Machine Learning Algorithm
+---
+
+### Simple Linear Regression
+
+Simple linear regression is a basic predictive modeling technique that models the relationship between one input variable (X) and one output variable (Y).
+
+#### How it Works
+
+1. **The Line Equation**
+   ```
+   Y = mX + b
+   ```
+   - Y: Predicted value (dependent variable)
+   - X: Input value (independent variable) 
+   - m: Slope (how much Y changes when X changes)
+   - b: Y-intercept (value of Y when X = 0)
+
+2. **Finding Best Fit**
+   - Uses "least squares" method
+   - Minimizes the sum of squared differences between predicted and actual Y values
+   - Lower error = better fit
+
+#### Example
+
+Predicting house prices based on square footage:
+- X = Square footage (input)
+- Y = House price (prediction)
+- m = Price increase per square foot
+- b = Base price
+
+#### When to Use
+
+- One input variable, one output variable
+- Data shows roughly linear pattern
+- Quick insights needed
+- Basic predictions
+
+#### Limitations
+
+- Only handles linear relationships
+- Sensitive to outliers
+- Too simple for complex problems
+
+#### Code Example
+```python
+# Basic implementation using sklearn
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+X = np.array([[1], [2], [3], [4]])  # Input data
+y = np.array([2, 4, 6, 8])          # Output data
+
+model = LinearRegression()
+model.fit(X, y)
+
+# Predict new value
+prediction = model.predict([[5]])
+```
+
+#### Real World Example: House Price Prediction
+
+Let's predict house prices using square footage:
+
+```python
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+
+# Sample data
+house_data = {
+    'sqft': [1200, 1500, 1800, 2200, 2500],
+    'price': [150000, 175000, 210000, 250000, 290000]
+}
+df = pd.DataFrame(house_data)
+
+# Prepare data
+X = df[['sqft']].values
+y = df['price'].values
+
+# Train model
+model = LinearRegression()
+model.fit(X, y)
+
+# Get equation components
+slope = model.coef_[0]
+intercept = model.intercept_
+
+print(f"Price = {slope:.2f} × sqft + {intercept:.2f}")
+
+# Predict price for a 2000 sqft house
+new_house = [[2000]]
+predicted_price = model.predict(new_house)
+print(f"Predicted price for 2000 sqft: ${predicted_price[0]:,.2f}")
+```
+
+**What This Shows:**
+- Each square foot increases price by a fixed amount (slope)
+- Base price is the intercept
+- Model learns from existing house prices
+- Can predict prices for new houses
+
+**Output Example:**
+```
+Price = 110.23 × sqft + 15000.00
+Predicted price for 2000 sqft: $235,460.00
+```
+### Cost Function
+
+The cost function helps us measure how well our linear regression line fits the data. Think of it as a "wrongness score" - the lower the score, the better the fit.
+
+#### How it Works
+
+1. **Mean Squared Error (MSE)**
+   ```
+   MSE = (1/n) * Σ(y_actual - y_predicted)²
+   ```
+   - n: Number of data points
+   - y_actual: Real value
+   - y_predicted: Model's prediction
+   - Σ: Sum everything
+
+2. **Why Square the Errors?**
+   - Makes all errors positive
+   - Penalizes big mistakes more
+   - Easier to calculate the minimum
+
+#### Visual Example
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Sample data
+X = np.array([1, 2, 3, 4, 5])
+y_actual = np.array([2, 4, 5, 4, 5])
+
+# Bad fit line
+m_bad = 0.5
+b_bad = 1
+y_bad = m_bad * X + b_bad
+
+# Good fit line
+m_good = 0.8
+b_good = 1.5
+y_good = m_good * X + b_good
+
+# Calculate MSE
+mse_bad = np.mean((y_actual - y_bad)**2)
+mse_good = np.mean((y_actual - y_good)**2)
+
+print(f"Bad fit MSE: {mse_bad:.2f}")
+print(f"Good fit MSE: {mse_good:.2f}")
+```
+
+#### Finding the Best Line
+1. Start with random slope (m) and intercept (b)
+2. Calculate MSE
+3. Adjust m and b to reduce MSE
+4. Repeat until MSE can't get lower
+
+#### Code Example
+```python
+from sklearn.metrics import mean_squared_error
+
+# Sample data
+X = np.array([[1], [2], [3], [4]])
+y_true = np.array([2, 4, 6, 8])
+
+# Train model
+model = LinearRegression()
+model.fit(X, y_true)
+
+# Make predictions
+y_pred = model.predict(X)
+
+# Calculate cost
+mse = mean_squared_error(y_true, y_pred)
+print(f"Model's MSE: {mse:.2f}")
+```
+
+#### Key Points
+- Lower cost = better fit
+- Perfect fit has cost of 0
+- Used to train the model
+- Helps prevent overfitting
+
+### Convergence Algorithm
+
+Gradient descent helps find the best line by gradually adjusting the slope and intercept. Think of it like walking downhill to find the lowest point.
+
+#### How it Works
+
+1. **Basic Steps**
+   ```
+   For each step:
+   1. Calculate current error
+   2. Find direction of steepest descent
+   3. Take a small step in that direction
+   4. Repeat until minimal improvement
+   ```
+
+2. **Learning Rate (α)**
+   - Controls step size
+   - Too large: might overshoot
+   - Too small: takes too long
+   - Typical values: 0.01 to 0.1
+
+#### Simple Implementation
+```python
+import numpy as np
+
+def gradient_descent(X, y, learning_rate=0.01, epochs=1000):
+    m = 0  # Initial slope
+    b = 0  # Initial intercept
+    n = len(X)  # Number of data points
+    
+    for _ in range(epochs):
+        # Current predictions
+        y_pred = m * X + b
+        
+        # Calculate gradients
+        dm = (-2/n) * sum(X * (y - y_pred))
+        db = (-2/n) * sum(y - y_pred)
+        
+        # Update parameters
+        m = m - learning_rate * dm
+        b = b - learning_rate * db
+        
+    return m, b
+
+# Example usage
+X = np.array([1, 2, 3, 4, 5])
+y = np.array([2, 4, 6, 8, 10])
+
+final_m, final_b = gradient_descent(X, y)
+print(f"Final equation: y = {final_m:.2f}x + {final_b:.2f}")
+```
+
+#### Convergence Types
+
+1. **Batch Gradient Descent**
+   - Uses all data points
+   - More stable
+   - Slower for large datasets
+
+2. **Stochastic Gradient Descent**
+   - Uses one random point
+   - Faster but noisier
+   - Better for large datasets
+
+#### Stopping Conditions
+- Maximum iterations reached
+- Error change is very small
+- Gradient becomes very small
+
+#### Common Issues and Solutions
+
+1. **Not Converging**
+   - Reduce learning rate
+   - Normalize input data
+   - Check for data issues
+
+2. **Slow Convergence**
+   - Increase learning rate
+   - Use momentum
+   - Try different initialization
+
+#### Code with Early Stopping
+```python
+def gradient_descent_with_stopping(X, y, learning_rate=0.01, 
+                                 tolerance=1e-6, max_epochs=1000):
+    m = b = 0
+    prev_cost = float('inf')
+    
+    for epoch in range(max_epochs):
+        y_pred = m * X + b
+        cost = np.mean((y - y_pred) ** 2)
+        
+        # Check for convergence
+        if abs(prev_cost - cost) < tolerance:
+            print(f"Converged at epoch {epoch}")
+            break
+            
+        # Update parameters
+        dm = (-2/len(X)) * sum(X * (y - y_pred))
+        db = (-2/len(X)) * sum(y - y_pred)
+        
+        m -= learning_rate * dm
+        b -= learning_rate * db
+        prev_cost = cost
+        
+    return m, b
+```
+
+#### Key Points
+- Automatically finds best parameters
+- Learning rate is crucial
+- May need multiple runs
+- Works for many ML algorithms
+
+### Multiple Linear Regression
+
+Multiple linear regression predicts an outcome using two or more input variables. Think of it as simple linear regression with more features.
+
+#### How it Works
+
+1. **The Equation**
+   ```
+   Y = b + m₁X₁ + m₂X₂ + ... + mₙXₙ
+   ```
+   - Y: Predicted value
+   - b: Base value (intercept)
+   - m₁, m₂, etc.: Coefficients for each feature
+   - X₁, X₂, etc.: Input features
+
+#### Real World Example: House Price Prediction
+
+```python
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+
+# Sample data
+house_data = {
+    'sqft': [1200, 1500, 1800, 2200, 2500],
+    'bedrooms': [2, 3, 3, 4, 4],
+    'age': [5, 10, 15, 5, 8],
+    'price': [150000, 175000, 210000, 250000, 290000]
+}
+df = pd.DataFrame(house_data)
+
+# Prepare features and target
+X = df[['sqft', 'bedrooms', 'age']]
+y = df['price']
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Train model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Show coefficients
+for feature, coef in zip(X.columns, model.coef_):
+    print(f"{feature}: ${coef:,.2f} impact")
+print(f"Base price: ${model.intercept_:,.2f}")
+
+# Predict new house
+new_house = [[2000, 3, 10]]  # 2000 sqft, 3 beds, 10 years old
+prediction = model.predict(new_house)
+print(f"\nPredicted price: ${prediction[0]:,.2f}")
+```
+
+#### Feature Selection
+Good features are:
+- Related to what you're predicting
+- Independent from each other
+- Actually available in real use
+
+#### Data Preparation
+1. **Handle Missing Values**
+   ```python
+   # Fill missing values
+   df.fillna(df.mean(), inplace=True)
+   ```
+
+2. **Scale Features**
+   ```python
+   from sklearn.preprocessing import StandardScaler
+   
+   scaler = StandardScaler()
+   X_scaled = scaler.fit_transform(X)
+   ```
+
+#### Model Evaluation
+```python
+from sklearn.metrics import r2_score, mean_squared_error
+import numpy as np
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Calculate metrics
+r2 = r2_score(y_test, y_pred)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+
+print(f"R² Score: {r2:.2f}")
+print(f"RMSE: ${rmse:,.2f}")
+```
+
+#### Key Points
+- More features = more complex model
+- Features should be meaningful
+- Watch for multicollinearity
+- Scale features if needed
+- Check model assumptions
+
+#### Limitations
+- Assumes linear relationships
+- Sensitive to outliers
+- Can overfit with too many features
+- Features should be independent
+
+### Performance Metrics
+
+Performance metrics help us understand how well our model is performing. Here are the key metrics for regression models.
+
+#### Common Metrics
+
+1. **Mean Squared Error (MSE)**
+   ```python
+   from sklearn.metrics import mean_squared_error
+   
+   mse = mean_squared_error(y_true, y_pred)
+   ```
+   - Measures average squared difference between predictions and actual values
+   - Penalizes larger errors more
+   - Always positive, lower is better
+
+2. **Root Mean Squared Error (RMSE)**
+   ```python
+   rmse = np.sqrt(mean_squared_error(y_true, y_pred))
+   ```
+   - Square root of MSE
+   - Same units as target variable
+   - Easier to interpret than MSE
+
+3. **R-squared (R²)**
+   ```python
+   from sklearn.metrics import r2_score
+   
+   r2 = r2_score(y_true, y_pred)
+   ```
+   - Shows percentage of variance explained
+   - Range: 0 to 1 (higher is better)
+   - 0.7 means model explains 70% of variance
+
+#### Complete Example
+```python
+import numpy as np
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+
+def evaluate_model(y_true, y_pred):
+    # Calculate metrics
+    mse = mean_squared_error(y_true, y_pred)
+    rmse = np.sqrt(mse)
+    r2 = r2_score(y_true, y_pred)
+    mae = mean_absolute_error(y_true, y_pred)
+    
+    # Print results
+    print(f"MSE: {mse:.2f}")
+    print(f"RMSE: {rmse:.2f}")
+    print(f"R²: {r2:.2f}")
+    print(f"MAE: {mae:.2f}")
+    
+    return mse, rmse, r2, mae
+
+# Example usage
+y_true = np.array([10, 20, 30, 40, 50])
+y_pred = np.array([12, 18, 31, 38, 51])
+
+evaluate_model(y_true, y_pred)
+```
+
+#### Cross-Validation
+```python
+from sklearn.model_selection import cross_val_score
+
+def cv_evaluate(model, X, y, cv=5):
+    # Get cross-validation scores
+    scores = cross_val_score(model, X, y, cv=cv)
+    
+    print(f"CV Scores: {scores}")
+    print(f"Mean Score: {scores.mean():.2f}")
+    print(f"Std Dev: {scores.std():.2f}")
+```
+
+#### Visualization
+```python
+import matplotlib.pyplot as plt
+
+def plot_predictions(y_true, y_pred):
+    plt.scatter(y_true, y_pred)
+    plt.plot([y_true.min(), y_true.max()], 
+             [y_true.min(), y_true.max()], 
+             'r--', lw=2)
+    plt.xlabel('Actual Values')
+    plt.ylabel('Predictions')
+    plt.title('Actual vs Predicted')
+    plt.show()
+```
+
+#### When to Use Each Metric
+
+1. **Use RMSE when:**
+   - You need error in same units as target
+   - Large errors are particularly bad
+
+2. **Use R² when:**
+   - Explaining model to non-technical people
+   - Comparing different models
+
+3. **Use Cross-validation when:**
+   - Dataset is small
+   - Need reliable performance estimate
+
+#### Key Points
+- Use multiple metrics
+- Consider your audience
+- Check for overfitting
+- Validate on test data
+- Compare to baseline
+
+### MSE, MAE and RMSE
+
+These are the three most important error metrics for regression models. Let's understand each one simply.
+
+#### Mean Absolute Error (MAE)
+```
+MAE = (1/n) * Σ|y_true - y_pred|
+```
+
+**What it means:**
+- Average of absolute differences between predictions and actual values
+- Easier to understand
+- All errors weighted equally
+- Same unit as your data
+
+```python
+from sklearn.metrics import mean_absolute_error
+
+# Example
+y_true = [10, 20, 30]
+y_pred = [12, 18, 35]
+
+mae = mean_absolute_error(y_true, y_pred)
+print(f"MAE: {mae}")  # Shows average error in original units
+```
+
+#### Mean Squared Error (MSE)
+```
+MSE = (1/n) * Σ(y_true - y_pred)²
+```
+
+**What it means:**
+- Square the errors before averaging
+- Penalizes large errors more
+- Units are squared (if predicting dollars, MSE is in dollars²)
+- Always positive
+
+```python
+from sklearn.metrics import mean_squared_error
+
+mse = mean_squared_error(y_true, y_pred)
+print(f"MSE: {mse}")
+```
+
+#### Root Mean Square Error (RMSE)
+```
+RMSE = √MSE
+```
+
+**What it means:**
+- Square root of MSE
+- Back to original units
+- Still penalizes large errors
+- Most commonly used metric
+
+```python
+rmse = np.sqrt(mean_squared_error(y_true, y_pred))
+print(f"RMSE: {rmse}")
+```
+
+#### Complete Example
+```python
+import numpy as np
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+def compare_metrics(y_true, y_pred):
+    # Calculate all metrics
+    mae = mean_absolute_error(y_true, y_pred)
+    mse = mean_squared_error(y_true, y_pred)
+    rmse = np.sqrt(mse)
+    
+    print("Example predictions vs actual:")
+    for t, p in zip(y_true, y_pred):
+        print(f"Actual: {t}, Predicted: {p}, Difference: {abs(t-p)}")
+    
+    print(f"\nMAE: {mae:.2f}")
+    print(f"MSE: {mse:.2f}")
+    print(f"RMSE: {rmse:.2f}")
+
+# Test with house prices (in thousands)
+actual = [200, 300, 400, 500]
+predicted = [180, 320, 390, 510]
+
+compare_metrics(actual, predicted)
+```
+
+#### When to Use Each
+
+**Use MAE when:**
+- You need simple interpretation
+- All errors equally important
+- Outliers are not a big concern
+
+**Use MSE when:**
+- Large errors are more important
+- You're training models
+- You don't need interpretable units
+
+**Use RMSE when:**
+- You want interpretable units
+- Large errors matter more
+- Comparing different models
+
+#### Key Points
+- MAE is most interpretable
+- RMSE is most popular
+- MSE is best for training
+- Always use same metric when comparing models
+
+### OVERFITING AND UNDERFITING
+
+Understanding when your model learns too much or too little from the data.
+
+#### What Are They?
+
+1. **Underfitting**
+   - Model is too simple
+   - Doesn't capture important patterns
+   - Poor performance on both training and test data
+   - Like memorizing only basic rules
+
+2. **Overfitting**
+   - Model is too complex
+   - Learns noise in training data
+   - Great on training data, poor on test data
+   - Like memorizing answers instead of understanding
+
+#### Visual Example
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+
+# Generate sample data
+X = np.linspace(0, 10, 100).reshape(-1, 1)
+y = 3*X + np.sin(X)*2 + np.random.normal(0, 1.5, (100,1))
+
+# Three models
+def plot_fits():
+    # Underfit: straight line
+    underfit = LinearRegression()
+    underfit.fit(X, y)
+    y_under = underfit.predict(X)
+    
+    # Good fit: polynomial degree 3
+    good = PolynomialFeatures(degree=3)
+    X_good = good.fit_transform(X)
+    model_good = LinearRegression().fit(X_good, y)
+    y_good = model_good.predict(X_good)
+    
+    # Overfit: polynomial degree 15
+    overfit = PolynomialFeatures(degree=15)
+    X_over = overfit.fit_transform(X)
+    model_over = LinearRegression().fit(X_over, y)
+    y_over = model_over.predict(X_over)
+    
+    # Plot
+    plt.scatter(X, y, color='gray', alpha=0.5, label='Data')
+    plt.plot(X, y_under, 'r-', label='Underfit')
+    plt.plot(X, y_good, 'g-', label='Good fit')
+    plt.plot(X, y_over, 'b-', label='Overfit')
+    plt.legend()
+    plt.show()
+
+plot_fits()
+```
+
+#### How to Detect
+
+1. **Underfitting Signs:**
+   - High training error
+   - High validation error
+   - Model makes very simple predictions
+
+2. **Overfitting Signs:**
+   - Low training error
+   - High validation error
+   - Model makes complex, wiggly predictions
+
+#### Solutions
+
+**For Underfitting:**
+```python
+# Add more features
+from sklearn.preprocessing import PolynomialFeatures
+
+# Create more complex features
+poly = PolynomialFeatures(degree=2)
+X_more_features = poly.fit_transform(X)
+
+# Try more complex model
+from sklearn.ensemble import RandomForestRegressor
+complex_model = RandomForestRegressor(n_estimators=100)
+```
+
+**For Overfitting:**
+```python
+# Add regularization
+from sklearn.linear_model import Ridge, Lasso
+
+# L2 regularization
+ridge = Ridge(alpha=1.0)
+ridge.fit(X, y)
+
+# L1 regularization
+lasso = Lasso(alpha=1.0)
+lasso.fit(X, y)
+
+# Use cross-validation
+from sklearn.model_selection import cross_val_score
+scores = cross_val_score(model, X, y, cv=5)
+```
+
+#### Prevention Techniques
+
+1. **Cross Validation**
+```python
+from sklearn.model_selection import train_test_split
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Train and evaluate
+model.fit(X_train, y_train)
+train_score = model.score(X_train, y_train)
+test_score = model.score(X_test, y_test)
+
+print(f"Training score: {train_score:.2f}")
+print(f"Testing score: {test_score:.2f}")
+```
+
+2. **Learning Curves**
+```python
+from sklearn.model_selection import learning_curve
+
+def plot_learning_curve(model, X, y):
+    train_sizes, train_scores, val_scores = learning_curve(
+        model, X, y, cv=5, n_jobs=-1, 
+        train_sizes=np.linspace(0.1, 1.0, 10))
+    
+    plt.plot(train_sizes, train_scores.mean(axis=1), label='Training score')
+    plt.plot(train_sizes, val_scores.mean(axis=1), label='Cross-validation score')
+    plt.xlabel('Training examples')
+    plt.ylabel('Score')
+    plt.legend()
+    plt.show()
+```
+
+#### Key Points
+- Balance is crucial
+- Use validation data
+- Start simple, add complexity slowly
+- Monitor training vs validation performance
+- Use regularization when needed
+
+### Linear Regression with Ordinary Least Squares (OLS)
+
+OLS is the most common method to find the best-fitting line in linear regression. It minimizes the sum of squared differences between predictions and actual values.
+
+#### How OLS Works
+
+1. **The Basic Idea**
+   - Find line that minimizes squared errors
+   - Squared errors = (actual - predicted)²
+   - Has a mathematical solution (no iteration needed)
+
+2. **The Formula**
+   ```
+   β = (X^T X)^(-1) X^T y
+   ```
+   Where:
+   - β: Coefficients (slope and intercept)
+   - X: Input features
+   - y: Target values
+   - ^T: Transpose
+   - ^(-1): Matrix inverse
+
+#### Simple Implementation
+```python
+import numpy as np
+
+def simple_ols(X, y):
+    # Add column of 1s for intercept
+    X = np.column_stack([np.ones(len(X)), X])
+    
+    # Calculate coefficients
+    beta = np.linalg.inv(X.T @ X) @ X.T @ y
+    
+    # Return intercept and slope
+    return beta[0], beta[1]
+
+# Example usage
+X = np.array([1, 2, 3, 4, 5])
+y = np.array([2, 4, 5, 4, 5])
+
+intercept, slope = simple_ols(X, y)
+print(f"y = {slope:.2f}x + {intercept:.2f}")
+```
+
+#### Using Statsmodels (More Detailed)
+```python
+import statsmodels.api as sm
+
+def detailed_ols(X, y):
+    # Add constant
+    X = sm.add_constant(X)
+    
+    # Fit model
+    model = sm.OLS(y, X).fit()
+    
+    # Print summary
+    print(model.summary().tables[1])
+    
+    return model
+
+# Example with house prices
+X = np.array([1500, 1800, 2000, 2200, 2500])  # Square footage
+y = np.array([150000, 180000, 210000, 220000, 250000])  # Prices
+
+model = detailed_ols(X, y)
+```
+
+#### Using Scikit-learn (Simple)
+```python
+from sklearn.linear_model import LinearRegression
+
+def sklearn_ols(X, y):
+    # Reshape X if needed
+    if X.ndim == 1:
+        X = X.reshape(-1, 1)
+        
+    # Fit model
+    model = LinearRegression()
+    model.fit(X, y)
+    
+    print(f"Slope: {model.coef_[0]:.2f}")
+    print(f"Intercept: {model.intercept_:.2f}")
+    print(f"R² Score: {model.score(X, y):.2f}")
+    
+    return model
+
+# Example usage
+model = sklearn_ols(X, y)
+```
+
+#### Assumptions of OLS
+1. **Linearity**
+   - Relationship is actually linear
+   - Check with scatter plots
+
+2. **Independence**
+   - Observations are independent
+   - No time series patterns
+
+3. **Normality**
+   - Residuals are normally distributed
+   - Check with histogram
+
+4. **Equal Variance**
+   - Spread of residuals is constant
+   - Check with residual plot
+
+#### Checking Assumptions
+```python
+def check_assumptions(model, X, y):
+    # Get predictions and residuals
+    y_pred = model.predict(X)
+    residuals = y - y_pred
+    
+    # Plot residuals
+    plt.figure(figsize=(10, 4))
+    
+    # Residual plot
+    plt.subplot(121)
+    plt.scatter(y_pred, residuals)
+    plt.axhline(y=0, color='r', linestyle='--')
+    plt.xlabel('Predicted')
+    plt.ylabel('Residuals')
+    
+    # Histogram of residuals
+    plt.subplot(122)
+    plt.hist(residuals, bins=20)
+    plt.xlabel('Residuals')
+    plt.ylabel('Frequency')
+    
+    plt.tight_layout()
+    plt.show()
+```
+
+#### Key Points
+- Simple and fast
+- Has exact solution
+- Works well for linear data
+- Check assumptions
+- Use with small/medium datasets
+
+### Linear Regression with Regularization
+
+Regularization helps prevent overfitting by adding a penalty for large coefficients. Think of it as making the model simpler.
+
+#### Types of Regularization
+
+1. **Ridge (L2)**
+   ```
+   Cost = MSE + α * (sum of squared coefficients)
+   ```
+   - Shrinks coefficients toward zero
+   - Never makes them exactly zero
+   - Good for handling multicollinearity
+
+2. **Lasso (L1)**
+   ```
+   Cost = MSE + α * (sum of absolute coefficients)
+   ```
+   - Can make coefficients exactly zero
+   - Good for feature selection
+   - Simpler models
+
+#### Simple Example
+```python
+from sklearn.linear_model import Ridge, Lasso
+import numpy as np
+
+# Sample data
+X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
+y = np.array([2, 3, 4, 5])
+
+# Ridge regression
+ridge = Ridge(alpha=1.0)
+ridge.fit(X, y)
+print("Ridge coefficients:", ridge.coef_)
+
+# Lasso regression
+lasso = Lasso(alpha=1.0)
+lasso.fit(X, y)
+print("Lasso coefficients:", lasso.coef_)
+```
+
+#### Real World Example: House Price Prediction
+```python
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+
+# Prepare data
+house_data = {
+    'sqft': [1200, 1500, 1800, 2200, 2500],
+    'bedrooms': [2, 3, 3, 4, 4],
+    'age': [5, 10, 15, 5, 8],
+    'price': [150000, 175000, 210000, 250000, 290000]
+}
+df = pd.DataFrame(house_data)
+
+# Scale features
+X = df[['sqft', 'bedrooms', 'age']]
+y = df['price']
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2)
+
+# Try different alpha values
+alphas = [0.1, 1.0, 10.0]
+for alpha in alphas:
+    # Ridge
+    ridge = Ridge(alpha=alpha)
+    ridge.fit(X_train, y_train)
+    
+    # Print coefficients
+    print(f"\nRidge (alpha={alpha})")
+    for name, coef in zip(X.columns, ridge.coef_):
+        print(f"{name}: {coef:.2f}")
+```
+
+#### Finding Best Alpha
+```python
+from sklearn.model_selection import cross_val_score
+
+def find_best_alpha(X, y, alphas):
+    best_score = -float('inf')
+    best_alpha = None
+    
+    for alpha in alphas:
+        model = Ridge(alpha=alpha)
+        scores = cross_val_score(model, X, y, cv=5)
+        avg_score = scores.mean()
+        
+        if avg_score > best_score:
+            best_score = avg_score
+            best_alpha = alpha
+            
+    return best_alpha, best_score
+```
+
+#### When to Use Each
+
+**Use Ridge when:**
+- All features might be important
+- Features are correlated
+- Want to reduce coefficients
+
+**Use Lasso when:**
+- Need feature selection
+- Want simpler model
+- Some features might be useless
+
+#### Elastic Net
+```python
+from sklearn.linear_model import ElasticNet
+
+# Combines Ridge and Lasso
+elastic = ElasticNet(alpha=1.0, l1_ratio=0.5)
+elastic.fit(X_train, y_train)
+```
+
+#### Key Points
+- Prevents overfitting
+- Makes models more stable
+- Scale features first
+- Try different alpha values
+- Use cross-validation
+
+### Simple Polynomial Regression
+
+Polynomial regression handles curved relationships by adding powers of X (like X², X³) to linear regression. Think of it as making linear regression flexible enough to fit curves.
+
+#### How it Works
+
+1. **Basic Idea**
+   ```
+   y = b + m₁x + m₂x² + m₃x³ + ...
+   ```
+   - b: Base value (intercept)
+   - x: Input feature
+   - x²,x³: Powers of x
+   - m₁,m₂,m₃: Coefficients
+
+#### Simple Implementation
+```python
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+def polynomial_regression(X, y, degree=2):
+    # Convert X to polynomial features
+    poly = PolynomialFeatures(degree=degree)
+    X_poly = poly.fit_transform(X.reshape(-1, 1))
+    
+    # Fit model
+    model = LinearRegression()
+    model.fit(X_poly, y)
+    
+    return model, poly
+
+# Example usage
+X = np.array([1, 2, 3, 4, 5])
+y = np.array([2, 4, 8, 16, 32])  # Exponential pattern
+
+model, poly = polynomial_regression(X, y, degree=2)
+```
+
+#### Visual Example
+```python
+import matplotlib.pyplot as plt
+
+def plot_polynomial_fit(X, y, degree):
+    # Fit model
+    model, poly = polynomial_regression(X, y, degree)
+    
+    # Generate smooth points for curve
+    X_smooth = np.linspace(X.min(), X.max(), 100)
+    X_smooth_poly = poly.transform(X_smooth.reshape(-1, 1))
+    y_smooth = model.predict(X_smooth_poly)
+    
+    # Plot
+    plt.scatter(X, y, color='blue', label='Data')
+    plt.plot(X_smooth, y_smooth, color='red', label=f'Degree {degree}')
+    plt.legend()
+    plt.show()
+    
+    return model
+
+# Example with different degrees
+degrees = [1, 2, 3]
+for degree in degrees:
+    plot_polynomial_fit(X, y, degree)
+```
+
+#### Real World Example: Temperature Curve
+```python
+# Daily temperature data
+hours = np.array([0, 4, 8, 12, 16, 20, 24])
+temp = np.array([15, 13, 18, 25, 23, 18, 15])
+
+def fit_temperature_curve():
+    # Fit polynomial model
+    model, poly = polynomial_regression(hours, temp, degree=3)
+    
+    # Generate smooth curve
+    hours_smooth = np.linspace(0, 24, 100)
+    hours_poly = poly.transform(hours_smooth.reshape(-1, 1))
+    temp_smooth = model.predict(hours_poly)
+    
+    # Plot
+    plt.scatter(hours, temp, label='Actual')
+    plt.plot(hours_smooth, temp_smooth, 'r-', label='Predicted')
+    plt.xlabel('Hour of Day')
+    plt.ylabel('Temperature (°C)')
+    plt.legend()
+    plt.show()
+```
+
+#### Choosing the Right Degree
+
+1. **Too Low (Underfitting)**
+   - Line too rigid
+   - Misses important patterns
+   - High error on both training and test
+
+2. **Too High (Overfitting)**
+   - Line too wiggly
+   - Fits noise in data
+   - Perfect on training, bad on test
+
+```python
+def find_best_degree(X, y, max_degree=10):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    best_score = -float('inf')
+    best_degree = 1
+    
+    for degree in range(1, max_degree + 1):
+        model, poly = polynomial_regression(X_train, y_train, degree)
+        
+        # Transform test data
+        X_test_poly = poly.transform(X_test.reshape(-1, 1))
+        score = model.score(X_test_poly, y_test)
+        
+        if score > best_score:
+            best_score = score
+            best_degree = degree
+    
+    return best_degree, best_score
+```
+
+#### When to Use
+
+**Good For:**
+- Curved relationships
+- Temperature cycles
+- Growth patterns
+- Physical processes
+
+**Not Good For:**
+- Linear relationships (use simple linear)
+- Too many features
+- Very noisy data
+
+#### Key Points
+- Start with low degrees (2 or 3)
+- Check for overfitting
+- Scale features if needed
+- Use cross-validation
+- Balance complexity vs accuracy
+
+### Pipeline in Polynomial Regression
+
+A pipeline combines multiple steps (like scaling, polynomial features, and regression) into one clean workflow. Think of it as an assembly line for your data.
+
+#### Basic Pipeline Structure
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+
+def create_poly_pipeline(degree=2):
+    return Pipeline([
+        ('scale', StandardScaler()),                # Step 1: Scale features
+        ('poly', PolynomialFeatures(degree=degree)), # Step 2: Create polynomial
+        ('regression', LinearRegression())          # Step 3: Fit regression
+    ])
+
+# Simple usage
+X = np.array([[1], [2], [3], [4]])
+y = np.array([1, 4, 9, 16])  # y = x²
+
+model = create_poly_pipeline(degree=2)
+model.fit(X, y)
+```
+
+#### Complete Example with Cross-Validation
+```python
+from sklearn.model_selection import cross_val_score
+
+def find_best_polynomial(X, y, max_degree=5):
+    best_score = float('-inf')
+    best_degree = 1
+    
+    for degree in range(1, max_degree + 1):
+        # Create pipeline
+        pipeline = create_poly_pipeline(degree)
+        
+        # Get cross-validation scores
+        scores = cross_val_score(pipeline, X, y, cv=5)
+        avg_score = scores.mean()
+        
+        print(f"Degree {degree}: Score = {avg_score:.3f}")
+        
+        if avg_score > best_score:
+            best_score = avg_score
+            best_degree = degree
+    
+    return best_degree, best_score
+
+# Example usage
+best_degree, best_score = find_best_polynomial(X, y)
+print(f"\nBest degree: {best_degree}")
+```
+
+#### Real-World Example: House Price Prediction
+```python
+def house_price_pipeline():
+    # Sample data
+    house_data = {
+        'size': [1000, 1500, 1200, 1700, 2000],
+        'price': [200000, 300000, 250000, 350000, 450000]
+    }
+    X = np.array(house_data['size']).reshape(-1, 1)
+    y = np.array(house_data['price'])
+    
+    # Create and fit pipeline
+    pipeline = create_poly_pipeline(degree=2)
+    pipeline.fit(X, y)
+    
+    # Make predictions
+    sizes = np.linspace(min(X), max(X), 100).reshape(-1, 1)
+    predictions = pipeline.predict(sizes)
+    
+    # Plot results
+    plt.scatter(X, y, color='blue', label='Actual')
+    plt.plot(sizes, predictions, color='red', label='Predicted')
+    plt.xlabel('House Size (sq ft)')
+    plt.ylabel('Price ($)')
+    plt.legend()
+    plt.show()
+```
+
+#### Benefits of Using Pipeline
+
+1. **Cleaner Code**
+   - All steps in one place
+   - No data leakage
+   - Easy to reproduce
+
+2. **Automatic Order**
+   - Steps run in correct sequence
+   - No manual data passing
+   - Handles transformations automatically
+
+3. **Easy Cross-Validation**
+   ```python
+   from sklearn.model_selection import GridSearchCV
+   
+   # Search for best parameters
+   param_grid = {
+       'poly__degree': [1, 2, 3, 4],
+       'regression__fit_intercept': [True, False]
+   }
+   
+   grid_search = GridSearchCV(
+       create_poly_pipeline(), 
+       param_grid, 
+       cv=5
+   )
+   grid_search.fit(X, y)
+   ```
+
+#### Common Pipeline Steps
+
+1. **Data Scaling**
+   - StandardScaler
+   - MinMaxScaler
+   - RobustScaler
+
+2. **Feature Creation**
+   - PolynomialFeatures
+   - Custom transformers
+
+3. **Model Fitting**
+   - LinearRegression
+   - Ridge
+   - Lasso
+
+#### Key Points
+- Always scale before polynomial features
+- Use cross-validation to avoid overfitting
+- Start with simple pipelines
+- Add steps as needed
+- Great for reproducibility
+
+### Ridge Regression
+
+Ridge regression prevents overfitting by adding a penalty for large coefficients. Think of it as making the model prefer smaller, more reasonable numbers.
+
+#### How it Works
+
+1. **Basic Formula**
+   ```
+   Cost = MSE + α * (sum of squared coefficients)
+   ```
+   - MSE: Regular error term
+   - α (alpha): Controls penalty strength
+   - Higher α = smaller coefficients
+
+#### Simple Implementation
+```python
+from sklearn.linear_model import Ridge
+import numpy as np
+
+def ridge_regression(X, y, alpha=1.0):
+    # Create and fit model
+    model = Ridge(alpha=alpha)
+    model.fit(X, y)
+    
+    return model
+
+# Example usage
+X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
+y = np.array([2, 3, 4, 5])
+
+model = ridge_regression(X, y)
+print("Coefficients:", model.coef_)
+```
+
+#### Visual Example: Effect of Alpha
+```python
+def plot_ridge_coefficients(X, y):
+    alphas = [0.1, 1.0, 10.0, 100.0]
+    coefficients = []
+    
+    for alpha in alphas:
+        model = Ridge(alpha=alpha)
+        model.fit(X, y)
+        coefficients.append(model.coef_)
+    
+    # Plot how coefficients change with alpha
+    plt.figure(figsize=(10, 6))
+    for i in range(X.shape[1]):
+        plt.plot(alphas, [c[i] for c in coefficients], 
+                label=f'Feature {i+1}')
+    
+    plt.xscale('log')
+    plt.xlabel('Alpha')
+    plt.ylabel('Coefficient Value')
+    plt.legend()
+    plt.title('Ridge Coefficients vs Alpha')
+    plt.show()
+```
+
+#### Real-World Example: House Price Prediction
+```python
+def house_price_ridge():
+    # Sample data with multiple features
+    data = {
+        'size': [1000, 1500, 1200, 1700, 2000],
+        'bedrooms': [2, 3, 2, 3, 4],
+        'age': [5, 10, 15, 8, 3],
+        'price': [200000, 300000, 250000, 350000, 450000]
+    }
+    
+    # Prepare data
+    X = np.array([[s, b, a] for s, b, a in 
+                  zip(data['size'], data['bedrooms'], data['age'])])
+    y = np.array(data['price'])
+    
+    # Compare different alphas
+    alphas = [0.1, 1.0, 10.0]
+    for alpha in alphas:
+        model = ridge_regression(X, y, alpha)
+        print(f"\nAlpha = {alpha}")
+        print("Size impact: ${:,.2f}".format(model.coef_[0]))
+        print("Bedroom impact: ${:,.2f}".format(model.coef_[1]))
+        print("Age impact: ${:,.2f}".format(model.coef_[2]))
+```
+
+#### Finding Best Alpha
+```python
+from sklearn.model_selection import cross_val_score
+
+def find_best_alpha(X, y, alphas=[0.1, 1.0, 10.0, 100.0]):
+    best_score = -float('inf')
+    best_alpha = None
+    
+    for alpha in alphas:
+        model = Ridge(alpha=alpha)
+        scores = cross_val_score(model, X, y, cv=5)
+        avg_score = scores.mean()
+        
+        print(f"Alpha {alpha}: Score = {avg_score:.3f}")
+        
+        if avg_score > best_score:
+            best_score = avg_score
+            best_alpha = alpha
+    
+    return best_alpha, best_score
+```
+
+#### When to Use Ridge
+
+**Good For:**
+- Many correlated features
+- All features might be important
+- Want to reduce coefficient size
+- Prevent overfitting
+
+**Not Good For:**
+- Feature selection (use Lasso instead)
+- Very sparse data
+- When you need exactly zero coefficients
+
+#### Key Points
+- Keeps all features
+- Reduces impact of less important features
+- Need to scale features first
+- Choose alpha using cross-validation
+- More stable than Lasso
+
+#### Common Workflow
+```python
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+def ridge_workflow(X, y):
+    # Create pipeline
+    pipeline = Pipeline([
+        ('scaler', StandardScaler()),
+        ('ridge', Ridge(alpha=1.0))
+    ])
+    
+    # Fit and predict
+    pipeline.fit(X, y)
+    
+    return pipeline
+```
+
+### Lasso Regression
+
+Lasso regression helps select important features by setting some coefficients to exactly zero. Think of it as a feature selector that removes less important variables.
+
+#### How it Works
+
+1. **Basic Formula**
+   ```
+   Cost = MSE + α * (sum of absolute coefficients)
+   ```
+   - MSE: Regular error term
+   - α (alpha): Controls feature selection
+   - Higher α = more coefficients become zero
+
+#### Simple Implementation
+```python
+from sklearn.linear_model import Lasso
+import numpy as np
+
+def lasso_regression(X, y, alpha=1.0):
+    # Create and fit model
+    model = Lasso(alpha=alpha)
+    model.fit(X, y)
+    
+    return model
+
+# Example usage
+X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
+y = np.array([2, 3, 4, 5])
+
+model = lasso_regression(X, y)
+print("Coefficients:", model.coef_)
+```
+
+#### Visual Example: Feature Selection
+```python
+def plot_lasso_path(X, y):
+    alphas = np.logspace(-4, 1, 100)
+    coefs = []
+    
+    for alpha in alphas:
+        model = Lasso(alpha=alpha)
+        model.fit(X, y)
+        coefs.append(model.coef_)
+    
+    # Plot coefficient paths
+    plt.figure(figsize=(10, 6))
+    for feature_idx in range(X.shape[1]):
+        plt.plot(alphas, [c[feature_idx] for c in coefs],
+                label=f'Feature {feature_idx+1}')
+    
+    plt.xscale('log')
+    plt.xlabel('Alpha')
+    plt.ylabel('Coefficient Value')
+    plt.legend()
+    plt.title('Lasso Path: Coefficients vs Alpha')
+    plt.show()
+```
+
+#### Real-World Example: House Price Features
+```python
+def house_price_lasso():
+    # Sample data with many features
+    data = {
+        'size': [1000, 1500, 1200, 1700, 2000],
+        'bedrooms': [2, 3, 2, 3, 4],
+        'age': [5, 10, 15, 8, 3],
+        'bathrooms': [1, 2, 1, 2, 2],
+        'garage': [1, 1, 0, 2, 2],
+        'price': [200000, 300000, 250000, 350000, 450000]
+    }
+    
+    # Prepare data
+    features = ['size', 'bedrooms', 'age', 'bathrooms', 'garage']
+    X = np.array([[data[f][i] for f in features] 
+                  for i in range(len(data['price']))])
+    y = np.array(data['price'])
+    
+    # Try different alphas
+    alphas = [0.1, 1.0, 10.0]
+    for alpha in alphas:
+        model = lasso_regression(X, y, alpha)
+        print(f"\nAlpha = {alpha}")
+        for feature, coef in zip(features, model.coef_):
+            if abs(coef) > 0:  # Only show non-zero coefficients
+                print(f"{feature}: ${coef:,.2f}")
+```
+
+#### Finding Important Features
+```python
+def identify_important_features(X, y, feature_names, alpha=1.0):
+    # Fit Lasso
+    model = Lasso(alpha=alpha)
+    model.fit(X, y)
+    
+    # Get non-zero coefficients
+    important_features = []
+    for name, coef in zip(feature_names, model.coef_):
+        if abs(coef) > 0:
+            important_features.append((name, coef))
+    
+    # Sort by absolute coefficient value
+    important_features.sort(key=lambda x: abs(x[1]), reverse=True)
+    
+    return important_features
+
+# Example usage
+features = ['size', 'bedrooms', 'age', 'bathrooms', 'garage']
+important = identify_important_features(X, y, features)
+for feature, impact in important:
+    print(f"{feature}: ${impact:,.2f}")
+```
+
+#### When to Use Lasso
+
+**Good For:**
+- Feature selection
+- Many irrelevant features
+- Want simpler models
+- Need to identify key variables
+
+**Not Good For:**
+- Correlated features (use Ridge)
+- When all features matter
+- Small datasets
+
+#### Key Points
+- Eliminates unimportant features
+- Produces sparse models
+- Scale features before using
+- Try multiple alpha values
+- Good for feature selection
+
+#### Complete Workflow
+```python
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+def lasso_workflow(X, y, alpha=1.0):
+    # Create pipeline
+    pipeline = Pipeline([
+        ('scaler', StandardScaler()),
+        ('lasso', Lasso(alpha=alpha))
+    ])
+    
+    # Find best alpha using cross-validation
+    alphas = [0.1, 1.0, 10.0]
+    best_alpha, best_score = find_best_alpha(X, y, alphas)
+    
+    # Update pipeline with best alpha
+    pipeline.set_params(lasso__alpha=best_alpha)
+    pipeline.fit(X, y)
+    
+    return pipeline, best_alpha
+```
+
+### Elastic Net Regression
+
+Elastic Net combines Ridge and Lasso regression to get the best of both worlds. It can both select features and handle correlated variables.
+
+#### How it Works
+
+1. **Basic Formula**
+   ```
+   Cost = MSE + α * (r * L1 + (1-r) * L2)
+   ```
+   - MSE: Regular error term
+   - α: Overall penalty strength
+   - r: Mix ratio (1 = Lasso, 0 = Ridge)
+   - L1: Sum of absolute coefficients (Lasso)
+   - L2: Sum of squared coefficients (Ridge)
+
+#### Simple Implementation
+```python
+from sklearn.linear_model import ElasticNet
+import numpy as np
+
+def elastic_net(X, y, alpha=1.0, l1_ratio=0.5):
+    # Create and fit model
+    model = ElasticNet(alpha=alpha, l1_ratio=l1_ratio)
+    model.fit(X, y)
+    
+    return model
+
+# Example usage
+X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
+y = np.array([2, 3, 4, 5])
+
+model = elastic_net(X, y)
+print("Coefficients:", model.coef_)
+```
+
+#### Real-World Example: House Prices
+```python
+def house_price_elastic():
+    # Sample data
+    data = {
+        'size': [1000, 1500, 1200, 1700, 2000],
+        'bedrooms': [2, 3, 2, 3, 4],
+        'age': [5, 10, 15, 8, 3],
+        'bathrooms': [1, 2, 1, 2, 2],
+        'price': [200000, 300000, 250000, 350000, 450000]
+    }
+    
+    # Prepare data
+    features = ['size', 'bedrooms', 'age', 'bathrooms']
+    X = np.array([[data[f][i] for f in features] 
+                  for i in range(len(data['price']))])
+    y = np.array(data['price'])
+    
+    # Try different combinations
+    alphas = [0.1, 1.0]
+    l1_ratios = [0.2, 0.5, 0.8]
+    
+    for alpha in alphas:
+        for l1_ratio in l1_ratios:
+            model = elastic_net(X, y, alpha, l1_ratio)
+            print(f"\nAlpha={alpha}, L1 ratio={l1_ratio}")
+            for feature, coef in zip(features, model.coef_):
+                print(f"{feature}: ${coef:,.2f}")
+```
+
+#### Finding Best Parameters
+```python
+from sklearn.model_selection import GridSearchCV
+
+def find_best_params(X, y):
+    # Parameter grid
+    param_grid = {
+        'alpha': [0.1, 0.5, 1.0],
+        'l1_ratio': [0.1, 0.5, 0.7, 0.9]
+    }
+    
+    # Create model
+    model = ElasticNet()
+    
+    # Grid search
+    grid = GridSearchCV(model, param_grid, cv=5)
+    grid.fit(X, y)
+    
+    print("Best parameters:", grid.best_params_)
+    return grid.best_estimator_
+```
+
+#### Complete Pipeline
+```python
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+def elastic_net_pipeline(X, y):
+    # Create pipeline
+    pipeline = Pipeline([
+        ('scaler', StandardScaler()),
+        ('elastic', ElasticNet())
+    ])
+    
+    # Parameter grid
+    param_grid = {
+        'elastic__alpha': [0.1, 1.0, 10.0],
+        'elastic__l1_ratio': [0.1, 0.5, 0.9]
+    }
+    
+    # Find best parameters
+    grid = GridSearchCV(pipeline, param_grid, cv=5)
+    grid.fit(X, y)
+    
+    return grid.best_estimator_
+```
+
+#### When to Use Elastic Net
+
+**Good For:**
+- Correlated features
+- Feature selection needed
+- Want balance between Ridge and Lasso
+- Medium to large datasets
+
+**Not Good For:**
+- Very small datasets
+- When you need simple interpretation
+- When pure Ridge or Lasso works well
+
+#### Key Points
+- Combines Ridge and Lasso benefits
+- More flexible than either alone
+- Two parameters to tune (α and r)
+- Scale features before using
+- Good default choice for regression
+
+#### Quick Tips
+1. Start with l1_ratio = 0.5
+2. Try different alpha values
+3. Use cross-validation
+4. Scale your features
+5. Check feature importance
+
+### Types of Cross-Validation
+
+Cross-validation helps test how well your model works on new data by splitting your data in different ways.
+
+#### K-Fold Cross-Validation
+```python
+from sklearn.model_selection import KFold
+import numpy as np
+
+def k_fold_example(X, y, k=5):
+    # Create K-Fold splitter
+    kf = KFold(n_splits=k, shuffle=True)
+    
+    scores = []
+    for fold, (train_idx, test_idx) in enumerate(kf.split(X)):
+        # Split data
+        X_train, X_test = X[train_idx], X[test_idx]
+        y_train, y_test = y[train_idx], y[test_idx]
+        
+        # Train and evaluate
+        model = LinearRegression()
+        model.fit(X_train, y_train)
+        score = model.score(X_test, y_test)
+        scores.append(score)
+        
+        print(f"Fold {fold+1} Score: {score:.3f}")
+    
+    print(f"Average Score: {np.mean(scores):.3f}")
+```
+
+#### Leave-One-Out Cross-Validation
+```python
+from sklearn.model_selection import LeaveOneOut
+
+def leave_one_out_example(X, y):
+    # Good for small datasets
+    loo = LeaveOneOut()
+    scores = []
+    
+    for train_idx, test_idx in loo.split(X):
+        X_train, X_test = X[train_idx], X[test_idx]
+        y_train, y_test = y[train_idx], y[test_idx]
+        
+        model = LinearRegression()
+        model.fit(X_train, y_train)
+        score = model.score(X_test, y_test)
+        scores.append(score)
+    
+    return np.mean(scores)
+```
+
+#### Stratified K-Fold
+```python
+from sklearn.model_selection import StratifiedKFold
+
+def stratified_kfold_example(X, y, k=5):
+    # Good for imbalanced classification
+    skf = StratifiedKFold(n_splits=k, shuffle=True)
+    
+    for fold, (train_idx, test_idx) in enumerate(skf.split(X, y)):
+        X_train, X_test = X[train_idx], X[test_idx]
+        y_train, y_test = y[train_idx], y[test_idx]
+        
+        # Check distribution
+        print(f"Fold {fold+1} distribution:")
+        print(f"Train: {np.bincount(y_train)}")
+        print(f"Test: {np.bincount(y_test)}\n")
+```
+
+#### Time Series Split
+```python
+from sklearn.model_selection import TimeSeriesSplit
+
+def time_series_split_example(X, y, n_splits=5):
+    # Good for time series data
+    tscv = TimeSeriesSplit(n_splits=n_splits)
+    
+    for fold, (train_idx, test_idx) in enumerate(tscv.split(X)):
+        print(f"Fold {fold+1}:")
+        print(f"Train: index {min(train_idx)} to {max(train_idx)}")
+        print(f"Test: index {min(test_idx)} to {max(test_idx)}\n")
+```
+
+#### Complete Example
+```python
+def compare_cv_methods(X, y):
+    # Sample data
+    X = np.array([[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]])
+    y = np.array([2, 4, 5, 4, 5, 6, 7, 6, 8, 9])
+    
+    # 1. K-Fold
+    print("K-Fold CV:")
+    k_fold_example(X, y)
+    
+    # 2. Leave-One-Out
+    print("\nLeave-One-Out CV:")
+    loo_score = leave_one_out_example(X, y)
+    print(f"Score: {loo_score:.3f}")
+    
+    # 3. Time Series
+    print("\nTime Series CV:")
+    time_series_split_example(X, y)
+```
+
+#### When to Use Each Method
+
+1. **K-Fold (Default Choice)**
+   - General purpose
+   - Medium to large datasets
+   - Random data order
+
+2. **Leave-One-Out**
+   - Very small datasets
+   - When you need exact results
+   - Computationally expensive
+
+3. **Stratified K-Fold**
+   - Classification problems
+   - Imbalanced classes
+   - Need to maintain class ratios
+
+4. **Time Series Split**
+   - Time series data
+   - Sequential data
+   - When order matters
+
+#### Quick Implementation
+```python
+from sklearn.model_selection import cross_val_score
+
+def quick_cv(model, X, y, cv_type='kfold', n_splits=5):
+    if cv_type == 'kfold':
+        cv = KFold(n_splits=n_splits, shuffle=True)
+    elif cv_type == 'loo':
+        cv = LeaveOneOut()
+    elif cv_type == 'stratified':
+        cv = StratifiedKFold(n_splits=n_splits, shuffle=True)
+    elif cv_type == 'timeseries':
+        cv = TimeSeriesSplit(n_splits=n_splits)
+    
+    scores = cross_val_score(model, X, y, cv=cv)
+    print(f"Scores: {scores}")
+    print(f"Mean: {scores.mean():.3f}")
+    print(f"Std: {scores.std():.3f}")
+```
+
+#### Key Points
+- Always shuffle data (except time series)
+- Use stratified for classification
+- K-Fold is good default choice
+- Consider data size and type
+- Check score distribution

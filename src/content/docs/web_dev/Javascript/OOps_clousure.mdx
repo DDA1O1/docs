@@ -1,0 +1,567 @@
+---
+title: "OOPs and Closure"
+sidebar: {
+    order: 5
+}
+---
+
+## OOPs
+
+- OOPs is a programming paradigm based on the concept of "objects", which can contain data and code to manipulate that data.
+- Objects can have methods, which are functions associated with the object.
+- OOPs is used to structure code into reusable, modular, and maintainable pieces.
+
+### Object literals
+
+- Object literals are a way to create objects in JavaScript.
+- They are defined using curly braces `{}`.
+- Properties are defined as key-value pairs.
+- Methods are defined as functions.
+
+```javascript
+const person = {
+    name: "John",
+    age: 30,
+    sayHello: function() {
+        console.log(`Hello, my name is ${this.name}`);
+    }
+};
+```
+
+- `this` keyword refers to the current object/context. `this` is not a fixed value but changes depending on the context.
+- Remember when we are visualising the `call stack` in execution  context of javascript whenever a new function is called a new execution context is created and `this` is set to the current object/context.
+
+
+### Prototype
+
+- Prototype is an object that is associated with every object in JavaScript.
+- It is used to add methods and properties to objects.
+- It is used to implement inheritance in JavaScript.
+
+### Prototype inheritance
+
+- In JavaScript, every thing is a object.
+- Javascript will look for the property or method in the object itself and if it is not found it will look for it in the prototype object until it reaches the end of the prototype chain.
+- Prototype inheritance is a way to inherit properties and methods from a prototype object.
+
+```text
+                                        ┌─────────┐
+                                        │  null   │
+                                        └────┬────┘
+                                             │
+                                             ▼
+                                    ┌─────────────────┐
+                                    │ Object.prototype│
+                                    └────────┬────────┘
+                                             │
+                     ┌───────────────────────┼───────────────────────┐
+                     │                       │                       │
+                     ▼                       ▼                       ▼
+            ┌─────────────────┐     ┌───────────────┐      ┌───────────────┐
+            │ Array.prototype  │     │String.prototype│    │Function.prototype│
+            └────────┬────────┘     └───────┬───────┘      └───────┬───────┘
+                     │                      │                       │
+                     ▼                      ▼                       ▼
+              ┌──────────┐           ┌──────────┐            ┌──────────┐
+              │  Array   │           │  String  │            │ Function │
+              └──────────┘           └──────────┘            └──────────┘
+                     │                      │                       │
+                     ▼                      ▼                       ▼
+              ┌──────────┐           ┌──────────┐            ┌──────────┐
+              │ [1,2,3]  │           │ "hello"  │            │function(){}│
+              └──────────┘           └──────────┘            └──────────┘
+```
+
+### Creating your own prototype
+
+- We can add our own properties and methods to the prototype object.
+
+```javascript
+Person.prototype.sayHello = function() {
+    console.log(`Hello, my name is ${this.name}`);
+}
+
+const person1 = new Person("John", 30);
+person1.sayHello();   //without new keyword this will be undefined.prototype won't be linked.constructer function won't be called.
+
+// creating prototype at the object level.
+const String = "Hello";
+const arr = [1,2,3];
+const func = function() {
+    console.log("Hello");
+}
+
+Object.prototype.sayHello = function() {
+    console.log(`Hello`);
+}
+
+String.sayHello();  //Hello
+arr.sayHello();    //Hello
+func.sayHello();   //Hello
+
+// Linking object to a object.
+const obj = {
+    name: "John"
+}
+
+const obj2 = {
+    name1: "Jane"
+}
+// old way of linking object to a object.
+obj2.__proto__ = obj;
+
+// new way of linking object to a object.
+Object.setPrototypeOf(obj2, obj);
+
+console.log(obj2.name);  //John
+console.log(obj2.name1);   //Jane
+
+// Creating your own prototype method
+const for = "ghtdk     ";
+
+String.prototype.trueLength = function() {
+    console.log(`True length is ${this.trim().length}`);
+}
+
+for.length;  //10
+for.trueLength();  //True length is 7
+```
+
+### Call and this keyword
+
+- When the setName function is called with the createUser function, the setName function creates its own new execution context and gets deleted after it's execution.
+- The call keyword is used to hold the reference of the setName function even after the execution of setName function.
+- `this` keyword is used in the `call(this, name)` to tell the setName function to pass the `this` context of setName function to the createUser function.
+
+```javascript
+
+
+function createUser(name, email, password) {
+    function setName(name) {
+        this.name = name;
+    }
+    setName(name);
+    this.email = email;
+    this.password = password;
+}
+
+const user = new createUser("John", "john@example.com", "password");
+console.log(user); // createUser { email: 'john@example.com', password: 'password' }
+
+// call and this keyword 
+
+function createUser(name, email, password) {
+    function setName(name) {
+        this.name = name;
+    }
+    setName.call(this, name);
+    this.email = email;
+    this.password = password;
+}
+
+const user1 = new createUser("John", "john@example.com", "password");
+console.log(user1); // createUser { name: 'John', email: 'john@example.com', password: 'password' }
+```
+### new Keyword
+
+- The `new` keyword is used to create instances of objects from constructor functions.
+- When using the `new` keyword, 4 things happen behind the scenes:
+
+```javascript
+function createUser(username) {
+    this.username = username;
+}
+
+// When we write: const user = new createUser("john")
+// JavaScript does this internally:
+
+// 1. Creates an empty object
+const user = {};
+
+// 2. Sets the constructor function's prototype as the object's prototype
+user.__proto__ = createUser.prototype;
+
+// 3. Calls the constructor function with 'this' set to the new object
+createUser.call(user, "john");
+// Now user = { username: "john" }
+
+// 4. Returns the object (happens automatically)
+// return user;
+
+// This is why we can do:
+const user = new createUser("john");
+console.log(user.username); // "john"
+console.log(user instanceof createUser); // true
+
+// Without new keyword:
+const badUser = createUser("john");
+console.log(badUser); // undefined
+console.log(window.username); // "john" (in browsers) - attaches to global object!
+```
+
+- If you forget the `new` keyword:
+  - `this` will refer to the global object (window in browsers, global in Node.js)
+  - Properties will be attached to the global object instead of a new instance
+  - The function will return undefined (unless explicitly returning something)
+  - No prototype linking occurs
+
+- Even if you do not declare the constructor function inside the class, the `new` keyword will still create a new instance of the class and the constructor function will be called.
+
+## Class Constructor
+
+- ES6 introduced the class keyword to create objects.It is a syntactic sugar over the existing prototype based inheritance.
+
+```javascript
+class User {
+    constructor(username, email, password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+    encryptPassword() {
+        return `${this.password}abc`;
+    }
+    changeUsername() {
+        return `${this.username.toUpperCase()}`;
+    }
+}
+
+const user = new User("john", "john@example.com", "password");
+console.log(user.encryptPassword());  //passwordabc
+console.log(user.changeUsername());  //JOHN
+
+// Behind the scenes
+
+function User(username, email, password) {
+    this.username = username;
+    this.email = email;
+    this.password = password;
+}
+
+User.prototype.encryptPassword = function() {
+    return `${this.password}abc`;
+}
+
+User.prototype.changeUsername = function() {
+    return `${this.username.toUpperCase()}`;
+}
+
+const user = new User("john", "john@example.com", "password");
+console.log(user.encryptPassword());  //passwordabc
+console.log(user.changeUsername());  //JOHN
+
+// Inheritance
+
+class Teacher extends User {
+    constructor(username, email, password, role) {
+        super(username, email, password);
+        this.role = role;
+    }
+    static createId() {
+        return `${Math.random() * 10}`;
+    }
+}
+
+const teacher = new Teacher("john", "john@example.com", "password", "teacher");
+console.log(teacher);  //Teacher { username: 'john', email: 'john@example.com', password: 'password', role: 'teacher' }
+console.log(teacher.encryptPassword());  //passwordabc
+console.log(teacher instanceof Teacher);  //true
+console.log(teacher instanceof User);  //true
+console.log(Teacher.createId());  // ReferenceError: Teacher.createId is not a function
+```
+
+### Bind
+
+- The `bind` keword is used to bind the `this` context of a function/object to another function/object.
+- Without using `bind(this)` keword the execution context of the constructor function will not be passed to the new function/object we are using.
+- To put it simply, we would not be able to access the properties and methods of any library/object created with the new keyword which creates a new instance of that object/library.
+
+```javascript
+function tr(){
+    this.library = 'React';
+    this.server = 'Library';
+    this.bro = 'bro';
+
+   // document.getElementById('btn')
+   //.addEventListener('click', handleClick);
+   // output of above:
+                       // clicked
+                       // undefined
+                      
+    document.getElementById('btn')
+    .addEventListener('click', handleClick.bind(this));
+
+}
+
+const tr1 = new tr();  // creates a new instance of tr
+console.log(tr1);  // tr1 { library: 'React', server: 'Library', bro: 'bro' }
+
+function handleClick(){
+    console.log('clicked');   //clicked
+    console.log(this.bro);    //bro
+}
+
+class tr2{
+        constructor(){
+            this.library = 'React';
+            this.server = 'Server';
+            document.getElementById('btn2')
+            .addEventListener('click',handleClick2.bind(this));
+            console.log(this);  // tr2 { library: 'React', server: 'Server' }
+        
+        }
+    }
+
+    function handleClick2(){
+        console.log('clicked2');  //clicked2
+        console.log(this.server);  //Server
+    }
+    const tr21 = new tr2();  // creates a new instance of tr2
+    console.log(tr21);  // tr2 { library: 'React', server: 'Server' }
+
+// function inside the class constructor
+
+class tr2{
+        constructor(){
+            this.library = 'React';
+            this.server = 'Server';
+            document.getElementById('btn2')
+            .addEventListener('click',this.handleClick2.bind(this));
+            // this.handleClick2 is being used here to tell that the handleClick2 
+            // function is inside the tr2 object not in global execution context.
+            console.log(this);  // tr2 { library: 'React', server: 'Server' }
+        
+        }
+    handleClick2(){
+        console.log('clicked2');  //clicked2
+        console.log(this.server);  //Server
+    }
+}
+
+```
+
+### getOwnPropertyDescriptor
+
+- The `getOwnPropertyDescriptor` method returns a property descriptor for a given property on an object.
+- It is used to get the property descriptor of a property.Which is a object containing the value, writable, enumerable, configurable properties.
+- You can also set the property descriptor of a property using the `defineProperty` method.
+- Suppose you want to make a property non writable, non enumerable, non configurable.
+
+```javascript
+const user = {
+    name: "John",
+    age: 30,
+    
+    func: function() {
+        console.log('Hello');
+    }
+
+}
+
+console.log(Object.getOwnPropertyDescriptor(user, 'name'));  
+//{ value: 'John', writable: true, enumerable: true, configurable: true }
+
+for(let [key, value] of Object.entries(user)) {
+    if(typeof value !== 'function') {
+        console.log(`${key}: ${value}`);
+    }
+}
+// name: John
+// age: 30
+
+// making the property non writable, non enumerable, non configurable
+
+Object.defineProperty(user, 'name', {
+    enumerable: false
+    
+})
+
+console.log(Object.getOwnPropertyDescriptor(user, 'name'));  
+//{ value: 'John', writable: true, enumerable: false, configurable: true }
+
+for(let [key, value] of Object.entries(user)) {
+    if(typeof value !== 'function') {
+        console.log(`${key}: ${value}`);
+    }
+}
+// age: 30
+
+```
+:::danger[Hardcoded Object properties]
+- javascript objects have some properties that are hardcoded and cannot be changed.
+- These properties are: `__proto__`, `constructor`, `prototype`, `hasOwnProperty`, `isPrototypeOf`, `propertyIsEnumerable`, `toLocaleString`, `toString`, `Math.PI`, `NaN`, `Infinity`.
+:::
+
+### getter and setter
+
+- The `getter` and `setter` methods are used to get and set the value of a property.
+- They are used to control the access to a property.
+
+```javascript
+class User {
+    constructor(username, email, password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+}
+
+const user = new User("john", "john@example.com", "password");
+console.log(user.password);  //password
+
+// using getter and setter
+
+class User {
+    constructor(username, email, password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+    get password() {
+        return `${this._password}abc`;
+    }
+    set password(value) {
+        this._password = value;   
+        // _password is a convention to make the property private.
+    }
+}   
+
+const user = new User("john", "john@example.com", "password");
+console.log(user.password);  //passwordabc
+
+// But the private property _password is still accessible.
+console.log(user._password);  //password
+
+// To make the private property truly private, we use the `#` symbol.
+
+class User {
+  #password; // Declare private field
+
+  constructor(username, email, password) {
+      this.username = username;
+      this.email = email;
+      this.password = password;
+  }
+  
+  get password() {
+      return this.#password.toUpperCase();
+  }
+  
+  set password(value) {
+      this.#password = value;
+  }
+}   
+
+const user = new User("john", "john@example.com", "password");
+console.log(user.password);  //PASSWORD
+console.log(user.#password);  //ReferenceError: #password is not defined
+
+// old way of making private property
+
+function User(username, email, password) {
+    this.username = username;
+    this.email = email;
+    this.password = password;
+    // making the password property private
+    Object.defineProperty(this, 'password', {
+        get: function() {
+            return this._password.toUpperCase();
+        },
+        set: function(value) {
+            this._password = value;
+        }
+    });
+}
+
+```
+:::danger[Race condition]
+- If you use `this.password` instead of `this._password` in the setter method, it will create a race condition where the value of the property will be changed to the value of the setter method.It will keep on changing untill the call stack is exceded.
+:::
+
+### Lexical Scope
+
+- Memory are shared between the parent and child functions.
+- The child function can access the variables of the parent function.
+
+```javascript
+function one() {
+    const username = "john";
+    function two() {
+        const website = "youtube";
+        function three() {
+            console.log(username, website);
+        }
+        three();
+    }
+    two();
+}
+one();
+// john youtube
+```
+:::note[Scope Sharing]
+- Child functions do not share their scope with each other.
+:::
+
+## Closure
+
+- Closure is a function that has access to the variables of its parent scope even after the parent function has executed.
+- `outer()` function has returned the `inner()` function and the `inner()` function has access to the variables of the `outer()` function even after the `outer()` function has executed.
+- When you return the `inner()` function it returns its local scope as well as the Lexical scope of the `outer()` function.
+
+```javascript
+function outer() {
+    let a = 10;
+    function inner() {
+        let b = 20;
+        console.log(a, b);
+    }
+    return inner;
+}
+const result = outer();
+console.log(result);  //[Function: inner]
+result();  //10 20
+```
+### Example
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="btn">Orange</button>
+    <button id="btn2">Green</button>
+</body>
+<script>
+
+// Closure 
+  const btn = document.getElementById("btn");
+  const btn2 = document.getElementById("btn2");
+
+  function changeColor(color) {
+    return function() {
+        document.body.style.backgroundColor = `${color}`;
+    }
+  }
+
+  btn.addEventListener("click", changeColor("orange"));
+  btn2.addEventListener("click", changeColor("green"));
+
+  // Anotherway using bind keyword
+
+  const btn = document.getElementById("btn");
+  const btn2 = document.getElementById("btn2");
+
+  function changeColor(color) {
+    document.body.style.backgroundColor = `${color}`;
+  }
+
+  btn.addEventListener("click", changeColor.bind(this, "orange"));
+  btn2.addEventListener("click", changeColor.bind(this, "green"));
+</script>
+</html>
+```

@@ -1,0 +1,372 @@
+---
+title: React
+description: React is a JavaScript library for building user interfaces.
+---
+
+- Makes it easy to manage and build complex UI components.
+
+- [React](https://react.dev/) is a library for building user interfaces. It lets you create Single Page Applications (SPAs) where content updates dynamically without reloading the entire page. React is declarative, component based and it is used to build reusable UI components. React is a JavaScript library and not a framework.
+
+## Building SPAs
+- Both JavaScript and React can build Single Page Applications
+- Vanilla JavaScript requires more manual work (routing, DOM updates, state management)
+- Most project do not need react in initial phase
+- React is preferred for complex SPAs due to its simpler development process
+
+### Why React?
+
+- Facebook faced a UI synchronization issue called the "Phantom Message Problem" or `Ghost Message Problem`. When users had new messages, a notification badge appeared on the chat icon. After opening messages, the notification badge wouldn't update immediately. This state management problem led to the development of React's reactive UI approach.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+    <h1>Hello World</h1>
+    <div id="buttonContainer"></div>
+</body>
+<script>
+    let counter = 0;
+const buttonContainer = document.getElementById("buttonContainer");
+const button1 = document.createElement("button");
+const button2 = document.createElement("button");
+const counterDisplay = document.createElement("h2");
+
+    function updateUI() {
+        button1.textContent = `Add Value : ${counter}`;
+        button2.textContent = `Remove Value : ${counter}`;
+        counterDisplay.textContent = `Counter : ${counter}`;
+    }
+
+    button1.addEventListener("click", () => {
+        if(counter < 20) {
+            counter++;
+            updateUI();
+        }
+    });
+
+    button2.addEventListener("click", () => {
+        if(counter > 0) {
+            counter--;
+            updateUI();
+        }
+    });
+
+    updateUI();
+    buttonContainer.appendChild(button1);
+    buttonContainer.appendChild(document.createElement("br"));
+    buttonContainer.appendChild(button2);
+    buttonContainer.appendChild(document.createElement("br"));
+    buttonContainer.appendChild(counterDisplay);
+</script>
+</html>
+```
+- Changes are propagated through `hooks`
+- `useState` is a hook that is used to manage the state of a component.
+
+```jsx
+function Counter() {
+  const [counter, setCounter] = useState(0);
+
+  const increment = () => {
+    if (counter < 20) {
+      setCounter(counter + 1);
+    }
+  };
+
+  const decrement = () => {
+    if (counter > 0) {
+      setCounter(counter - 1);
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={increment}>Add Value : {counter}</button>
+      <br />
+      <button onClick={decrement}>Remove Value : {counter}</button>
+      <br />
+      <h2>Counter : {counter}</h2>
+    </div>
+  );
+}
+```
+- `React` is not a complete solution for all problems.
+    - No SEO: HTML Tags are not generated for search engine crawlers.
+    - No Routing: Navigation between pages is not handled.
+
+
+
+### Install React
+
+```bash
+npm create vite@latest
+```
+> Select React, TypeScript
+
+- React library
+  - `react-dom` is used to render the React components in the DOM.
+  - `react` is the core library.
+  - `react-router-dom` is used to handle the routing in the application.
+  - `react-scripts` is used to bundle the application.
+  - `react native` is used to build mobile applications.
+
+## Behind the Scene
+
+- React uses a virtual DOM to optimize the rendering process.
+  - Virtual DOM is a lightweight copy of the actual DOM.
+  - React itself does not render the output in the browser. It uses a library called `react-dom`. It is a part of React.
+- React uses a diff algorithm to compare the virtual DOM with the actual DOM and update the DOM only if there are changes.
+  - React does not re-render the entire DOM. It only re-renders the changed parts.
+  - This process is called `Reconciliation`.
+- React uses a batching process to optimize the rendering process.
+  - If there are multiple state updates, React will batch them together and render them at once.
+
+```js
+// Card.jsx
+const Card = () => {
+  return (
+    <div>
+      <img src="img.jpg" alt="img" />
+      <h2>Card Title</h2>
+      <p>This is a card</p>
+    </div>
+  );
+};
+
+export default Card;
+
+// React puts out a tree of elements.
+
+{
+  type: "div",
+  props: {
+    children: [
+      {
+        type: "img",
+        props: {src: "img.jpg", alt: "img"}
+      },
+      {
+        type: "h2",
+        props: { children: "Card Title" }
+      },
+      {
+        type: "p",
+        props: { children: "This is a card" }
+      }
+    ]
+  }
+}
+
+// React does not know what would be the output would be used for.
+// You can take it render it in the browser with the help of `react-dom` or
+// render it in the mobile app with the help of `react-native` or 
+// you can use your own custom library to render it.
+
+// Custom Library
+
+const element = {
+    type: "div",
+    props: {
+      children: [
+        {
+          type: "img",
+          props: {src: "img.jpg", alt: "img"}
+        },
+        {
+          type: "h2",
+          props: { children: "Card Title" }
+        },
+        {
+          type: "p",
+          props: { children: "This is a card" }
+        }
+      ]
+    }
+  }
+
+  const container = document.getElementById("root");
+  const root = document.createElement(element.type);
+
+  // Create and append all children
+  element.props.children.forEach(child => {
+    const childElement = document.createElement(child.type);
+    
+    // Set attributes correctly
+    for (let prop in child.props) {
+      if (prop === 'children') {
+        childElement.textContent = child.props.children;
+      } else {
+        childElement.setAttribute(prop, child.props[prop]);
+      }
+    }
+    
+    root.appendChild(childElement);
+  });
+
+  container.appendChild(root);
+```
+### What is JSX?
+
+- JSX is a syntax extension for JavaScript. It is used to write HTML in JavaScript.
+- JSX is not a part of React. It is a syntax extension for JavaScript.
+
+```jsx
+const element = <h1>Hello, world!</h1>;
+```
+#### How JSX is converted to JavaScript?
+
+- JSX is converted to JavaScript by the Babel compiler.
+- Babel is a JavaScript compiler. It is used to convert the JSX code to JavaScript code.
+
+```js
+// Without Babel
+const element = React.createElement("h1", null, "Hello, world!");
+
+// With Babel
+const element = <h1>Hello, world!</h1>;
+```
+#### Evaluated Expression
+
+- Anything inside `{}` is an evaluated expression.
+- Statements are not allowed inside JSX.
+- `React.createElement` expects an object to be returned to create the `DOM`.It is not expecting that you write statements like `if`, `for`, `while` etc inside the object.
+
+```jsx
+function App() {
+  const count = 5;
+  
+  // ❌ These are statements - Won't work in JSX {}
+  {
+    if (count > 0) {
+      return "Positive";
+    } else {
+      return "Negative";
+    }
+  }
+
+  {
+    for (let i = 0; i < 5; i++) {
+      console.log(i);
+    }
+  }
+
+  // ✅ These are expressions - Will work in JSX {}
+  return (
+    <>
+      {/* Ternary */}
+      {count > 0 ? "Positive" : "Negative"}
+      
+      {/* Array methods */}
+      {[1, 2, 3].map(num => <div key={num}>{num}</div>)}
+      
+      {/* Logical operators */}
+      {count > 0 && "Positive"}
+      
+      {/* Function calls */}
+      {Math.random()}
+      
+      {/* Object/Array destructuring */}
+      {[1, 2, 3][0]}
+    </>
+  )
+}
+```
+### React's Snapshot
+
+- When a component is rendered, React creates a snapshot of the component and it's state.
+
+```jsx title="Counter.jsx"
+import { useState } from "react";
+
+function Counter() {
+  const [counter, setCounter] = useState(0);
+
+  function increment() {
+    setCounter(counter + 1);  // counter = 0
+    setCounter(counter + 1);  // counter = 0
+    setCounter(counter + 1);  // counter = 0
+    setCounter(counter + 1);  // counter = 0
+  }
+
+  return (
+    <div>
+      <h2>Counter : {counter}</h2>
+      <button onClick={increment}>Increment</button>
+    </div>
+  );
+}
+
+export default Counter;
+```
+If you click on the increment button, the counter will be incremented by only 1.Here the end result will always be incremented by 1 because the state is updated only after the function is executed.The setCounter function will always set the state value to 0.
+
+If we want to increment the counter by 4, we can use the following approach:
+we can pass a function which has the most recent state value as an argument to the setCounter function.
+
+```jsx
+function increment() {
+  setCounter(prevCounter => prevCounter + 1);
+  setCounter(prevCounter => prevCounter + 1);
+  setCounter(prevCounter => prevCounter + 1);
+  setCounter(prevCounter => prevCounter + 1);
+}
+```
+### Rendering
+
+After the change in state, React will re-render the component.Components are just functions and they return a React element.When the component is re-rendered, the component function is called again and it returns a new React element.
+
+- This process is `recursive`, means when a component contains another component, it will call them as well untill it reaches the end and nothing is left to render.
+
+```text
+Virtual DOM (New)                         Actual DOM (Old)
+─────────────────                        ─────────────────
+       <div>                                  <div>
+         │                                      │
+    ┌────┴────────┐                       ┌─────┴────┐
+    │    │    │   │                       │     │    │   
+  <img> <h2>  <p> <btn>      ═══>       <img>  <h2> <p>
+    │    │     │    │       Diffing       │      │   │  
+  props text  text text    Algorithm    props  text  text
+```
+- React uses a diffing algorithm to compare the virtual DOM with the actual DOM and update the DOM only if there are changes.
+- Since each object has a element tag, its properties and children, figuring out what has changed between the virtual DOM and the actual DOM is really complex.The complexity of calculating the difference between the two is `O(n^3)`.
+- If your UI has `1000` elements, it will take `1000^3 or 1,000,000,000` operations to figure out the difference.It's way too expensive.
+- To reduce the number of comparisons, React makes `Two Assumptions`.
+  - Two elements of different types will produce different trees.
+  - The developer can hint at which child elements may be the same across re-renders by using `keys`.
+
+- Different types of elements will produce different trees: If the root elements are different, React will not try to match these trees.It will rebuild the entire subtree.
+
+```text
+Before Update                After Update
+─────────────                ────────────
+    <div>                      <span>            
+     │                           │
+  ┌──┴──┐                     ┌──┴──┐
+  │     │          =>         │     │
+<p>    <span>              <p>     <a>
+  │      │                   │      │
+ text   text               text    text
+
+React will not try to match these trees
+since root elements are different types
+(div vs span). Entire subtree is rebuilt.
+```
+- Keys: The developer can hint at which child elements may be the same across re-renders by using `keys`.
+
+```jsx
+<ul>
+  <li key="A">First item</li>
+  <li key="B">Second item</li>
+  <li key="C">Third item</li>
+</ul>
+```
+:::note
+Keys should be unique.
+:::

@@ -1,0 +1,761 @@
+---
+title: Arrays , Objects and Functions
+description: Understanding JavaScript arrays and their copy behaviors
+sidebar: {
+    order: 2
+}
+---
+
+## Arrays in JavaScript
+
+Arrays in JavaScript are like ordered lists that:
+- Start counting from 0 (e.g., first item is at position 0)
+- Can grow or shrink in size
+- Can store any type of data (numbers, strings, objects, even other arrays)
+- Can be modified after creation
+
+```javascript
+// Basic array creation and usage
+const numbers = [1, 2, 3, 4, 5];
+const mixed = ['text', 42, true, { key: 'value' }, [1, 2]];
+```
+
+## Array Copy Behaviors
+
+### 1. Reference Copy
+The simplest form of copying - creates a new reference to the same array.
+```javascript
+const original = [1, 2, {x: 3}];
+const reference = original;  // Same array in memory
+
+reference.push(4);
+console.log(original);  // [1, 2, {x: 3}, 4]  (affected)
+console.log(reference); // [1, 2, {x: 3}, 4]  (affected)
+```
+
+### 2. Shallow Copy
+Creates a new array but maintains references to nested objects.
+
+```text
+         Shallow Copy Visualization
+    ═══════════════════════════════════
+
+Original Array         Copied Array
+┌──────────────┐      ┌──────────────┐
+│    arr1      │      │    arr2      │
+├──────────────┤      ├──────────────┤
+│ [0]: 1       │      │ [0]: 1       │
+│ [1]: 2       │      │ [1]: 2       │
+│ [2]: ─────┐  │      │ [2]: ─────┐  │
+└───────────┼──┘      └───────────┼──┘
+            │                     │
+            │   Heap Memory       │
+            │  ┌────────────┐     │
+            └─→│ {x: 10}    │←────┘
+               └────────────┘
+```
+
+```javascript
+// Shallow copy methods
+const original = [1, 2, {x: 3}];
+const shallowCopy1 = [...original];     // Spread operator
+const shallowCopy2 = Array.from(original); // Array.from()
+const shallowCopy3 = original.slice();     // slice()
+
+// Demonstrating shared references
+shallowCopy1[2].x = 100;
+console.log(original[2].x);     // 100 (nested object affected)
+```
+
+:::tip[Spread Operator]
+
+```javascript
+const arr = [1, 2, 3];
+const arr2 = [4, 5];
+const arr3 = [6, 7];
+const newArr = [...arr, ...arr2, ...arr3]; // Returns [1, 2, 3, 4, 5, 6, 7]
+```
+:::
+
+### 3. Deep Copy
+Creates a completely independent copy with new references for all nested items.
+
+```text
+         Deep Copy Visualization
+    ═══════════════════════════════════
+
+Original Array         Deep Copied Array
+┌──────────────┐      ┌──────────────┐
+│    arr1      │      │    arr2      │
+├──────────────┤      ├──────────────┤
+│ [0]: 1       │      │ [0]: 1       │
+│ [1]: 2       │      │ [1]: 2       │
+│ [2]: ─────┐  │      │ [2]: ─────┐  │
+└───────────┼──┘      └───────────┼──┘
+            │                     │
+            │   Heap Memory       │
+            │  ┌────────────┐     │  ┌────────────┐
+            └─→│ {x: 10}    │     └─→│ {x: 10}    │
+               └────────────┘        └────────────┘
+               (Object #1)           (Object #2)
+```
+
+```javascript
+// Modern deep copy methods
+const original = [1, 2, {x: 3}];
+
+// Method 1: structuredClone (recommended)
+const deepCopy1 = structuredClone(original);
+
+// Method 2: JSON parse/stringify (with limitations)
+const deepCopy2 = JSON.parse(JSON.stringify(original));
+
+// Demonstrating independence
+deepCopy1[2].x = 200;
+console.log(original[2].x);  // Still 3 (unaffected)
+```
+#### Example
+
+```javascript
+const users = [
+    { id: 1, name: 'Alice', settings: { theme: 'dark' } },
+    { id: 2, name: 'Bob', settings: { theme: 'light' } }
+];
+
+// Shallow copy behavior
+const shallowUsers = [...users];
+shallowUsers[0].settings.theme = 'light';
+console.log(users[0].settings.theme);      // 'light' (affected)
+
+// Deep copy behavior
+const deepUsers = structuredClone(users);
+deepUsers[0].settings.theme = 'dark';
+console.log(users[0].settings.theme);      // 'light' (unaffected)
+```
+
+## Array Methods
+
+Common array methods can be categorized by whether they modify the original array:
+
+### Non-mutating Methods (Return new array)
+```javascript
+const arr = [1, 2, 3, 4, 5];
+arr.map(item => item * 2);     // Returns [2, 4, 6, 8, 10], arr unchanged
+arr.filter(item => item % 2 === 0); // Returns [2, 4], arr unchanged
+arr.reduce((acc, item) => acc + item, 0); // Returns 15, arr unchanged
+arr.slice(1, 4);              // Returns [2, 3, 4], arr unchanged
+arr.forEach(item => console.log(item)); // Returns undefined, arr unchanged
+arr.join('-');                      // Returns '1-2-3-4-5', arr unchanged
+```
+
+### Mutating Methods (Modify original array)
+```javascript
+const arr = [1, 2, 3, 4, 5];
+arr.splice(1, 2);             // Returns [2, 3], arr is now [1, 4, 5]
+arr.push(6);                  // Returns new length 4, arr is now [1, 4, 5, 6]
+arr.pop();                    // Returns 6, arr is now [1, 4, 5]
+arr.forEach(item => {         // Returns undefined, can mutate arr if callback modifies it
+    console.log(item);
+});
+arr.sort((a, b) => a - b);    // Returns sorted array, arr is now [1, 4, 5, 6].
+// Note: sort() method modifies the original array.
+```
+
+#### Chaining Methods
+Higher-order methods can be chained together for complex operations.
+
+```javascript
+const products = [
+    { name: 'Laptop', price: 1000, inStock: true },
+    { name: 'Phone', price: 500, inStock: false },
+    { name: 'Tablet', price: 300, inStock: true }
+];
+
+const totalInStock = products
+    .filter(product => product.inStock)
+    .map(product => product.price)
+    .reduce((acc, price) => acc + price, 0);
+
+console.log(totalInStock); // 1300
+```
+
+### Array Loops
+
+- Array loops are used to iterate over the elements of an array.
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+for (let i = 0; i < numbers.length; i++) {
+    console.log(numbers[i]);
+}
+```
+
+#### forEach()
+The `forEach()` method executes a provided function once for each array element.
+
+```javascript
+// Basic syntax
+array.forEach(function(element, index, array) {
+    // Your code here
+});
+
+// Simple example
+const numbers = [1, 2, 3];
+numbers.forEach(num => console.log(num));  // Logs: 1, 2, 3
+
+// With index
+numbers.forEach((num, index) => {
+    console.log(`Index ${index}: ${num}`);
+}); // Logs: "Index 0: 1", "Index 1: 2", "Index 2: 3"
+
+// With array
+numbers.forEach((num, index, array) => {
+    console.log(array);
+}); // Logs: [1, 2, 3]
+```
+
+**Key Features:**
+- Always returns `undefined`
+- Cannot break or return from the loop
+- Skips empty array elements
+- Modifies the original array if the callback function does so
+
+**Common Use Cases:**
+```javascript
+// 1. Modifying objects in an array
+const users = [
+    { name: 'Alice', active: false },
+    { name: 'Bob', active: false }
+];
+users.forEach(user => user.active = true);
+
+// 2. Side effects (like DOM updates)
+const items = ['apple', 'banana', 'orange'];
+items.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    list.appendChild(li);
+});
+
+// 3. Accumulating values
+let sum = 0;
+[1, 2, 3].forEach(num => sum += num);
+```
+
+:::tip[When to Use]
+Use `forEach()` when:
+- You need to perform side effects
+- You want to modify each array element
+- You don't need to break the loop early
+
+Consider using `map()`, `filter()`, or `reduce()` when you need to:
+- Create a new array based on transformations
+- Filter elements
+- Accumulate a single value
+:::
+
+## Objects
+
+- Objects are collections of key-value pairs
+- Keys are strings (or symbols), values can be any type of data
+- Objects are mutable
+- Objects are unordered
+
+```javascript
+const user = {
+    name: 'Alice',
+    age: 25,
+    isAdmin: true,
+    "color": red
+};
+
+console.log(user.name); // Alice
+console.log(user['age']); // 25
+console.log(user["color"]); // red
+```
+#### Object Methods
+
+```javascript
+const obj1 = {
+    name: "Alice",
+    age: 25
+};
+
+const obj2 = {
+    name1: "Bob",
+    age1: 30
+};
+
+const obj3 = {...obj1, ...obj2}; // Spread operator
+
+console.log(obj3.name); // Alice
+console.log(obj3.age1); // 30
+console.log(obj3); // { name: 'Alice', age: 25, name1: 'Bob', age1: 30 }
+```
+- To learn more about the object methods, visit [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object).
+
+### Map and Set Collections
+
+#### Map
+- A collection that lets you store key-value pairs where keys can be of any type (objects, functions, primitives).
+- Map is not iterable for in loop.
+
+```javascript
+// Creating and using Maps
+const userRoles = new Map();
+userRoles.set('john', 'admin');        // Add entry
+userRoles.get('john');                 // Get value: 'admin'
+userRoles.has('john');                 // Check existence: true
+userRoles.delete('john');              // Remove entry
+userRoles.size;                        // Get size
+
+// Iterating
+for (const [user, role] of userRoles) {
+    console.log(`${user} is ${role}`);
+}
+```
+
+**Common Use Cases:**
+- Caching/memoization results
+
+```javascript
+// Example: Simple cache
+const cache = new Map();
+function expensiveOperation(input) {
+    if (cache.has(input)) return cache.get(input);
+    const result = /* complex calculation */;
+    cache.set(input, result);
+    return result;
+}
+```
+
+#### Set
+- A collection of unique values where duplicates are automatically removed.
+
+```javascript
+// Creating and using Sets
+const uniqueTags = new Set(['js', 'python', 'js']); // Duplicates removed
+uniqueTags.add('java');                // Add value
+uniqueTags.has('python');              // Check existence: true
+uniqueTags.delete('js');               // Remove value
+uniqueTags.size;                       // Get size
+
+// Quick array deduplication
+const array = [1, 2, 2, 3, 3];
+const unique = [...new Set(array)];    // [1, 2, 3]
+```
+
+**Common Use Cases:**
+- Removing duplicates from arrays
+- Tracking unique visitors/events
+- Managing selected items in UI
+
+```javascript
+// Example: Tracking unique users
+const activeUsers = new Set();
+function trackUserActivity(userId) {
+    activeUsers.add(userId);
+    console.log(`Active users: ${activeUsers.size}`);
+}
+```
+
+:::tip[Quick Reference]
+- Use **Map** when you need key-value pairs with non-string keys
+- Use **Set** when you need to maintain a list of unique values
+- Both are iterable and have better performance than arrays/objects for frequent lookups
+:::
+
+## Destructuring
+
+Destructuring allows you to unpack values from arrays or properties from objects into distinct variables. This syntax makes it easier to work with complex data structures.
+
+#### Object Destructuring
+```javascript
+// Basic destructuring
+const person = { name: 'Alice', age: 25, city: 'London' };
+const { name, age } = person;
+console.log(name);  // 'Alice'
+console.log(age);   // 25
+
+// Destructuring with different variable names
+const { name: firstName, age: yearsOld } = person;
+console.log(firstName);  // 'Alice'
+console.log(yearsOld);   // 25
+
+// Default values
+const { country = 'Unknown' } = person;
+console.log(country);  // 'Unknown' (since it wasn't in person object)
+```
+
+#### Array Destructuring
+```javascript
+// Basic array destructuring
+const colors = ['red', 'green', 'blue'];
+const [first, second] = colors;
+console.log(first);   // 'red'
+console.log(second);  // 'green'
+
+// Skip elements using commas
+const [,, third] = colors;
+console.log(third);   // 'blue'
+
+// Rest pattern
+const [primary, ...rest] = colors;
+console.log(primary); // 'red'
+console.log(rest);    // ['green', 'blue']
+```
+
+#### Nested Destructuring
+```javascript
+const data = {
+    user: {
+        id: 1,
+        details: {
+            firstName: 'Alice',
+            lastName: 'Smith'
+        }
+    },
+    scores: [10, 20, 30]
+};
+
+// Destructuring nested objects and arrays
+const { 
+    user: { 
+        details: { firstName, lastName },
+        id
+    },
+    scores: [firstScore, ...otherScores]
+} = data;
+
+console.log(firstName);    // 'Alice'
+console.log(id);          // 1
+console.log(firstScore);  // 10
+console.log(otherScores); // [20, 30]
+```
+
+#### JSON
+```javascript
+// JSON is a string representation of a JavaScript object.
+
+{
+    "name": "Alice",
+    "age": 25,
+    "data1":{
+        "name1": "Bob",
+        "age1": 30,
+        "data2":{
+            "name2": "Charlie",
+            "age2": 35,
+            "data3":{
+                "name3": "David",
+                "age3": 40
+            }
+        }
+    }
+}
+
+// JSON.parse() is used to parse a JSON string and convert it into a JavaScript object.
+// JSON.stringify() is used to convert a JavaScript object into a JSON string.
+```
+## Functions
+
+- Functions are blocks of code that perform a specific task.
+- Functions can take input parameters and return output values.
+- Functions can be used to organize code and make it more modular and reusable.
+
+```javascript
+function add(a, b) {
+    return a + b;
+}
+
+console.log(add(1, 2)); // 3
+```
+#### Functions with Objects and Arrays
+
+Functions can work with complex data types like objects and arrays. Here are some common patterns:
+
+```javascript
+// Object as parameter
+function processUser(user) {
+    return `${user.firstName} ${user.lastName} is ${user.age} years old`;
+}
+
+const user = {
+    firstName: 'John',
+    lastName: 'Doe',
+    age: 30
+};
+console.log(processUser(user)); // "John Doe is 30 years old"
+
+// Array as parameter
+function calculateAverage(numbers) {
+    const sum = numbers.reduce((acc, curr) => acc + curr, 0);
+    return sum / numbers.length;
+}
+
+const scores = [85, 92, 78, 95, 88];
+console.log(calculateAverage(scores)); // 87.6
+
+// Returning an object
+function createPerson(name, age) {
+    return {
+        name,
+        age,
+        greet() {
+            return `Hello, I'm ${this.name}`;
+        }
+    };
+}
+
+// Returning an array
+function splitAndSort(text) {
+    return text.split(' ').sort();
+}
+
+console.log(splitAndSort('apple banana cherry')); // ['apple', 'banana', 'cherry']
+```
+### Variable Scope
+
+JavaScript has several types of scope:
+- **Global Scope**: Variables accessible throughout the entire program
+- **Function Scope**: Variables only accessible within their containing function
+- **Block Scope**: Variables (using `let`/`const`) only accessible within their containing block
+
+```javascript
+// Global scope
+const globalVar = 'I am global';
+
+function exampleFunction() {
+    // Function scope
+    const functionVar = 'I am function-scoped';
+    
+    if (true) {
+        // Block scope
+        const blockVar = 'I am block-scoped';
+        console.log(blockVar);     // Works
+        console.log(functionVar);  // Works
+        console.log(globalVar);    // Works
+    }
+    
+    console.log(functionVar);      // Works
+    console.log(blockVar);         // ReferenceError: blockVar is not defined
+}
+
+console.log(globalVar);        // Works
+console.log(functionVar);      // ReferenceError: functionVar is not defined
+```
+
+:::tip[Best Practices]
+- Use `const` by default for variables that won't be reassigned
+- Use `let` when you need to reassign variables
+- Avoid `var` as it doesn't respect block scope and can lead to unexpected behavior
+- Keep global variables to a minimum to prevent naming conflicts
+:::
+
+### Hoisting: A JavaScript Legacy Challenge
+
+Hoisting is a JavaScript behavior where variable and function declarations are moved to the top of their scope during code execution. While it's considered a bad practice in modern JavaScript, understanding it is crucial for maintaining legacy code.
+
+```javascript
+// What developers write
+console.log(myVar);  // undefined (doesn't crash!)
+var myVar = "Hello";
+
+// What JavaScript actually sees
+var myVar;           // Declaration is "hoisted" up
+console.log(myVar);  // undefined
+myVar = "Hello";     // Assignment stays here
+```
+
+#### Why Hoisting is Problematic
+
+1. **Confusing Code Flow**:
+```javascript
+// Bad practice (but works due to hoisting)
+calculateTotal(100);  // Works! But why?
+
+function calculateTotal(amount) {
+    console.log(amount * tax);  // undefined × 100 = NaN
+    var tax = 0.2;             // Declaration hoisted, but not the value
+}
+
+// Better practice
+const tax = 0.2;
+function calculateTotal(amount) {
+    console.log(amount * tax);  // Clear and predictable
+}
+calculateTotal(100);
+```
+
+2. **Function Declaration vs Expression**:
+```javascript
+// Function declarations are fully hoisted
+doSomething();  // Works!
+function doSomething() {
+    console.log("I'm hoisted!");
+}
+
+// Function expressions are not
+doSomethingElse();  // Error!
+const doSomethingElse = () => {
+    console.log("I'm not hoisted!");
+};
+```
+
+#### Legacy Code Examples
+
+```javascript
+// Common in legacy code - relying on hoisting
+function oldCodebase() {
+    for(var i = 0; i < items.length; i++) {
+        // var is hoisted to function scope
+    }
+    console.log(i);  // Still accessible! 😱
+
+    if(true) {
+        var secret = "123";  // Hoisted to function scope
+    }
+    console.log(secret);     // Accessible outside if block! 😱
+}
+
+// Modern approach
+function modernCode() {
+    for(let i = 0; i < items.length; i++) {
+        // let has block scope
+    }
+    console.log(i);  // ReferenceError ✅
+
+    if(true) {
+        const secret = "123";  // Block scoped
+    }
+    console.log(secret);      // ReferenceError ✅
+}
+```
+
+:::danger[Why You Need to Know Hoisting]
+1. Many legacy JavaScript codebases rely heavily on hoisting
+2. Understanding hoisting helps debug unexpected behavior in older code
+3. JavaScript's forgiving nature allowed bad practices to persist
+:::
+
+:::tip[Modern Best Practices]
+- Always use `const` or `let` instead of `var`
+- Declare variables at the top of their scope
+- Declare functions before using them
+- Use linters (ESLint) to catch hoisting-related issues
+- Consider TypeScript for stricter code organization
+:::
+
+### Arrow Functions vs Regular Functions
+
+Arrow functions and regular functions have several key differences in syntax and behavior:
+
+```javascript
+// Regular Function
+function regularFunction(a, b) {
+    return a + b;
+}
+
+// Arrow Function
+const arrowFunction = (a, b) => a + b;
+```
+
+#### Key Differences
+
+1. **`this` Binding**:
+```javascript
+const obj = {
+    name: 'Example',
+    // Regular function
+    regularMethod: function() {
+        setTimeout(function() {
+            console.log(this.name); // undefined
+        }, 100);
+    },
+    // Arrow function
+    arrowMethod: function() {
+        setTimeout(() => {
+            console.log(this.name); // 'Example'
+        }, 100);
+    }
+};
+
+obj.regularMethod(); // undefined
+obj.arrowMethod();   // Example
+```
+
+2. **Constructor Usage**:
+```javascript
+// Regular functions can be constructors
+function Car(make) {
+    this.make = make;
+}
+const myCar = new Car('Toyota'); // Works
+
+// Arrow functions cannot be constructors
+const CarArrow = (make) => {
+    this.make = make;
+};
+const myCarArrow = new CarArrow('Toyota'); // TypeError
+```
+
+3. **Arguments Object**:
+```javascript
+// Regular function has arguments object
+function regular() {
+    console.log(arguments); // [1, 2, 3]
+}
+
+// Arrow function doesn't have arguments
+const arrow = () => {
+    console.log(arguments); // ReferenceError
+};
+
+regular(1, 2, 3); // [1, 2, 3]
+arrow(1, 2, 3); // ReferenceError
+```
+
+4. **Implicit Return**:
+```javascript
+// Regular function needs explicit return
+function addRegular(a, b) {
+    return a + b;
+}
+
+// Arrow function with implicit return
+const addArrow = (a, b) => a + b;
+
+// Arrow function with object implicit return
+const createObj = (name) => ({ name });
+```
+
+:::tip[When to Use Each]
+- Use **Arrow Functions** for:
+  - Short callback functions
+  - Methods that don't need their own `this`
+  - Functional programming (map, reduce, etc.)
+  
+- Use **Regular Functions** for:
+  - Object methods that need `this`
+  - Constructor functions
+  - When you need the `arguments` object
+  - Event handlers where `this` should refer to the element
+:::
+
+#### IIFE (Immediately Invoked Function Expression)
+
+- IIFE is a function that is defined and executed immediately.
+- It is used to create a new execution context and avoid polluting the global scope.
+
+```javascript
+(function() {
+    console.log('IIFE executed!');
+})(); // IIFE executed!
+// Parentheses are required to invoke the IIFE.
+// Semicolons are required after IIFE to separate it from the next statement.
+
+// Arrow functions can also be used as IIFE
+(() => {
+    console.log('Arrow IIFE executed!');
+})(); // Arrow IIFE executed!
+```
