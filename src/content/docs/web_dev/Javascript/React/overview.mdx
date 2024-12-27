@@ -434,3 +434,136 @@ since root elements are different types
 :::note
 Keys should be unique.
 :::
+
+## React Hooks
+
+Hooks are functions that let you use state and other React features in functional components.
+
+### Basic Hooks
+
+#### useState
+```jsx
+const [state, setState] = useState(initialValue);
+
+// Example
+function Counter() {
+  const [count, setCount] = useState(0);
+  
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Count: {count}
+    </button>
+  );
+}
+```
+
+#### useEffect
+Handles side effects (API calls, subscriptions, DOM updates).
+```jsx
+useEffect(() => {
+  // Effect code
+  return () => {
+    // Cleanup code (optional)
+  };
+}, [dependencies]);
+
+// Example
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    fetch(`/api/users/${userId}`)
+      .then(res => res.json())
+      .then(data => setUser(data));
+  }, [userId]);  // Only re-run if userId changes
+}
+```
+
+#### useContext
+Access context values without prop drilling.
+```jsx
+const ThemeContext = createContext('light');
+
+function ThemedButton() {
+  const theme = useContext(ThemeContext);
+  return <button className={theme}>Click me</button>;
+}
+```
+
+### Additional Hooks
+
+#### useRef
+Persists values between renders without causing re-renders.
+```jsx
+function TextInput() {
+  const inputRef = useRef();
+  
+  const focus = () => {
+    inputRef.current.focus();
+  };
+
+  return <input ref={inputRef} />;
+}
+```
+
+#### useMemo
+Memoizes expensive calculations.
+```jsx
+const memoizedValue = useMemo(() => {
+  return expensiveOperation(a, b);
+}, [a, b]);
+```
+
+#### useCallback
+Memoizes functions to prevent unnecessary re-renders of child components.
+```jsx
+const memoizedFn = useCallback(() => {
+  doSomething(a, b);
+}, [a, b]);
+```
+
+### Custom Hooks
+Create reusable logic across components.
+```jsx
+function useWindowSize() {
+  const [size, setSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const updateSize = () => {
+      setSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
+  return size;
+}
+
+// Usage
+function App() {
+  const { width, height } = useWindowSize();
+  return <div>Window size: {width} x {height}</div>;
+}
+```
+
+### Rules of Hooks
+
+1. Only call hooks at the top level
+2. Only call hooks from React functions
+3. Hook names must start with "use"
+
+```jsx
+// ❌ Wrong - Hook inside condition
+if (condition) {
+  useState(0);
+}
+
+// ✅ Correct
+const [state, setState] = useState(0);
+if (condition) {
+  // Use state here
+}
+```
