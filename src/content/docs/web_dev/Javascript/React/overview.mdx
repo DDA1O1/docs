@@ -567,3 +567,137 @@ if (condition) {
   // Use state here
 }
 ```
+#### Example
+
+```jsx
+// Import necessary hooks and functions from React.
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+
+// Character sets for password generation
+const CHAR_SETS = {
+  lowercase: 'abcdefghijklmnopqrstuvwxyz',
+  uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  numbers: '0123456789',
+  symbols: '!@#$%^&*()'
+};
+
+// Main functional component
+function App() {
+  // Core states for password configuration
+  const [length, setLength] = useState(8);
+  const [includeNumbers, setIncludeNumbers] = useState(false);
+  const [includeSymbols, setIncludeSymbols] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordHistory, setPasswordHistory] = useState([]);
+  
+  // Reference for copy functionality
+  const passwordInputRef = useRef(null);
+
+  // Generates password based on selected options
+  const generatePassword = useCallback(() => {
+    let chars = CHAR_SETS.lowercase + CHAR_SETS.uppercase;
+    if (includeNumbers) chars += CHAR_SETS.numbers;
+    if (includeSymbols) chars += CHAR_SETS.symbols;
+
+    const passwordArray = Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]);
+
+    setPassword(passwordArray.join(''));
+    
+  }, [length, includeNumbers, includeSymbols]);
+  
+  // Copies password to clipboard
+  const copyPassword = useCallback(() => {
+    passwordInputRef.current?.select();
+    window.navigator.clipboard.writeText(password);
+  }, [password]);
+  
+  // Generate password on mount or when options change
+  useEffect(() => {
+    generatePassword();
+  }, [generatePassword]);
+  
+  // JSX returned by the component, which includes a password display and controls for customization.
+  return (
+    <div className="w-full max-w-md mx-auto shadow-lg rounded-lg px-4 py-8 my-4 text-orange-500 bg-gray-700">
+      
+      {/* Header of the password generator */}
+      <h1 className="text-white text-3xl font-bold text-center py-4 mb-4">Password Generator</h1>
+      
+      {/* Section to display the generated password and buttons to regenerate or copy it */}
+      <div className="flex shadow rounded-lg overflow-hidden mb-4">
+        
+        {/* Input field that displays the password, readOnly ensures it cannot be manually changed */}
+        <input
+          type="text"
+          value={password}
+          className="w-full px-4 py-2 text-gray-700 focus:outline-none"
+          readOnly // Prevent manual editing of the generated password
+          ref={passwordInputRef} // Attach the ref to this input to enable copy functionality
+        />
+        
+        {/* Button to trigger the password generation function */}
+        <button
+          onClick={generatePassword}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4"
+        >
+          Generate
+        </button>
+        
+        {/* Button to trigger the copy password functionality */}
+        <button
+          onClick={copyPassword}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4"
+        >
+          Copy
+        </button>
+      </div>
+
+      {/* Section to customize the password length and options */}
+      <div className="flex flex-col space-y-2">
+        
+        {/* Control for selecting the password length */}
+        <div className="flex items-center space-x-2">
+          <input
+            type="range"
+            min="1"
+            max="32"
+            value={length}
+            className="cursor-pointer" // Cursor style for the slider
+            onChange={(e) => setLength(parseInt(e.target.value))} // Update the length state based on slider value
+          />
+          <label>Length: {length}</label> {/* Display the current password length */}
+        </div>
+        
+        {/* Control for including numbers in the password */}
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={includeNumbers}
+            id="numberInput"
+            onChange={(e) => setIncludeNumbers(e.target.checked)} // Toggle including numbers based on checkbox state
+          />
+          <label htmlFor="numberInput">Include Numbers</label> {/* Label for the numbers checkbox */}
+        </div>
+        
+        {/* Control for including symbols in the password */}
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={includeSymbols}
+            id="symbolInput"
+            onChange={(e) => setIncludeSymbols(e.target.checked)} // Toggle including symbols based on checkbox state
+          />
+          <label htmlFor="symbolInput">Include Symbols</label> {/* Label for the symbols checkbox */}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App; // Export the App component as default for rendering elsewhere in the application.
+```
+<iframe
+  src="https://stackblitz.com/edit/vitejs-vite-1i1ksjoz?embed=1&hideExplorer=1&hideNavigation=1&theme=dark&view=preview"
+  style="width:100%; height:500px; border:0; border-radius: 4px"
+  title="Code Playground"
+></iframe>
