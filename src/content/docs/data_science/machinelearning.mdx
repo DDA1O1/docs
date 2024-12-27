@@ -962,3 +962,82 @@ decision = approver.predict(new_application)
 
 > **Remember**: Simpler models often work better than complex ones.
 
+### Pickling
+
+Pickling is a way to save Python objects to files and load them back later. Think of it like saving your game progress.
+
+#### Basic Usage
+
+```python
+import pickle
+
+# Save object to file
+def save_object(obj, filename):
+    """Save any Python object to a file"""
+    with open(filename, 'wb') as file:
+        pickle.dump(obj, file)
+
+# Load object from file
+def load_object(filename):
+    """Load a Python object from a file"""
+    with open(filename, 'rb') as file:
+        return pickle.load(file)
+
+# Example Usage
+model = {'name': 'MyModel', 'score': 0.95}
+save_object(model, 'model.pkl')
+loaded_model = load_object('model.pkl')
+```
+
+#### Common Use Cases
+
+1. **Save ML Models**
+```python
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# Train and save model
+model = LinearRegression()
+X = np.array([[1], [2], [3]])
+y = np.array([2, 4, 6])
+model.fit(X, y)
+save_object(model, 'linear_model.pkl')
+
+# Load and use model later
+loaded_model = load_object('linear_model.pkl')
+prediction = loaded_model.predict([[4]])
+```
+
+2. **Save Data Structures**
+```python
+# Save processed data
+data = {
+    'features': [1, 2, 3],
+    'labels': ['A', 'B', 'C']
+}
+save_object(data, 'data.pkl')
+```
+
+#### Best Practices
+
+1. **File Extensions**
+   - Use `.pkl` or `.pickle`
+   - Makes files easily identifiable
+
+2. **Error Handling**
+```python
+def safe_save(obj, filename):
+    """Save with error handling"""
+    try:
+        save_object(obj, filename)
+        return True
+    except Exception as e:
+        print(f"Error saving: {e}")
+        return False
+```
+
+3. **Security Note**
+   - Only unpickle files you trust
+   - Pickled files can contain malicious code
+
+> **Remember**: Pickling is for Python objects only. Use JSON for sharing data with other languages.
