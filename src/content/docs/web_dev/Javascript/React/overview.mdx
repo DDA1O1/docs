@@ -701,3 +701,182 @@ export default App; // Export the App component as default for rendering elsewhe
   style="width:100%; height:500px; border:0; border-radius: 4px"
   title="Code Playground"
 ></iframe>
+
+## React Router
+
+- React Router is `Third Party Library` for routing in React.
+- It is used to handle the routing in the application.
+
+### Installation
+
+```bash
+npm install react-router
+```
+
+### Basic Routing
+
+Set up basic routing in your app:
+
+```jsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+### Navigation
+
+Navigate between pages:
+
+```jsx
+import { Link, NavLink } from 'react-router-dom';
+
+function Navbar() {
+  return (
+    <nav>
+      {/* Basic Link */}
+      <Link to="/">Home</Link>
+
+      {/* NavLink adds 'active' class when route matches */}
+      <NavLink 
+        to="/about"
+        className={({ isActive }) => isActive ? 'active' : ''}
+      >
+        About
+      </NavLink>
+    </nav>
+  );
+}
+```
+
+### Dynamic Routes
+
+Handle dynamic URL parameters:
+
+```jsx
+// Route setup
+<Route path="/users/:id" element={<UserProfile />} />
+
+// Access URL params in component
+function UserProfile() {
+  const { id } = useParams();
+  return <div>User ID: {id}</div>;
+}
+```
+
+### Nested Routes
+
+Create nested route layouts:
+
+```jsx
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="products" element={<Products />}>
+            <Route path=":id" element={<ProductDetails />} />
+          </Route>
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+// Layout component
+function Layout() {
+  return (
+    <div>
+      <Navbar />
+      <Outlet /> {/* Child routes render here */}
+    </div>
+  );
+}
+```
+
+### Protected Routes
+
+Create routes that require authentication:
+
+```jsx
+function PrivateRoute({ children }) {
+  const isAuthenticated = checkAuth(); // Your auth check logic
+
+  return isAuthenticated ? children : <Navigate to="/login" />;
+}
+
+// Usage
+<Route 
+  path="/dashboard" 
+  element={
+    <PrivateRoute>
+      <Dashboard />
+    </PrivateRoute>
+  } 
+/>
+```
+
+### Programmatic Navigation
+
+Navigate from code:
+
+```jsx
+function LoginForm() {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await login();
+    navigate('/dashboard'); // Redirect after login
+  };
+
+  return <form onSubmit={handleSubmit}>...</form>;
+}
+```
+
+### Query Parameters
+
+Handle URL query parameters:
+
+```jsx
+function SearchPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('q');
+
+  return (
+    <div>
+      <input 
+        value={query || ''}
+        onChange={(e) => setSearchParams({ q: e.target.value })}
+      />
+      <p>Search results for: {query}</p>
+    </div>
+  );
+}
+```
+
+### 404 Page
+
+Handle unknown routes:
+
+```jsx
+<Routes>
+  <Route path="/" element={<Home />} />
+  <Route path="/about" element={<About />} />
+  {/* Must be last */}
+  <Route path="*" element={<NotFound />} />
+</Routes>
+```
+
+
+
