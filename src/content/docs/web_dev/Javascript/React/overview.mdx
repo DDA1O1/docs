@@ -522,51 +522,6 @@ const memoizedFn = useCallback(() => {
 }, [a, b]);
 ```
 
-### Custom Hooks
-Create reusable logic across components.
-```jsx
-function useWindowSize() {
-  const [size, setSize] = useState({ width: 0, height: 0 });
-
-  useEffect(() => {
-    const updateSize = () => {
-      setSize({ width: window.innerWidth, height: window.innerHeight });
-    };
-    
-    window.addEventListener('resize', updateSize);
-    updateSize();
-    
-    return () => window.removeEventListener('resize', updateSize);
-  }, []);
-
-  return size;
-}
-
-// Usage
-function App() {
-  const { width, height } = useWindowSize();
-  return <div>Window size: {width} x {height}</div>;
-}
-```
-
-### Rules of Hooks
-
-1. Only call hooks at the top level
-2. Only call hooks from React functions
-3. Hook names must start with "use"
-
-```jsx
-// ❌ Wrong - Hook inside condition
-if (condition) {
-  useState(0);
-}
-
-// ✅ Correct
-const [state, setState] = useState(0);
-if (condition) {
-  // Use state here
-}
-```
 #### Example
 
 ```jsx
@@ -701,6 +656,66 @@ export default App; // Export the App component as default for rendering elsewhe
   style="width:100%; height:500px; border:0; border-radius: 4px"
   title="Code Playground"
 ></iframe>
+
+### Custom Hooks
+Custom hooks let you extract reusable logic from components. They must start with "use".
+
+Here's a simple counter hook example:
+
+```jsx
+// useCounter.js
+function useCounter(initialValue = 0) {
+  const [count, setCount] = useState(initialValue);
+
+  const increment = () => setCount(count + 1);
+  const decrement = () => setCount(count - 1);
+  const reset = () => setCount(initialValue);
+
+  return { count, increment, decrement, reset };
+}
+
+// Usage
+function CounterComponent() {
+  const { count, increment, decrement, reset } = useCounter(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={increment}>+</button>
+      <button onClick={decrement}>-</button>
+      <button onClick={reset}>Reset</button>
+    </div>
+  );
+}
+```
+
+This custom hook can be reused in any component that needs counter functionality.
+
+### Rules of Hooks
+
+Three essential rules when using React Hooks:
+
+1. **Top Level Only**: Never use hooks inside loops, conditions, or nested functions
+2. **React Functions Only**: Only call hooks from React function components or custom hooks
+3. **Naming Convention**: Custom hooks must start with "use" (e.g., useCounter)
+
+```jsx
+// ❌ Don't do this
+function Component() {
+  if (condition) {
+    useState(0);  // Hook inside condition
+  }
+}
+
+// ✅ Do this instead
+function Component() {
+  const [state, setState] = useState(0);
+  
+  if (condition) {
+    // Use state here
+  }
+}
+```
 
 ## React Router
 
