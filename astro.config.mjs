@@ -10,6 +10,8 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   integrations: [starlight({
       title: 'Docs',
+      description: 'Documentation for DDA1O1',
+      favicon: '/r.png',
       logo:{
           src: './public/r.png',
           alt: 'My Logo', // Add an alt attribute for selecting the logo
