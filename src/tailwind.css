@@ -17,3 +17,11 @@ img[alt="My Logo"]:hover {
     hover:shadow-lg transition-all duration-300;
 }
 
+.iframe-container {
+  position: relative;
+  width: 100%;
+  margin: 1.5rem 0;
+  overflow: hidden;
+  background: #f5f5f5;
+  border-radius: 0.5rem;
+}
