@@ -16,6 +16,12 @@ export default defineConfig({
           src: './public/r.png',
           alt: 'My Logo', // Add an alt attribute for selecting the logo
       },
+      head: [
+        {
+          tag: 'script',
+          attrs: { src: '/disableClick.js' }
+        }
+      ],
       customCss:[
           // Path to your Tailwind base styles:
         './src/tailwind.css',
