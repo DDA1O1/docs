@@ -20,23 +20,9 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 		Edit the content in <code>src/content/docs</code>.
 		<br />Click Edit link below.
 	</Card>
+	<Card title="Browser Tools" icon="warning">
+		Developer tools are disabled for security purposes.
+	</Card>
 </CardGrid>
 
 <script src='/disableClick.js'></script>
-
-<script>
-  document.addEventListener('keydown', function(e) {
-    // Disable F12
-    if (e.key === 'F12') {
-      e.preventDefault();
-    }
-    // Disable Ctrl+Shift+I (Windows) / Cmd+Option+I (Mac)
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'I') {
-      e.preventDefault();
-    }
-    // Disable Ctrl+U (View Source)
-    if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
-      e.preventDefault();
-    }
-  });
-</script>
