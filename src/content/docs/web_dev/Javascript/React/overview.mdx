@@ -7,7 +7,7 @@ description: React is a JavaScript library for building user interfaces.
 
 - [React](https://react.dev/) is a library for building user interfaces. It lets you create Single Page Applications (SPAs) where content updates dynamically without reloading the entire page. React is declarative, component based and it is used to build reusable UI components. React is a JavaScript library and not a framework.
 
-## Building SPAs
+#### Building SPAs
 - Both JavaScript and React can build Single Page Applications
 - Vanilla JavaScript requires more manual work (routing, DOM updates, state management)
 - Most project do not need react in initial phase
@@ -176,7 +176,7 @@ export default App;
 
 
 
-### Install React
+#### Install React
 
 ```bash
 npm create vite@latest
@@ -500,8 +500,6 @@ function ThemedButton() {
 }
 ```
 
-### Additional Hooks
-
 #### useRef
 Persists values between renders without causing re-renders.
 ```jsx
@@ -743,7 +741,7 @@ function Component() {
 npm install react-router-dom
 ```
 
-#### Basic Routing
+### Basic Routing
 
 Set up basic routing in your app:
 
@@ -926,7 +924,7 @@ Handle unknown routes:
 
 Context API provides a way to share data between components without passing props manually through each level. It solves the "prop drilling" problem.
 
-### When to Use Context?
+#### When to Use Context?
 - Theme data (dark/light mode)
 - User authentication state
 - Language preferences
@@ -973,8 +971,6 @@ function UserProfile() {
   return <div>Hello, {user.name}!</div>;
 }
 ```
-
-### Advanced Patterns
 
 #### Context with State Management
 ```jsx
@@ -1043,32 +1039,8 @@ function App() {
 }
 ```
 
-### Context with TypeScript
-```typescript
-// types.ts
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
 
-interface UserContextType {
-  user: User | null;
-  login: (user: User) => void;
-  logout: () => void;
-}
-
-// UserContext.tsx
-import { createContext, useContext } from 'react';
-
-const UserContext = createContext<UserContextType | undefined>(undefined);
-
-export function UserProvider({ children }: { children: React.ReactNode }) {
-  // Context implementation
-}
-```
-
-### Real-World Example: Theme Switcher
+#### Theme Switcher
 
 ```jsx
 // ThemeContext.js
@@ -1122,7 +1094,7 @@ function Layout() {
 }
 ```
 
-### Performance Optimization
+#### Performance Optimization
 
 #### 1. Split Context
 ```jsx
@@ -1162,90 +1134,193 @@ function ThemeProvider({ children }) {
 }
 ```
 
-### Best Practices
+### Task Manager without Context API
 
-1. **Keep Context Focused**
+Let's analyze the core problems in the current implementation by examining the actual codebase:
+
+#### 1. State Management in App.jsx
+
 ```jsx
-// ❌ Too broad
-const AppContext = createContext(); // Contains everything
-
-// ✅ Focused contexts
-const ThemeContext = createContext();
-const AuthContext = createContext();
-const SettingsContext = createContext();
-```
-
-2. **Default Values**
-```jsx
-// Provide meaningful defaults
-const ThemeContext = createContext({
-  theme: 'light',
-  toggleTheme: () => {},
-});
-```
-
-3. **Error Boundaries**
-```jsx
-function useTheme() {
-  const context = useContext(ThemeContext);
-  if (context === undefined) {
-    throw new Error('useTheme must be used within ThemeProvider');
-  }
-  return context;
+// App.jsx
+function App() {
+  const [tasks, setTasks] = useLocalStorage('tasks');
+  const [taskHistory, setTaskHistory] = useLocalStorage('taskHistory');
+  const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // All state management centralized here
 }
 ```
 
-4. **Provider Components**
+**Problems:**
+1. **Centralized State**
+   - All state lives in App.jsx
+   - Every state change forces App.jsx to re-render
+   - Related states (tasks/taskHistory) managed separately
+   - Complex state updates spread across components
+
+#### 2. Component Re-rendering Issues
+
 ```jsx
-// Create dedicated provider components
-export function ThemeProvider({ children }) {
-  // Provider logic here
+// TaskList.jsx
+function TaskList({ tasks, setTasks, taskHistory, setTaskHistory }) {
+  return tasks.map(task => (
+    <TaskItem
+      key={task.id}
+      task={task}
+      taskHistory={taskHistory}  // TaskList doesn't use this
+      setTaskHistory={setTaskHistory}  // Just passing through
+    />
+  ));
+}
+```
+
+**Problems:**
+1. **Unnecessary Re-renders**
+   - When App.jsx re-renders, all children re-render
+   - TaskList re-renders even when only taskHistory changes
+   - TaskItem re-renders when unrelated tasks update
+
+2. **useMemo Limitations**
+   ```jsx
+   const filteredTasks = useMemo(() => {
+     return tasks.filter(task => ...);
+   }, [tasks, filter, searchTerm]);
+   ```
+   - useMemo doesn't prevent re-renders from prop changes
+   - New state references still trigger re-renders
+   - Component still re-renders when taskHistory changes
+
+#### 3. Prop Drilling Complexity
+
+```jsx
+// Current Data Flow
+App.jsx
+  └─ TaskList
+      └─ TaskItem (needs taskHistory)
+```
+
+**Problems:**
+1. **Deep Prop Passing**
+   - TaskHistory flows through TaskList unnecessarily
+   - TaskList becomes a prop middleman
+   - Hard to track where props are actually used
+   - Makes component reuse difficult
+
+2. **Component Coupling**
+   - Components tightly coupled through props
+   - Changes require updates across component chain
+   - Testing becomes more complex
+   - Harder to move or refactor components
+
+#### 4. State Update Synchronization
+
+```jsx
+// TaskItem.jsx
+const handleUpdate = () => {
+  setTasks(prevTasks => /* update tasks */);
+  setTaskHistory(prevHistory => /* update history */);
+};
+```
+
+**Problems:**
+1. **Multiple State Updates**
+   - Tasks and history must update together
+   - No guarantee of update order
+   - Potential for inconsistent state
+   - Complex error handling needed
+
+2. **State Dependencies**
+   - Task updates require history updates
+   - Multiple setter functions needed
+   - Hard to maintain data consistency
+   - Complex update patterns
+
+
+### Task Manager with Context API
+
+Let's examine how Context API solved many of our previous problems:
+
+#### Problems Solved
+
+1. **Eliminated Prop Drilling**
+```jsx
+// Before - TaskList needed to pass props it didn't use
+function TaskList({ tasks, setTasks, taskHistory, setTaskHistory }) {
+  return <TaskItem task={task} taskHistory={taskHistory} />;
+}
+
+// After - Components directly access what they need
+function TaskItem() {
+  const { taskHistory, updateTask } = useTasks();
+  // Direct access to needed state and methods
+}
+```
+
+2. **Centralized State Management**
+```jsx
+// TaskContext.jsx
+export function TaskProvider({ children }) {
+  const [tasks, setTasks] = useLocalStorage('tasks', []);
+  const [taskHistory, setTaskHistory] = useLocalStorage('taskHistory', []);
+  
+  // All related state and logic in one place
+  const value = {
+    tasks,
+    taskHistory,
+    addTask,
+    updateTask,
+    deleteTask
+  };
+
   return (
-    <ThemeContext.Provider value={value}>
+    <TaskContext.Provider value={value}>
       {children}
-    </ThemeContext.Provider>
+    </TaskContext.Provider>
   );
 }
 ```
 
-### Common Pitfalls
-
-1. **Unnecessary Context Usage**
+3. **Better State Synchronization**
 ```jsx
-// ❌ Don't use context for data needed by only a few components
-// ✅ Use props instead for shallow component trees
+// All state updates happen in one place
+const updateTask = (taskId, updates) => {
+  setTasks(prevTasks => {
+    const newTasks = /* update tasks */;
+    setTaskHistory(prevHistory => /* update history */);
+    return newTasks;
+  });
+};
 ```
 
-2. **Provider Value Changes**
+4. **Cleaner Component Structure**
 ```jsx
-// ❌ Creates new object every render
-<Context.Provider value={{ data: data }}>
-
-// ✅ Memoize value
-<Context.Provider value={useMemo(() => ({ data }), [data])}>
-```
-
-3. **Context Nesting**
-```jsx
-// ❌ Deeply nested contexts
-<Context1>
-  <Context2>
-    <Context3>
-      <Context4>
-        <App />
-      </Context4>
-    </Context3>
-  </Context2>
-</Context1>
-
-// ✅ Combine related contexts
-function AppProviders({ children }) {
+// App.jsx is now much simpler
+function App() {
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        {children}
-      </ThemeProvider>
-    </AuthProvider>
+    <TaskProvider>
+      <TaskForm />
+      <TaskList />
+      <Statistics />
+    </TaskProvider>
   );
 }
 ```
+
+#### Remaining Challenges
+
+1. **Performance Issues**
+   - Context updates still cause all consuming components to re-render
+   - Large state objects in context affect performance
+   - No built-in state splitting like Redux
+
+2. **State Management Complexity**
+   - All state logic centralized in one file can grow complex
+   - No clear separation between different types of state
+   - Context composition can become messy with multiple contexts
+
+3. **Debugging Challenges**
+   - No built-in dev tools like Redux
+   - State updates harder to track
+   - No middleware support for side effects
+
