@@ -1236,24 +1236,23 @@ const handleUpdate = () => {
    - Hard to maintain data consistency
    - Complex update patterns
 
-
 ### Task Manager with Context API
 
-Let's examine how Context API solved many of our previous problems:
+Let's examine how Context API solved problems and its limitations:
 
 #### Problems Solved
 
 1. **Eliminated Prop Drilling**
 ```jsx
-// Before - TaskList needed to pass props it didn't use
+// Before - Props passed through multiple levels
 function TaskList({ tasks, setTasks, taskHistory, setTaskHistory }) {
   return <TaskItem task={task} taskHistory={taskHistory} />;
 }
 
-// After - Components directly access what they need
-function TaskItem() {
-  const { taskHistory, updateTask } = useTasks();
-  // Direct access to needed state and methods
+// After - Direct state access
+function TaskItem({ task }) {
+  const { taskHistory, updateTask } = useTaskContext();
+  // Components only access what they need
 }
 ```
 
@@ -1263,14 +1262,20 @@ function TaskItem() {
 export function TaskProvider({ children }) {
   const [tasks, setTasks] = useLocalStorage('tasks', []);
   const [taskHistory, setTaskHistory] = useLocalStorage('taskHistory', []);
+  const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
   
   // All related state and logic in one place
   const value = {
     tasks,
     taskHistory,
+    filter,
+    searchTerm,
     addTask,
     updateTask,
-    deleteTask
+    deleteTask,
+    setFilter,
+    setSearchTerm
   };
 
   return (
@@ -1283,44 +1288,201 @@ export function TaskProvider({ children }) {
 
 3. **Better State Synchronization**
 ```jsx
-// All state updates happen in one place
+// TaskContext.jsx
 const updateTask = (taskId, updates) => {
   setTasks(prevTasks => {
-    const newTasks = /* update tasks */;
-    setTaskHistory(prevHistory => /* update history */);
-    return newTasks;
+    const taskIndex = prevTasks.findIndex(t => t.id === taskId);
+    const updatedTasks = [...prevTasks];
+    updatedTasks[taskIndex] = { ...prevTasks[taskIndex], ...updates };
+    
+    setTaskHistory(prev => [...prev, {
+      action: 'UPDATE',
+      taskId,
+      timestamp: new Date()
+    }]);
+    
+    return updatedTasks;
   });
 };
 ```
 
 4. **Cleaner Component Structure**
 ```jsx
-// App.jsx is now much simpler
 function App() {
   return (
     <TaskProvider>
-      <TaskForm />
-      <TaskList />
-      <Statistics />
+      <div className="container">
+        <TaskForm />
+        <TaskFilters />
+        <TaskList />
+        <TaskStats />
+      </div>
     </TaskProvider>
   );
 }
 ```
 
-#### Remaining Challenges
+#### Key Challenges
 
 1. **Performance Issues**
-   - Context updates still cause all consuming components to re-render
-   - Large state objects in context affect performance
-   - No built-in state splitting like Redux
+   - Every component using context re-renders on any state change
+   - Example: Updating a task causes TaskStats to re-render even if total count hasn't changed
+   - No built-in way to subscribe to specific state pieces
 
 2. **State Management Complexity**
-   - All state logic centralized in one file can grow complex
-   - No clear separation between different types of state
-   - Context composition can become messy with multiple contexts
+   - All state and logic in TaskContext makes it hard to maintain
+   - Multiple related states (tasks/history) update together
+   - No clear separation between UI state (filters) and data state (tasks)
 
-3. **Debugging Challenges**
-   - No built-in dev tools like Redux
-   - State updates harder to track
-   - No middleware support for side effects
+3. **Debugging Limitations**
+   - Can't track state changes over time
+   - No way to replay actions
+   - Hard to debug state updates across components
 
+
+### Task Manager with Redux Toolkit
+
+#### Core Implementation
+
+1. **Store Setup**
+```jsx
+// store/store.js
+import { configureStore } from '@reduxjs/toolkit';
+import taskReducer from './taskSlice';
+
+export const store = configureStore({
+  reducer: {
+    tasks: taskReducer
+  }
+});
+```
+
+2. **State Management**
+```jsx
+// store/taskSlice.js
+const taskSlice = createSlice({
+  name: 'tasks',
+  initialState: {
+    tasks: [],
+    taskHistory: [],
+    filter: 'all',
+    searchTerm: ''
+  },
+  reducers: {
+    addTask,
+    updateTask,
+    deleteTask,
+    setFilter,
+    setSearchTerm
+  }
+});
+```
+
+#### Key Improvements
+
+1. **Predictable State Updates**
+```jsx
+// Before (Context API)
+const updateTask = (taskId, updates) => {
+  setTasks(prev => [...]);
+  setTaskHistory(prev => [...]);
+};
+
+// After (Redux)
+const updateTask = createAction('tasks/updateTask');
+// Single dispatch updates both tasks and history
+dispatch(updateTask({ id, updates }));
+```
+
+2. **Performance Optimization**
+```jsx
+// Components only re-render when their specific data changes
+function TaskItem({ id }) {
+  // Only re-renders when this specific task changes
+  const task = useSelector(state => 
+    state.tasks.tasks.find(t => t.id === id)
+  );
+}
+```
+
+3. **State Access**
+```jsx
+// Any component can access state without props
+function TaskStats() {
+  const totalTasks = useSelector(state => state.tasks.tasks.length);
+  const completedTasks = useSelector(state => 
+    state.tasks.tasks.filter(t => t.completed).length
+  );
+}
+```
+
+4. **Debugging Capabilities**
+- Redux DevTools integration
+- Time-travel debugging
+- State history tracking
+- Action logging
+
+#### Key Features
+
+1. **Centralized State**
+```jsx
+// All app state in one place
+const initialState = {
+  tasks: [],
+  taskHistory: [],
+  filter: 'all',
+  searchTerm: ''
+};
+```
+
+2. **Immutable Updates**
+```jsx
+// Redux Toolkit handles immutability
+reducers: {
+  addTask: (state, action) => {
+    state.tasks.push(action.payload);  // Looks mutable but isn't
+    state.taskHistory.push({
+      type: 'ADD',
+      task: action.payload
+    });
+  }
+}
+```
+
+3. **Action Creators**
+```jsx
+// Automatically generated action creators
+export const { 
+  addTask,
+  updateTask,
+  deleteTask,
+  setFilter,
+  setSearchTerm 
+} = taskSlice.actions;
+```
+
+#### Benefits Over Previous Versions
+
+1. **State Management**
+   - Single source of truth
+   - Predictable state updates
+   - Easier debugging
+   - Better performance optimization
+
+2. **Development Experience**
+   - DevTools integration
+   - Clear action patterns
+   - Simplified testing
+   - Better error tracking
+
+3. **Performance**
+   - Selective re-rendering
+   - Optimized state updates
+   - Better memory management
+   - Reduced unnecessary renders
+
+4. **Maintainability**
+   - Clear state structure
+   - Centralized logic
+   - Easy to add features
+   - Better code organization
