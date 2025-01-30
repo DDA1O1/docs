@@ -4,8 +4,7 @@ import starlight from '@astrojs/starlight';
 
 import vercel from '@astrojs/vercel';
 
-import tailwindcss from "@tailwindcss/vite";
-
+import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
@@ -85,6 +84,9 @@ export default defineConfig({
               ]
           },
       ],
+  }), tailwind({
+    // Disable the default base styles:
+    applyBaseStyles: false,
   })],
 
   output: 'server',
@@ -92,7 +94,6 @@ export default defineConfig({
     webAnalytics: { enabled: true }
   }),
   vite: {
-    plugins: [tailwindcss()],
     resolve: {
       alias: {
         '@/': '/src/'
