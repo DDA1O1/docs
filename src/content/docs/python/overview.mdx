@@ -1050,3 +1050,213 @@ filtered = [x for x in range(10) if x % 2 == 0]
 # Transforming items
 transformed = [x * 2 for x in range(5)]
 ```
+## Function Definitions
+
+A function is a reusable block of code that performs a specific task. Functions are defined using the `def` keyword. They help organize code and promote reuse.
+
+```python:src/content/docs/python/functions.mdx
+def greet(name):
+    """Return a greeting message for the given name.
+
+    Args:
+        name (str): The person's name.
+
+    Returns:
+        str: A greeting message.
+    """
+    return f"Hello, {name}!"
+```
+
+## Docstrings
+
+Docstrings provide inline documentation for your functions. Placed immediately after the function definition, they explain the function’s purpose, its parameters, return values, and any exceptions raised.
+
+```python:src/content/docs/python/functions.mdx
+def subtract(a, b):
+    """Subtract two numbers.
+
+    Args:
+        a (int or float): The number from which to subtract.
+        b (int or float): The number to subtract.
+
+    Returns:
+        int or float: The result of a minus b.
+    """
+    return a - b
+```
+
+You can use the built-in `help()` function to view a function’s docstring:
+
+```python:src/content/docs/python/functions.mdx
+help(greet)
+```
+
+## Function Parameters
+
+Python functions support several types of parameters:
+
+- **Positional Arguments:** Required and passed in order.
+- **Default Arguments:** These have default values and are used when no value is provided.
+- **Variable-length Arguments:** Use `*args` for extra positional arguments and `**kwargs` for extra keyword arguments.
+
+```python:src/content/docs/python/functions.mdx
+def calculate_sum(a, b=0, *args, **kwargs):
+    """Calculate the sum of multiple numbers.
+
+    Args:
+        a (int): The first number.
+        b (int, optional): The second number. Defaults to 0.
+        *args (int): Additional positional numbers.
+        **kwargs (int): Additional numbers provided as keyword arguments.
+
+    Returns:
+        int: The total sum.
+    """
+    total = a + b + sum(args) + sum(kwargs.values())
+    return total
+
+# Examples:
+# calculate_sum(1, 2) returns 3
+# calculate_sum(1, 2, 3, 4, num1=5, num2=6) returns 21
+```
+
+## Anonymous Functions
+
+Lambda functions, or anonymous functions, provide a concise way to write small functions without formally defining them.
+
+```python:src/content/docs/python/functions.mdx
+double = lambda x: x * 2
+print(double(5))  # Output: 10
+```
+
+## The `help()` Function
+
+Use the built-in `help()` function to display a function’s documentation. This is particularly useful for quickly reviewing the usage of a function.
+
+```python:src/content/docs/python/functions.mdx
+help(calculate_sum)
+```
+
+## Summary
+
+- **Functions** encapsulate logic for reusability.
+- **Docstrings** serve as inline documentation to explain what each function does, its parameters, and its return value.
+- **Parameter Types** such as positional, default, and variable-length add flexibility.
+- **Lambda Functions** simplify the definition of small, one-off functions.
+- The **`help()` Function** allows users to view documentation quickly.
+
+---
+
+## Object-Oriented Programming in Python
+
+OOP is a paradigm that organizes code using classes and objects. In Python, classes provide the structure to encapsulate data (attributes) and behavior (methods).
+
+### Creating Classes in Python
+
+A class in Python is defined using the `class` keyword. The constructor-like method, `__init__`, initializes new instances, and the first parameter `self` refers explicitly to the current instance.
+
+```python:src/content/docs/python/oops.mdx
+class Duck:
+    def __init__(self, name):
+        """Initialize a new Duck instance.
+
+        Args:
+            name (str): The name of the duck.
+        """
+        self.name = name       # Similar to 'this.name' in JavaScript
+        self.sound = "Quack"
+
+    def quack(self):
+        """Make the duck quack."""
+        print(self.sound)
+
+# Create an instance of Duck and use its method
+donald = Duck("Donald")
+donald.quack()  # Output: Quack
+```
+
+### Inheritance
+
+Inheritance enables a child class to reuse code from a parent class. Python uses the `super()` function to call the parent class's initializer.
+
+```python:src/content/docs/python/oops.mdx
+class Duckling(Duck):
+    def __init__(self, name):
+        """Initialize a Duckling instance inheriting from Duck.
+
+        Args:
+            name (str): The name of the duckling.
+        """
+        super().__init__(name)  # Calls Duck.__init__(name)
+        self.size = "small"
+
+donnie = Duckling("Donnie")
+donnie.quack()  # Output: Quack
+```
+
+## JavaScript vs. Python: Constructors and the `this`/`self` Context
+
+Both languages support OOP but differ in syntax and naming conventions for initialization.
+
+### JavaScript Approach
+
+In JavaScript, the `constructor` method initializes new objects, and the `this` keyword is used implicitly to refer to the current instance.
+
+```javascript
+// JavaScript Example
+class Duck {
+  constructor(name) {
+    this.name = name;    // 'this' refers to the current object
+    this.sound = 'Quack';
+  }
+  quack() {
+    console.log(this.sound);
+  }
+}
+
+const donald = new Duck("Donald");
+donald.quack();  // Output: "Quack"
+```
+
+### Python Approach
+
+Python uses the `__init__` method for initialization, and every instance method must explicitly include `self` to reference the object.
+
+```python
+# Python Example (see above)
+class Duck:
+    def __init__(self, name):
+        self.name = name     # 'self' is the explicit reference to the instance
+        self.sound = "Quack"
+
+    def quack(self):
+        print(self.sound)
+
+donald = Duck("Donald")
+donald.quack()  # Output: Quack
+```
+
+### Key Differences
+
+- **Context Reference:**  
+  - **JavaScript:** Uses `this` implicitly.  
+  - **Python:** Requires `self` as the first parameter in instance methods.
+
+- **Constructor Naming:**  
+  - **JavaScript:** The constructor method is named `constructor`.  
+  - **Python:** The initializer method is named `__init__`.
+
+## Summary
+
+- **Classes** encapsulate data and behaviors.
+- **Inheritance** in Python allows for code reuse via `super()`.
+- **`this` vs. `self`:**  
+  - JavaScript uses `this` implicitly in class methods.
+  - Python uses an explicit `self` parameter.
+- **Constructor Functions:**  
+  - JavaScript defines constructors with the `constructor` method.
+  - Python initializes objects using the `__init__` method.
+
+---
+
+
