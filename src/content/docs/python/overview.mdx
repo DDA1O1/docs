@@ -411,8 +411,6 @@ list(zip(names, ages))   # [('Alice', 25), ('Bob', 30)]
 
 ### Tuples
 
-### Tuples
-
 Tuples are immutable sequences in Python, making them ideal for data that shouldn't change.
 
 ```python
@@ -499,8 +497,6 @@ flattened = tuple(y for x in nested for y in x)  # (1, 2, 3, 4)
 isinstance((1, 2), tuple)  # True
 type((1, 2)).__name__     # 'tuple'
 ```
-
-### Dictionaries
 
 ### Dictionaries
 
@@ -1054,7 +1050,7 @@ transformed = [x * 2 for x in range(5)]
 
 A function is a reusable block of code that performs a specific task. Functions are defined using the `def` keyword. They help organize code and promote reuse.
 
-```python:src/content/docs/python/functions.mdx
+```python
 def greet(name):
     """Return a greeting message for the given name.
 
@@ -1067,11 +1063,11 @@ def greet(name):
     return f"Hello, {name}!"
 ```
 
-## Docstrings
+### Docstrings
 
 Docstrings provide inline documentation for your functions. Placed immediately after the function definition, they explain the function’s purpose, its parameters, return values, and any exceptions raised.
 
-```python:src/content/docs/python/functions.mdx
+```python
 def subtract(a, b):
     """Subtract two numbers.
 
@@ -1087,11 +1083,11 @@ def subtract(a, b):
 
 You can use the built-in `help()` function to view a function’s docstring:
 
-```python:src/content/docs/python/functions.mdx
+```Python
 help(greet)
 ```
 
-## Function Parameters
+### Function Parameters
 
 Python functions support several types of parameters:
 
@@ -1099,7 +1095,7 @@ Python functions support several types of parameters:
 - **Default Arguments:** These have default values and are used when no value is provided.
 - **Variable-length Arguments:** Use `*args` for extra positional arguments and `**kwargs` for extra keyword arguments.
 
-```python:src/content/docs/python/functions.mdx
+```python
 def calculate_sum(a, b=0, *args, **kwargs):
     """Calculate the sum of multiple numbers.
 
@@ -1120,24 +1116,24 @@ def calculate_sum(a, b=0, *args, **kwargs):
 # calculate_sum(1, 2, 3, 4, num1=5, num2=6) returns 21
 ```
 
-## Anonymous Functions
+### Anonymous Functions
 
 Lambda functions, or anonymous functions, provide a concise way to write small functions without formally defining them.
 
-```python:src/content/docs/python/functions.mdx
+```python
 double = lambda x: x * 2
 print(double(5))  # Output: 10
 ```
 
-## The `help()` Function
+### The `help()` Function
 
 Use the built-in `help()` function to display a function’s documentation. This is particularly useful for quickly reviewing the usage of a function.
 
-```python:src/content/docs/python/functions.mdx
+```python
 help(calculate_sum)
 ```
 
-## Summary
+### Summary
 
 - **Functions** encapsulate logic for reusability.
 - **Docstrings** serve as inline documentation to explain what each function does, its parameters, and its return value.
@@ -1155,7 +1151,7 @@ OOP is a paradigm that organizes code using classes and objects. In Python, clas
 
 A class in Python is defined using the `class` keyword. The constructor-like method, `__init__`, initializes new instances, and the first parameter `self` refers explicitly to the current instance.
 
-```python:src/content/docs/python/oops.mdx
+```python
 class Duck:
     def __init__(self, name):
         """Initialize a new Duck instance.
@@ -1179,7 +1175,7 @@ donald.quack()  # Output: Quack
 
 Inheritance enables a child class to reuse code from a parent class. Python uses the `super()` function to call the parent class's initializer.
 
-```python:src/content/docs/python/oops.mdx
+```python
 class Duckling(Duck):
     def __init__(self, name):
         """Initialize a Duckling instance inheriting from Duck.
@@ -1246,7 +1242,7 @@ donald.quack()  # Output: Quack
   - **JavaScript:** The constructor method is named `constructor`.  
   - **Python:** The initializer method is named `__init__`.
 
-## Summary
+### Summary
 
 - **Classes** encapsulate data and behaviors.
 - **Inheritance** in Python allows for code reuse via `super()`.

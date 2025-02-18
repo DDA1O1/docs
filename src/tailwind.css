@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "tailwindcss";
 
 img[alt="My Logo"]:hover {
   transform: scale(1.1);
