@@ -46,7 +46,7 @@ export default defineConfig({
               autogenerate: { directory: 'Computer_Architecture' },
           },
           {
-            label: 'Web Dev',
+            label: 'Web',
             items: [
               //   { label: 'HTML', slug: 'web_dev/html' }, 
                 { label: 'JavaScript' ,badge: 'Finished', autogenerate: { directory: 'web/Javascript' } },
@@ -72,16 +72,6 @@ export default defineConfig({
           {
               label: 'Thoughts',
               autogenerate: { directory: 'Thoughts' }
-          },
-          {
-              label: 'Fun',
-              items: [
-                {
-                  label: 'Lorentz',
-                  link: 'https://lorentz.d1o1.fun/',
-                  attrs: { target: '_blank', style: 'font-style: italic' },
-                },
-              ]
           },
       ],
   }), tailwind({
