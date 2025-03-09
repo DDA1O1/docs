@@ -1,0 +1,82 @@
+---
+title: "TypeScript"
+description: "A comprehensive guide to TypeScript"
+---
+
+# TypeScript
+
+TypeScript is a superset of JavaScript that adds static typing. It compiles down to plain JavaScript that runs in any browser or Node.js environment.
+
+## Core Features
+
+### Static Typing
+
+```typescript
+// Variables with types
+let name: string = "Alice";
+let age: number = 30;
+let active: boolean = true;
+
+// Function with typed parameters and return type
+function add(a: number, b: number): number {
+    return a + b;
+}
+```
+
+### Interfaces
+
+```typescript
+interface User {
+    id: number;
+    name: string;
+    email?: string; // Optional property
+}
+
+function greetUser(user: User) {
+    console.log(`Hello, ${user.name}!`);
+}
+```
+
+### Type Inference
+
+TypeScript can automatically detect types:
+
+```typescript
+// No type annotations needed
+let name = "Alice"; // TypeScript knows this is a string
+let numbers = [1, 2, 3]; // TypeScript knows this is number[]
+```
+
+## Common Misconceptions
+
+1. **TypeScript is a different language from JavaScript**
+   - Reality: TypeScript is a superset of JavaScript. All JavaScript code is valid TypeScript code.
+
+2. **TypeScript improves runtime performance**
+   - Reality: TypeScript only helps during development. The compiled JavaScript has identical performance.
+
+3. **TypeScript guarantees type safety**
+   - Reality: TypeScript has escape hatches (`any`, type assertions) and can't catch all errors.
+
+4. **TypeScript requires types for everything**
+   - Reality: Type inference often means you don't need explicit type annotations.
+
+5. **TypeScript is only for large projects**
+   - Reality: Even small projects benefit from improved tooling and early error detection.
+
+## When to Use TypeScript
+
+- When building larger applications
+- When working with a team
+- When you want better tooling and IDE support
+- When maintaining code long-term
+
+## TypeScript vs JavaScript
+
+| Feature | TypeScript | JavaScript |
+|---------|-----------|------------|
+| Static typing | ✅ | ❌ |
+| Interfaces | ✅ | ❌ |
+| Generics | ✅ | ❌ |
+| Browser support | Requires compilation | Native |
+| Learning curve | Steeper | Gentle |
