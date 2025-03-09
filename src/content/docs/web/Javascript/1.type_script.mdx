@@ -41,7 +41,7 @@ function greetUser(user: User) {
 TypeScript can automatically detect types:
 
 ```typescript
-// No type annotations needed
+// No type annotations needed (let name: string = "Alice";)
 let name = "Alice"; // TypeScript knows this is a string
 let numbers = [1, 2, 3]; // TypeScript knows this is number[]
 ```
@@ -78,5 +78,110 @@ let numbers = [1, 2, 3]; // TypeScript knows this is number[]
 | Interfaces | ✅ | ❌ |
 | Generics | ✅ | ❌ |
 | Browser support | Requires compilation | Native |
+
+### Installation
+
+```bash
+npm install -g typescript // globally
+npx tsc // locally
+```
+
+### Compilation
+
+```bash
+tsc filename.ts
+```
+- Do not use node to run typescript file, use tsc to compile the file into javascript and then run the compiled file using node.
+
+### Any Type
+
+The `any` type lets you opt-out of type checking:
+
+```typescript
+let anything: any;
+anything = "Hello";
+anything = 1;
+anything = true;
+anything.nonExistentMethod(); // No error during compilation
+```
+
+#### When to use `any`
+
+- Working with dynamic content
+- Migrating from JavaScript to TypeScript
+- When dealing with third-party libraries without type definitions
+
+#### Drawbacks
+
+- Loses type safety benefits
+- Reduces IDE assistance
+- Can hide bugs until runtime
+
+#### Better Alternatives
+
+```typescript
+// Instead of any, use more specific types:
+let value: unknown;  // Similar to any but safer
+let id: string | number;  // Union type
+let callback: () => void;  // Function type
+```
+
+TypeScript's goal is to avoid `any` when possible. Use more specific types for better code quality.
+
+### Functions in TypeScript
+
+Functions can have typed parameters and return values:
+
+```typescript
+// Basic function with types
+function greet(name: string): string {
+    return `Hello, ${name}!`;
+}
+
+// Arrow function with types
+const multiply = (a: number, b: number): number => a * b;
+
+// Optional parameters (? makes it optional)
+function createUser(name: string, age?: number): object {
+    return age ? { name, age } : { name };
+}
+
+// Default parameters
+function increment(value: number, amount: number = 1): number {
+    return value + amount;
+}
+
+// Rest parameters
+function sum(...numbers: number[]): number {
+    return numbers.reduce((total, n) => total + n, 0);
+}
+
+// Function type definition
+type MathOperation = (x: number, y: number) => number;
+const add: MathOperation = (a, b) => a + b;
+```
+
+#### Function Overloads
+
+Function overloads allow a function to be called in multiple ways:
+
+```typescript
+// Overload signatures
+function process(x: number): number;
+function process(x: string): string;
+// Implementation
+function process(x: number | string): number | string {
+    if (typeof x === "number") {
+        return x * 2;
+    } else {
+        return `${x} processed`;
+    }
+}
+
+const a = process(123);     // Returns a number
+const b = process("hello"); // Returns a string
+```
+
+
 
 
