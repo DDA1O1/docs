@@ -49,7 +49,7 @@ let numbers = [1, 2, 3]; // TypeScript knows this is number[]
 ## Common Misconceptions
 
 1. **TypeScript is a different language from JavaScript**
-   - Reality: TypeScript is a superset of JavaScript. All JavaScript code is valid TypeScript code.
+   - Reality: TypeScript is a superset of JavaScript. 
 
 2. **TypeScript improves runtime performance**
    - Reality: TypeScript only helps during development. The compiled JavaScript has identical performance.
@@ -57,13 +57,8 @@ let numbers = [1, 2, 3]; // TypeScript knows this is number[]
 3. **TypeScript guarantees type safety**
    - Reality: TypeScript has escape hatches (`any`, type assertions) and can't catch all errors.
 
-4. **TypeScript requires types for everything**
-   - Reality: Type inference often means you don't need explicit type annotations.
 
-5. **TypeScript is only for large projects**
-   - Reality: Even small projects benefit from improved tooling and early error detection.
-
-## When to Use TypeScript
+### When to Use TypeScript
 
 - When building larger applications
 - When working with a team
@@ -79,19 +74,35 @@ let numbers = [1, 2, 3]; // TypeScript knows this is number[]
 | Generics | ✅ | ❌ |
 | Browser support | Requires compilation | Native |
 
-### Installation
+
+
+## Installation
 
 ```bash
 npm install -g typescript // globally
 npx tsc // locally
 ```
 
-### Compilation
+#### Compilation
 
 ```bash
 tsc filename.ts
 ```
 - Do not use node to run typescript file, use tsc to compile the file into javascript and then run the compiled file using node.
+
+#### Typescript Configuration
+
+```typescript
+tsc --init
+```
+
+- This will create a `tsconfig.json` file in the root of your project.
+- This file contains the configuration for the TypeScript compiler.
+- `outDir` is the directory where the compiled JavaScript files will be placed.
+- `rootDir` is the directory where the TypeScript source files are located.
+- `target` is the version of JavaScript that the TypeScript compiler will compile to.
+- `module` is the module code generation.
+- `strict` is a flag to enable all strict type-checking options.
 
 ### Any Type
 
@@ -105,17 +116,14 @@ anything = true;
 anything.nonExistentMethod(); // No error during compilation
 ```
 
-#### When to use `any`
 
-- Working with dynamic content
-- Migrating from JavaScript to TypeScript
-- When dealing with third-party libraries without type definitions
-
-#### Drawbacks
+:::caution[Drawbacks]
 
 - Loses type safety benefits
 - Reduces IDE assistance
 - Can hide bugs until runtime
+
+:::
 
 #### Better Alternatives
 
@@ -242,12 +250,6 @@ type Customer = {
 };
 ```
 
-Common utility types:
-- `Partial<T>`: Makes all properties optional
-- `Required<T>`: Makes all properties required
-- `Pick<T, K>`: Selects specific properties
-- `Omit<T, K>`: Removes specific properties
-
 ### Type Aliases
 
 ```typescript
@@ -352,22 +354,17 @@ const readOnlyNumbers: ReadonlyArray<number> = [1, 2, 3];
 let tuple: [string, number] = ["age", 25];
 ```
 
-Common array methods preserve types:
-```typescript
-let nums = [1, 2, 3];
-let doubled = nums.map(n => n * 2);    // type: number[]
-let filtered = nums.filter(n => n > 1); // type: number[]
-let found = nums.find(n => n === 2);    // type: number | undefined
-```
 
 ### Tuples in TypeScript
+
+Tuples are fixed-length arrays with elements of different types. They are useful for:
+- Returning multiple values from functions
+- Working with fixed-length, mixed-type data
+
 
 ```typescript
 // Basic tuple
 let person: [string, number] = ["Alice", 25];
-
-// Destructuring works
-const [name, age] = person;
 
 // Optional elements
 let record: [string, number?] = ["Alice"]; // Second element optional
@@ -378,17 +375,12 @@ let team: [string, ...number[]] = ["Scores", 90, 85, 75];
 // Readonly tuple
 const point: readonly [number, number] = [10, 20];
 // point[0] = 30; // Error: Cannot assign to '0' because it is a read-only property
+
 ```
 
-Use tuples when:
-- Returning multiple values from functions
-- Working with fixed-length, mixed-type data
-- Representing coordinates or pairs
 
-⚠️ Cautions:
+:::caution[Caution]
 - Arrays methods can break tuple constraints
-- Type inference may not catch tuple issues
-- Avoid tuples for objects with clear property relationships
 
 ```typescript
 // ❌ Avoid: Array methods can break tuple constraints
@@ -399,8 +391,12 @@ pair.push(30); // TypeScript allows this but breaks tuple structure
 type Person = { name: string; age: number };
 let person: Person = { name: "Alice", age: 25 };
 ```
+:::
 
 ### Enums in TypeScript
+
+Enums allow you to define a set of named constants. They make it easier to handle fixed sets of values.
+
 
 ```typescript
 // Numeric enum
@@ -437,12 +433,6 @@ function setStatus(status: Status) {
 // ✅ Prefer string enums or union types for better type safety
 type UserRole = "admin" | "user" | "guest";  // Union type alternative
 ```
-
-Key points:
-- Use for fixed sets of values
-- String enums are safer than numeric
-- Consider union types as alternatives
-- Const enums optimize to inline values
 
 ### Classes in TypeScript
 
@@ -588,26 +578,80 @@ Key interface use cases:
 
 #### Abstract Classes
 
+Abstract classes are special classes that:
+- Cannot be instantiated directly means you cannot create an instance of an abstract class.
+- Must be inherited by other classes
+- Force child classes to implement abstract methods
+
 ```typescript
-// Abstract class example
+// Abstract Class Example
 abstract class Animal {
+    // Can have constructor
+    constructor(protected name: string) {}
+
     // Can have implemented methods
     makeSound(): void {
-        console.log("Some sound");
+        console.log(`${this.name} makes a sound`);
     }
-    
-    // Must be implemented by child classes
+
+    // Can have private members
+    private age: number = 0;
+
+    // Abstract method that must be implemented
     abstract move(): void;
 }
 
+// Concrete class implementing Abstract class
 class Dog extends Animal {
+    // Must extend only one abstract class
+    constructor(name: string) {
+        super(name);
+    }
+
+    // Must implement abstract methods
     move(): void {
-        console.log("Walking");
+        console.log(`${this.name} walks on four legs`);
     }
 }
+
+// Interface Example
+interface Vehicle {
+    // Only method signatures, no implementation
+    start(): void;
+    stop(): void;
+}
+
+interface Electric {
+    charge(): void;
+}
+
+// Class can implement multiple interfaces
+class Tesla implements Vehicle, Electric {
+    // Must implement all interface methods
+    start(): void {
+        console.log("Tesla starts silently");
+    }
+
+    stop(): void {
+        console.log("Tesla stops");
+    }
+
+    charge(): void {
+        console.log("Tesla is charging");
+    }
+}
+
+// Usage
+const dog = new Dog("Rex");
+dog.makeSound();  // "Rex makes a sound"
+dog.move();       // "Rex walks on four legs"
+
+const tesla = new Tesla();
+tesla.start();    // "Tesla starts silently"
+tesla.charge();   // "Tesla is charging"
 ```
 
-Abstract Classes vs Interfaces:
+#### Abstract Classes vs Interfaces
 
 1. Abstract Classes:
    - Can have implemented methods
@@ -621,23 +665,6 @@ Abstract Classes vs Interfaces:
    - Only public members
    - Class can implement multiple interfaces
 
-When to use which:
-- Use Abstract Class: When sharing code between related classes
-- Use Interface: When defining a contract for unrelated classes
-
-### Typescript Configuration
-
-```typescript
-tsc --init
-```
-
-- This will create a `tsconfig.json` file in the root of your project.
-- This file contains the configuration for the TypeScript compiler.
-- `outDir` is the directory where the compiled JavaScript files will be placed.
-- `rootDir` is the directory where the TypeScript source files are located.
-- `target` is the version of JavaScript that the TypeScript compiler will compile to.
-- `module` is the module code generation.
-- `strict` is a flag to enable all strict type-checking options.
 
 ### Generics in TypeScript
 
@@ -695,7 +722,7 @@ printName({ name: "John", age: 30 });     // Works
 ```
 
 
-:::danger `any` type
+:::caution[`any` type]
 
 - `any` type does not return the same type as the input type.
 ```typescript
