@@ -694,18 +694,8 @@ printName({ name: "John", age: 30 });     // Works
 // printName({ age: 30 });                // Error: missing name property
 ```
 
-Common Use Cases:
-1. Array operations
-2. Data containers
-3. API responses
-4. State management
 
-Best Practices:
-- Keep it simple
-- Use constraints when you need specific properties
-- Let TypeScript infer types when possible
-
-:::warning any type
+:::danger `any` type
 
 - `any` type does not return the same type as the input type.
 ```typescript
