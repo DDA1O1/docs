@@ -182,6 +182,546 @@ const a = process(123);     // Returns a number
 const b = process("hello"); // Returns a string
 ```
 
+### Never Type
+
+The `never` type represents values that never occur:
+
+```typescript
+// Function that never returns (throws)
+function throwError(message: string): never {
+    throw new Error(message);
+}
+
+// Function with unreachable end point
+function infiniteLoop(): never {
+    while (true) {
+        // do something forever
+    }
+}
+
+```
+
+The `never` type is useful for:
+- Functions that always throw exceptions
+- Functions with infinite loops
+
+### Objects in TypeScript
+
+```typescript
+// Basic object type
+let user: { name: string; age: number } = {
+    name: "Alice",
+    age: 30
+};
+
+// Type alias for reuse
+type User = {
+    id: number;
+    name: string;
+    email?: string;        // Optional property
+    readonly createdAt: Date; // Can't be modified
+};
+
+// Index signature for dynamic properties
+type Dictionary = {
+    [key: string]: string;
+};
+
+const colors: Dictionary = {
+    red: "#ff0000",
+    green: "#00ff00"
+};
+
+// Nested objects
+type Customer = {
+    name: string;
+    address: {
+        city: string;
+        zipCode: string;
+    }
+};
+```
+
+Common utility types:
+- `Partial<T>`: Makes all properties optional
+- `Required<T>`: Makes all properties required
+- `Pick<T, K>`: Selects specific properties
+- `Omit<T, K>`: Removes specific properties
+
+### Type Aliases
+
+```typescript
+// Basic type alias
+type Point = {
+    x: number;
+    y: number;
+};
+
+// Union type alias
+type Status = 'pending' | 'success' | 'error';
+
+// Function type alias
+type Calculator = (x: number, y: number) => number;
+
+// Combining type aliases
+type Circle = {
+    kind: 'circle';
+    radius: number;
+};
+
+type Square = {
+    kind: 'square';
+    size: number;
+};
+
+type Shape = Circle | Square;
+```
+
+Type aliases help you:
+- Create reusable types
+- Make code more readable
+- Define union and intersection types
+- Create complex type definitions
+
+### Combining Types
+
+```typescript
+// Union Types (OR)
+type ID = string | number;
+type Status = 'loading' | 'success' | 'error';
+
+// Intersection Types (AND)
+type Employee = {
+    id: number;
+    name: string;
+};
+
+type Address = {
+    city: string;
+    country: string;
+};
+
+type EmployeeWithAddress = Employee & Address;
+
+// Extending Types
+type Animal = {
+    name: string;
+};
+
+type Dog = Animal & {
+    breed: string;
+};
+
+// Generic Types
+type List<T> = {
+    items: T[];
+    total: number;
+};
+
+const numberList: List<number> = {
+    items: [1, 2, 3],
+    total: 3
+};
+```
+
+### Arrays in TypeScript
+
+```typescript
+// Basic array types
+let numbers: number[] = [1, 2, 3];
+let names: string[] = ["Alice", "Bob"];
+
+// Alternative syntax
+let items: Array<number> = [1, 2, 3];
+
+// Mixed types array
+let mixed: (string | number)[] = [1, "two", 3];
+
+// Array of objects
+type User = { id: number; name: string };
+let users: User[] = [
+    { id: 1, name: "Alice" },
+    { id: 2, name: "Bob" }
+];
+
+// Readonly arrays
+const readOnlyNumbers: ReadonlyArray<number> = [1, 2, 3];
+// readOnlyNumbers.push(4); // Error: Property 'push' does not exist
+
+// Tuple (fixed-length array)
+let tuple: [string, number] = ["age", 25];
+```
+
+Common array methods preserve types:
+```typescript
+let nums = [1, 2, 3];
+let doubled = nums.map(n => n * 2);    // type: number[]
+let filtered = nums.filter(n => n > 1); // type: number[]
+let found = nums.find(n => n === 2);    // type: number | undefined
+```
+
+### Tuples in TypeScript
+
+```typescript
+// Basic tuple
+let person: [string, number] = ["Alice", 25];
+
+// Destructuring works
+const [name, age] = person;
+
+// Optional elements
+let record: [string, number?] = ["Alice"]; // Second element optional
+
+// Rest elements
+let team: [string, ...number[]] = ["Scores", 90, 85, 75];
+
+// Readonly tuple
+const point: readonly [number, number] = [10, 20];
+// point[0] = 30; // Error: Cannot assign to '0' because it is a read-only property
+```
+
+Use tuples when:
+- Returning multiple values from functions
+- Working with fixed-length, mixed-type data
+- Representing coordinates or pairs
+
+⚠️ Cautions:
+- Arrays methods can break tuple constraints
+- Type inference may not catch tuple issues
+- Avoid tuples for objects with clear property relationships
+
+```typescript
+// ❌ Avoid: Array methods can break tuple constraints
+let pair: [string, number] = ["Alice", 25];
+pair.push(30); // TypeScript allows this but breaks tuple structure
+
+// ✅ Better: Use objects for named relationships
+type Person = { name: string; age: number };
+let person: Person = { name: "Alice", age: 25 };
+```
+
+### Enums in TypeScript
+
+```typescript
+// Numeric enum
+enum Direction {
+    Up,     // 0
+    Down,   // 1
+    Left,   // 2
+    Right   // 3
+}
+
+// String enum
+enum Color {
+    Red = "RED",
+    Green = "GREEN",
+    Blue = "BLUE"
+}
+
+// Usage
+let move: Direction = Direction.Up;
+let color: Color = Color.Red;
+
+// Const enum (better performance)
+const enum Status {
+    Active = "ACTIVE",
+    Inactive = "INACTIVE"
+}
+
+// Use when you have a fixed set of options
+function setStatus(status: Status) {
+    // ...
+}
+
+// ⚠️ Avoid number enums unless you really need them
+// ✅ Prefer string enums or union types for better type safety
+type UserRole = "admin" | "user" | "guest";  // Union type alternative
+```
+
+Key points:
+- Use for fixed sets of values
+- String enums are safer than numeric
+- Consider union types as alternatives
+- Const enums optimize to inline values
+
+### Classes in TypeScript
+
+```typescript
+// Basic class
+class Person {
+    // Properties
+    name: string;
+    private age: number;
+    protected role: string;
+    readonly id: number;
+
+    // Constructor
+    constructor(name: string, age: number) {
+        this.name = name;
+        this.age = age;
+        this.id = Math.random();
+    }
+
+    // Methods
+    greet(): string {
+        return `Hello, I'm ${this.name}`;
+    }
+}
+
+// Inheritance
+class Employee extends Person {
+    constructor(
+        name: string,
+        age: number,
+        private department: string
+    ) {
+        super(name, age);
+    }
+
+    // Getter
+    get employeeInfo(): string {
+        return `${this.name} works in ${this.department}`;
+    }
+
+    // Setter
+    set setDepartment(newDepartment: string) {
+        if (newDepartment.length > 0) {
+            this.department = newDepartment;
+        } else {
+            throw new Error("Department name cannot be empty");
+        }
+    }
+}
+
+// Interface implementation
+interface Vehicle {
+    start(): void;
+    stop(): void;
+}
+
+class Car implements Vehicle {
+    start() { console.log('Starting...'); }
+    stop() { console.log('Stopping...'); }
+}
+
+// Abstract class
+abstract class Shape {
+    abstract getArea(): number;
+    
+    printArea(): void {
+        console.log(this.getArea());
+    }
+}
+
+class Circle extends Shape {
+    constructor(private radius: number) {
+        super();
+    }
+
+    getArea(): number {
+        return Math.PI * this.radius ** 2;
+    }
+}
+
+// Interface with Classes Examples
+interface Database {
+    connect(): void;
+    query(sql: string): any[];
+    close(): void;
+}
+
+// Multiple classes implementing same interface
+class MySQLDatabase implements Database {
+    connect() { console.log('MySQL connected'); }
+    query(sql: string) { return []; }
+    close() { console.log('MySQL closed'); }
+}
+
+class PostgresDatabase implements Database {
+    connect() { console.log('Postgres connected'); }
+    query(sql: string) { return []; }
+    close() { console.log('Postgres closed'); }
+}
+
+// Interface inheritance
+interface UserService {
+    findById(id: number): User;
+}
+
+interface AdminService extends UserService {
+    deleteUser(id: number): void;
+}
+
+// Class implementing multiple interfaces
+interface Logger {
+    log(message: string): void;
+}
+
+class UserManager implements UserService, Logger {
+    findById(id: number): User { return { id, name: "User" }; }
+    log(message: string) { console.log(message); }
+}
+
+// Usage example
+function processDatabase(db: Database) {
+    db.connect();
+    const results = db.query("SELECT * FROM users");
+    db.close();
+    return results;
+}
+```
+
+Key features:
+- Access modifiers: `public`, `private`, `protected`
+- `readonly` properties
+- Inheritance with `extends`
+- Interface implementation
+- Abstract classes
+- Getters and setters
+
+Key interface use cases:
+- Defining contracts for different implementations
+- Creating pluggable components
+- Ensuring consistent method signatures
+- Supporting dependency injection
+- Enabling code reusability
+
+#### Abstract Classes
+
+```typescript
+// Abstract class example
+abstract class Animal {
+    // Can have implemented methods
+    makeSound(): void {
+        console.log("Some sound");
+    }
+    
+    // Must be implemented by child classes
+    abstract move(): void;
+}
+
+class Dog extends Animal {
+    move(): void {
+        console.log("Walking");
+    }
+}
+```
+
+Abstract Classes vs Interfaces:
+
+1. Abstract Classes:
+   - Can have implemented methods
+   - Can have constructor
+   - Can have private/protected members
+   - Class can extend only one abstract class
+
+2. Interfaces:
+   - Only method signatures, no implementation
+   - No constructor
+   - Only public members
+   - Class can implement multiple interfaces
+
+When to use which:
+- Use Abstract Class: When sharing code between related classes
+- Use Interface: When defining a contract for unrelated classes
+
+### Typescript Configuration
+
+```typescript
+tsc --init
+```
+
+- This will create a `tsconfig.json` file in the root of your project.
+- This file contains the configuration for the TypeScript compiler.
+- `outDir` is the directory where the compiled JavaScript files will be placed.
+- `rootDir` is the directory where the TypeScript source files are located.
+- `target` is the version of JavaScript that the TypeScript compiler will compile to.
+- `module` is the module code generation.
+- `strict` is a flag to enable all strict type-checking options.
+
+### Generics in TypeScript
+
+Generics let you write flexible, reusable code that works with any type while maintaining type safety.
+
+```typescript
+// Simple Generic Function
+function getFirst<Type>(items: Type[]): Type {
+    return items[0];
+}
+
+// Using the function
+getFirst([1, 2, 3]);               // Returns number
+getFirst(["a", "b", "c"]);         // Returns string
+getFirst([true, false]);           // Returns boolean
+
+// Generic Class Example
+class Box<Type> {
+    private content: Type;
+
+    constructor(value: Type) {
+        this.content = value;
+    }
+
+    get(): Type {
+        return this.content;
+    }
+}
+
+// Using the Box class
+const numberBox = new Box(123);     // Box<number>
+const stringBox = new Box("hello"); // Box<string>
+
+// Generic with Multiple Types
+function pair<Type1, Type2>(first: Type1, second: Type2) {
+    return { first, second };
+}
+
+// Using pair function
+pair("name", 100);    // { first: string, second: number }
+pair(true, 42);       // { first: boolean, second: number }
+
+// Generic Constraint Example
+interface HasName {
+    name: string;
+}
+
+function printName<Type extends HasName>(item: Type) {
+    console.log(item.name);
+}
+
+// Using constrained generic
+printName({ name: "John", age: 30 });     // Works
+// printName({ age: 30 });                // Error: missing name property
+```
+
+Common Use Cases:
+1. Array operations
+2. Data containers
+3. API responses
+4. State management
+
+Best Practices:
+- Keep it simple
+- Use constraints when you need specific properties
+- Let TypeScript infer types when possible
+
+:::warning any type
+
+- `any` type does not return the same type as the input type.
+```typescript
+function getFirst(arr: any[]): any {
+    return "hello";
+}
+
+getFirst([1, 2, 3]); // Returns string
+```
+
+:::
+
+
+
+
+
 
 
 
