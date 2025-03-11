@@ -47,9 +47,7 @@ export default defineConfig({
           },
           {
             label: 'Git & GitHub',
-            items: [
-              { label: 'overview', slug: 'Git_&_GitHub/overview' },
-            ]
+            autogenerate: { directory: 'Git_&_GitHub' },
           },
           {
             label: 'Web',
