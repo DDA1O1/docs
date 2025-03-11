@@ -128,6 +128,7 @@ The head pointer is the branch you are currently on.
 
 ```bash
 git branch <branch-name>
+git checkout -b <branch-name> // to create and switch to the new branch
 ```
 
 #### Switch to a branch
@@ -162,4 +163,92 @@ function hello() {
 ```
 To resolve a conflict, you need to manually edit the file to combine the changes.
 
+### Git Diff
+
+`git diff` shows changes between commits, commit and working tree, etc.
+
+#### Basic Usage
+
+```bash
+# Show unstaged changes
+git diff
+
+# Show staged changes
+git diff --staged
+
+# Compare two branches
+git diff branch1..branch2
+
+# Compare specific files
+git diff file1.js file2.js
+
+# Show changes between two commits
+git diff commit1 commit2
+
+```
+#### Diff output
+
+```bash
+diff --git a/file.js b/file.js
+index abc123..def456 100644
+--- a/file.js
++++ b/file.js
+@@ -1,5 +1,5 @@
+ function greeting() {
+-    return "Hello";    // Red: lines removed
++    return "Hi";       // Green: lines added
+     console.log("Greeting completed");
+ }
+```
+
+### Git Stash
+
+Git stash temporarily shelves (or stashes) changes you've made to your working directory so you can work on something else, and then come back and re-apply them later.
+
+```bash
+# Save current changes to stash
+git stash
+
+# Save with a description
+git stash save "work in progress for feature x"
+
+# List all stashes
+git stash list
+
+# Apply most recent stash
+git stash apply
+
+# Apply specific stash
+git stash apply stash@{2}
+
+# Remove most recent stash after applying
+git stash pop
+
+# Remove specific stash
+git stash drop stash@{1}
+
+# Clear all stashes
+git stash clear
+```
+#### use case
+
+Switching Branches with Uncommitted Work:
+
+```bash
+# On feature-branch with uncommitted changes
+git stash
+git checkout main
+
+# Do some work
+git checkout feature-branch
+git stash pop
+```
+
+### Git Rebase
+
+`git rebase` is used to replay changes from one branch onto another.
+
+```bash
+git rebase main
+```
 
