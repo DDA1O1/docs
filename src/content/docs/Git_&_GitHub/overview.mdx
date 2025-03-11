@@ -44,6 +44,9 @@ GitHub is a web-based hosting service for Git repositories. It adds a visual int
 ```bash
 git init
 ```
+- This will create a new directory called `.git` in the current directory.
+- This directory will contain the repository's metadata and history.
+
 ### Check the status of the repository
 
 you should always check the status of the repository before you start working on it.
@@ -54,8 +57,11 @@ git status
 
 ### Add files to the repository
 
+To track the changes you make to the files, you need to add them to the repository.
+
 ```bash
-git add <file>
+git add <file> // to add a specific file
+git add . // to add all the files
 ```
 ### Commit changes
 
@@ -72,6 +78,19 @@ After committing your changes locally, you need to push them to the remote repos
 ```bash
 git push
 ```
+
+### Pull changes from the repository
+
+```bash
+git pull
+```
+
+### Clone a repository
+
+```bash
+git clone <repository-url>
+```
+
 
 
 
