@@ -84,8 +84,16 @@ git commit -m "commit message"
 
 After committing your changes locally, you need to push them to the remote repository to make them available to others.
 
+- First connect with GitHub using SSh keys you can find it in your GitHub account settings.For Documentation [click here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+- Before pushing, you need to connect to the remote repository.
+
 ```bash
-git push
+git remote add origin <repository-url>
+```
+
+```bash
+git push -u origin main // to set the upstream branch so that you don't need to specify the branch name every time you push
+git push // to push the changes to the remote repository
 ```
 
 ### Git Log
@@ -130,7 +138,11 @@ The head pointer is the branch you are currently on.
 git branch <branch-name>
 git checkout -b <branch-name> // to create and switch to the new branch
 ```
+#### Change the branch name
 
+```bash
+git branch -m <old-name> <new-name>
+```
 #### Switch to a branch
 
 ```bash
@@ -244,11 +256,4 @@ git checkout feature-branch
 git stash pop
 ```
 
-### Git Rebase
-
-`git rebase` is used to replay changes from one branch onto another.
-
-```bash
-git rebase main
-```
 
