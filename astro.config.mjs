@@ -46,6 +46,12 @@ export default defineConfig({
               autogenerate: { directory: 'Computer_Architecture' },
           },
           {
+            label: 'Git & GitHub',
+            items: [
+              { label: 'overview', slug: 'Git_&_GitHub/overview' },
+            ]
+          },
+          {
             label: 'Web',
             items: [
               //   { label: 'HTML', slug: 'web_dev/html' }, 
