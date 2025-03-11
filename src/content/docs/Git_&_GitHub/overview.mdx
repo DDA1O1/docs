@@ -23,6 +23,15 @@ Git is available on all major operating systems. You can download it from the [G
 ```bash
 git --version
 ```
+#### Git Config
+
+Before you start using Git, you need to configure your username and email address.So that Git knows who you are.
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+```
+
 
 ## What is GitHub?
 
@@ -79,26 +88,78 @@ After committing your changes locally, you need to push them to the remote repos
 git push
 ```
 
-### Pull changes from the repository
+### Git Log
+
+To see the commit history, you can use the `git log` command.
 
 ```bash
-git pull
+git log --oneline // to see the commit history in one line
 ```
+### Git Ignore
 
-### Clone a repository
+When you are working on a project, you may have files that you do not want to track with Git. For example, you may have a `node_modules` directory or API keys,Database credentials,etc.
+
+You can create a `.gitignore` file to specify files and directories that should not be tracked by Git.
 
 ```bash
-git clone <repository-url>
+touch .gitignore
+```
+example of a `.gitignore` file:
+
+```
+node_modules/
+.env
+```
+### Git Branch
+
+Branches allow you to develop features, fix bugs, or experiment with new ideas without affecting the main codebase.
+
+```bash
+git branch // to see the branches
+```
+The head pointer is the branch you are currently on.
+
+```bash
+* main
+  feature-branch
 ```
 
+#### Create a new branch
 
+```bash
+git branch <branch-name>
+```
 
+#### Switch to a branch
 
+```bash
+git checkout <branch-name>
+```
 
+#### Merge a branch
 
+```bash
+git merge <branch-name>
+```
+:::danger[Always Check Your Current Branch]
+Always check which branch you are on before merging. You don't want to accidentally merge the main branch into your feature branch, which would require reverting changes to undo the damage.
+:::
 
+### Git Conflict
 
+A conflict occurs when two branches have made changes to the same file and Git cannot automatically merge the changes.
 
-
+```js
+<<<<<<< HEAD
+function hello() {
+  return "Hello World";  // Current branch changes
+}
+=======
+function hello() {
+  return "Hi there";     // Incoming branch changes
+}
+>>>>>>> feature-branch
+```
+To resolve a conflict, you need to manually edit the file to combine the changes.
 
 
