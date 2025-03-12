@@ -51,7 +51,7 @@ export default defineConfig({
           },
           {
             label: 'DataBase',
-            autogenerate: { directory: 'DataBase' },
+            autogenerate: { directory: 'Database' },
           },
           {
             label: 'Web',
