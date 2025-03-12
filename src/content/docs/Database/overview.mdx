@@ -38,8 +38,47 @@ A database is an organized collection of structured information, or data, typica
 - Used for IoT, financial data, and monitoring systems
 - Examples: InfluxDB, TimescaleDB
 
-### 5. Cloud Databases
+### Cloud Databases
 - Hosted on cloud platforms
 - Scalable and managed services
 - Examples: Amazon RDS, Google Cloud Firestore
+
+## Object-Relational Mapping (ORM)
+
+### Cloud Databases
+- Hosted on cloud platforms
+- Scalable and managed services
+- Examples: Amazon RDS, Google Cloud Firestore
+
+## ORM Framework
+- **Purpose**: Bridges object-oriented programming with relational databases
+- **Why We Use It**:
+  - Solves object-relational impedance mismatch
+  - Enables working with database entities as programming objects
+  - Simplifies database schema changes
+  - Provides type-safe query building
+- **Key Benefits**:
+  - Database abstraction layer
+  - Reduces boilerplate SQL code
+  - Improves code maintainability
+  - Automatic query optimization
+  - Database portability
+- **Popular Implementations**:
+  - SQLAlchemy (Python)
+  - Django ORM (Python)
+  - 
+- **Comparison with Raw SQL**:
+  ```python
+  # ORM Example (SQLAlchemy)
+  user = session.query(User).filter_by(username='john').first()
+  
+  # Raw SQL Equivalent
+  cursor.execute("SELECT * FROM users WHERE username = 'john'")
+  user = cursor.fetchone()
+  ```
+- **Typical Use Cases**:
+  - Rapid application development
+  - Complex data relationships
+  - Applications requiring multiple database backends
+  - Teams using object-oriented programming paradigms
 
