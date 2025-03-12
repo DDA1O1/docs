@@ -50,6 +50,10 @@ export default defineConfig({
             autogenerate: { directory: 'Git_&_GitHub' },
           },
           {
+            label: 'DataBase',
+            autogenerate: { directory: 'DataBase' },
+          },
+          {
             label: 'Web',
             items: [
               //   { label: 'HTML', slug: 'web_dev/html' }, 
