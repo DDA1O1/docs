@@ -3,6 +3,8 @@ title: "Database Overview"
 description: "An overview of databases and their types."
 ---
 
+import { Tabs, Tab } from '@astrojs/starlight/components';
+
 ## What is a Database?
 
 A database is an organized collection of structured information, or data, typically stored electronically in a computer system. Databases are designed to efficiently store, retrieve, and manage data, making it accessible for various applications and users.
@@ -76,28 +78,24 @@ user = cursor.fetchone()
 
 ## Cloud Databases
 
-<Tabs>
-  <Tab label="AWS">
-    - Amazon RDS (Relational)
-    - DynamoDB (NoSQL)
-    - Redshift (Data Warehouse)
-  </Tab>
-  
-  <Tab label="GCP">
-    - Cloud SQL
-    - Firestore
-    - Bigtable
-  </Tab>
-  <Tab label="Azure">
-    - Azure SQL Database
-    - Cosmos DB
-    - Synapse Analytics
-  </Tab>
-</Tabs>
+### Cloud Database Providers
 
-### Hosted on cloud platforms
-- Scalable and managed services
-- Examples: Amazon RDS, Google Cloud Firestore, Azure Cosmos DB
+**AWS**
+- Amazon RDS (Relational)
+- DynamoDB (NoSQL)
+- Redshift (Data Warehouse)
+
+**GCP**
+- Cloud SQL
+- Firestore
+- Bigtable
+
+**Azure**
+- Azure SQL Database
+- Cosmos DB
+- Synapse Analytics
+
+
 
 ## ORM Framework
 - **Purpose**: Bridges object-oriented programming with relational databases
