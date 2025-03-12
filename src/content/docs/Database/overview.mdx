@@ -39,17 +39,65 @@ A database is an organized collection of structured information, or data, typica
 - Used for IoT, financial data, and monitoring systems
 - Examples: InfluxDB, TimescaleDB
 
-### Cloud Databases
+### 5. Cloud Databases
 - Hosted on cloud platforms
 - Scalable and managed services
-- Examples: Amazon RDS, Google Cloud Firestore
+- Examples: Amazon RDS, Google Cloud Firestore, Azure Cosmos DB
 
 ## Object-Relational Mapping (ORM)
 
-### Cloud Databases
-- Hosted on cloud platforms
+```python
+# ORM Example (SQLAlchemy)
+user = session.query(User).filter_by(username='john').first()
+
+# Raw SQL Equivalent
+cursor.execute("SELECT * FROM users WHERE username = 'john'")
+user = cursor.fetchone()
+```
+
+- **Popular Implementations**:
+  - SQLAlchemy (Python)
+  - Django ORM (Python)
+  - Hibernate (Java)
+  - Entity Framework (.NET) Hibernate (Java)
+  - Entity Framework (.NET)
+
+- **Comparison Table**:
+
+| ORM Features               | Raw SQL                |
+|----------------------------|------------------------|
+| Object-oriented interface  | Manual query writing  |
+| Automatic connection pool  | Direct DB connections  |
+| Type-safe queries          | String-based queries   |
+
+<div class="callout">
+**Best Practice**: Use ORM for most application logic while keeping raw SQL for complex queries and optimizations.
+</div>
+
+## Cloud Databases
+
+<Tabs>
+  <Tab label="AWS">
+    - Amazon RDS (Relational)
+    - DynamoDB (NoSQL)
+    - Redshift (Data Warehouse)
+  </Tab>
+  
+  <Tab label="GCP">
+    - Cloud SQL
+    - Firestore
+    - Bigtable
+  </Tab>
+  <Tab label="Azure">
+    - Azure SQL Database
+    - Cosmos DB
+    - Synapse Analytics
+  </Tab>
+</Tabs>
+
+### Hosted on cloud platforms
 - Scalable and managed services
-- Examples: Amazon RDS, Google Cloud Firestore
+- Examples: Amazon RDS, Google Cloud Firestore, Azure Cosmos DB
 
 ## ORM Framework
 - **Purpose**: Bridges object-oriented programming with relational databases
@@ -67,7 +115,8 @@ A database is an organized collection of structured information, or data, typica
 - **Popular Implementations**:
   - SQLAlchemy (Python)
   - Django ORM (Python)
-  - 
+  - Hibernate (Java)
+  - Entity Framework (.NET) 
 - **Comparison with Raw SQL**:
   ```python
   # ORM Example (SQLAlchemy)
@@ -82,4 +131,26 @@ A database is an organized collection of structured information, or data, typica
   - Complex data relationships
   - Applications requiring multiple database backends
   - Teams using object-oriented programming paradigms
+
+<Callout type="tip">
+**Pro Tip**: Combine ORM for CRUD operations with raw SQL for complex analytics queries.
+</Callout>
+
+```python title="ORM Example"
+# SQLAlchemy implementation
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    username = Column(String(50), unique=True)
+    email = Column(String(100), unique=True)
+```
+
+<Callout type="warning">
+**Important**: Always implement proper connection pooling when working with ORM frameworks to maintain database performance.
+</Callout>
 
