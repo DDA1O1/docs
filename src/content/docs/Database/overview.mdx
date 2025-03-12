@@ -3,8 +3,6 @@ title: "Database Overview"
 description: "An overview of databases and their types."
 ---
 
-import { Tabs, Tab } from '@astrojs/starlight/components';
-
 ## What is a Database?
 
 A database is an organized collection of structured information, or data, typically stored electronically in a computer system. Databases are designed to efficiently store, retrieve, and manage data, making it accessible for various applications and users.
@@ -66,15 +64,28 @@ user = cursor.fetchone()
 
 - **Comparison Table**:
 
-| ORM Features               | Raw SQL                |
-|----------------------------|------------------------|
-| Object-oriented interface  | Manual query writing  |
-| Automatic connection pool  | Direct DB connections  |
-| Type-safe queries          | String-based queries   |
-
-<div class="callout">
-**Best Practice**: Use ORM for most application logic while keeping raw SQL for complex queries and optimizations.
-</div>
+<table class="table-auto min-w-full border-collapse my-4">
+  <thead>
+    <tr class="bg-gray-200">
+      <th class="border px-4 py-2 text-left">ORM Features</th>
+      <th class="border px-4 py-2 text-left">Raw SQL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="bg-white">
+      <td class="border px-4 py-2">Object-oriented interface</td>
+      <td class="border px-4 py-2">Manual query writing</td>
+    </tr>
+    <tr class="bg-gray-100">
+      <td class="border px-4 py-2">Automatic connection pool</td>
+      <td class="border px-4 py-2">Direct DB connections</td>
+    </tr>
+    <tr class="bg-white">
+      <td class="border px-4 py-2">Type-safe queries</td>
+      <td class="border px-4 py-2">String-based queries</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Cloud Databases
 
@@ -95,8 +106,6 @@ user = cursor.fetchone()
 - Cosmos DB
 - Synapse Analytics
 
-
-
 ## ORM Framework
 - **Purpose**: Bridges object-oriented programming with relational databases
 - **Why We Use It**:
@@ -113,8 +122,10 @@ user = cursor.fetchone()
 - **Popular Implementations**:
   - SQLAlchemy (Python)
   - Django ORM (Python)
-  - Hibernate (Java)
-  - Entity Framework (.NET) 
+  - Mongoose (MongoDB)
+  - Prisma
+  - Drizzle ORM
+
 - **Comparison with Raw SQL**:
   ```python
   # ORM Example (SQLAlchemy)
@@ -130,19 +141,5 @@ user = cursor.fetchone()
   - Applications requiring multiple database backends
   - Teams using object-oriented programming paradigms
 
-
-```python title="ORM Example"
-# SQLAlchemy implementation
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
-
-class User(Base):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    username = Column(String(50), unique=True)
-    email = Column(String(100), unique=True)
-```
 
 
