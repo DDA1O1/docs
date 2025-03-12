@@ -56,11 +56,11 @@ user = cursor.fetchone()
 ```
 
 - **Popular Implementations**:
-  - SQLAlchemy (Python)
-  - Django ORM (Python)
-  - Hibernate (Java)
-  - Entity Framework (.NET) Hibernate (Java)
-  - Entity Framework (.NET)
+  - SQLAlchemy 
+  - Django ORM 
+  - Mongoose (MongoDB)
+  - Prisma
+  - Drizzle ORM
 
 - **Comparison Table**:
 
@@ -132,9 +132,6 @@ user = cursor.fetchone()
   - Applications requiring multiple database backends
   - Teams using object-oriented programming paradigms
 
-<Callout type="tip">
-**Pro Tip**: Combine ORM for CRUD operations with raw SQL for complex analytics queries.
-</Callout>
 
 ```python title="ORM Example"
 # SQLAlchemy implementation
@@ -150,7 +147,4 @@ class User(Base):
     email = Column(String(100), unique=True)
 ```
 
-<Callout type="warning">
-**Important**: Always implement proper connection pooling when working with ORM frameworks to maintain database performance.
-</Callout>
 
