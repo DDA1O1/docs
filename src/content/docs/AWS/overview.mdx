@@ -1,0 +1,83 @@
+---
+title: AWS Overview
+description: Getting started with AWS before using any services
+---
+
+# Getting Started with AWS
+
+## Account Setup
+
+1. **Create an AWS Account**
+   - Visit [AWS Console](https://aws.amazon.com/)
+   - Click "Create an AWS Account"
+   - Provide email, password, and account name
+   - Complete the verification process
+
+2. **Set Up Multi-Factor Authentication (MFA)**
+   - Go to IAM dashboard
+   - Select your username
+   - Configure MFA device (recommended: authenticator app)
+
+3. **Create IAM Users**
+   - Avoid using root account for daily tasks
+   - Create admin IAM user with appropriate permissions
+   - Generate access keys only when needed for specific services
+
+## Security Best Practices
+
+1. **Enable CloudTrail**
+   - Tracks all API calls in your account
+   - Set up in the CloudTrail console
+   - Store logs in a dedicated S3 bucket
+
+2. **Configure Billing Alerts**
+   - Set up in Billing dashboard
+   - Create budget with notifications
+   - Set CloudWatch alarms for spending thresholds
+
+3. **Implement Least Privilege Access**
+   - Grant minimal permissions needed
+   - Use IAM roles for services
+   - Regularly review and audit permissions
+
+
+
+## AWS CLI and SDK Setup
+
+1. **Install AWS CLI**
+   ```bash
+   # For Windows (PowerShell)
+   msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
+
+   # For macOS
+   curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
+   sudo installer -pkg AWSCLIV2.pkg -target /
+
+   # For Linux
+   curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+   unzip awscliv2.zip
+   sudo ./aws/install
+   ```
+
+2. **Configure AWS CLI**
+   ```bash
+   aws configure
+   # Enter your access key, secret key, default region, and output format
+   ```
+
+3. **Install SDK for Your Programming Language**
+   - [Python (Boto3)](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html)
+   - [JavaScript](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/getting-started.html)
+   - [Java](https://docs.aws.amazon.com/sdk-for-java/v2/developer-guide/setup-project-maven.html)
+   - [.NET](https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/net-dg-setup.html)
+
+
+## Next Steps
+
+After setting up your AWS environment, explore these foundational services:
+
+1. **Amazon S3** - Object storage
+2. **Amazon EC2** - Virtual servers
+3. **Amazon RDS** - Managed databases
+4. **AWS Lambda** - Serverless computing
+5. **Amazon CloudWatch** - Monitoring and observability
