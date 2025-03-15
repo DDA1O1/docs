@@ -44,20 +44,60 @@ Docker's key innovations:
 - Simplified container creation with Dockerfile
 - Standardized container format
 - Container registries for sharing images
-- Rich ecosystem of tools and services
 
-Containers represent the evolution from monolithic physical servers to highly efficient, portable application deployment units.
 
 ## Containers: Definition
 
 Containers are lightweight, standalone, executable software packages that include everything needed to run an application: code, runtime, system tools, libraries, and settings. They isolate software from its environment and ensure it works uniformly despite differences in infrastructure.
 
+### Container vs VM(Virtual Machine)
 
+| Feature | Containers | Virtual Machines |
+|---------|-----------|------------------|
+| Architecture | Share host OS kernel | Run complete OS + hypervisor |
+| Size | Megabytes | Gigabytes |
+| Startup time | Seconds | Minutes |
+| Performance | Near-native | Overhead due to hypervisor |
+| Isolation | Process-level isolation | Complete hardware isolation |
+| Resource usage | Minimal overhead | Significant memory/CPU overhead |
+| Portability | Highly portable across compatible hosts | Less portable, may require conversion |
+| Density | Can run hundreds per host | Typically dozens per host |
 
+### Visual Comparison
 
+#### Container Architecture
+```
+┌─────────────────────────────────────────────────┐
+│                  Applications                    │
+├─────────────┬─────────────────┬─────────────────┤
+│  Container  │    Container    │    Container    │
+│      A      │        B        │        C        │
+│  (Node.js)  │    (Redis)      │   (MongoDB)     │
+├─────────────┴─────────────────┴─────────────────┤
+│                Docker Engine                     │
+├─────────────────────────────────────────────────┤
+│                   Host OS                        │
+├─────────────────────────────────────────────────┤
+│                  Hardware                        │
+└─────────────────────────────────────────────────┘
+```
 
+#### Virtual Machine Architecture
+```
+┌───────────────┐  ┌───────────────┐  ┌───────────────┐
+│  Application  │  │  Application  │  │  Application  │
+│   (Node.js)   │  │    (.NET)     │  │   (Python)    │
+├───────────────┤  ├───────────────┤  ├───────────────┤
+│    Ubuntu     │  │    Windows    │  │    CentOS     │
+├───────────────┤  ├───────────────┤  ├───────────────┤
+│      VM A     │  │      VM B     │  │      VM C     │
+├───────────────┴──┴───────────────┴──┴───────────────┤
+│                   Hypervisor                         │
+├─────────────────────────────────────────────────────┤
+│                     Host OS                          │
+├─────────────────────────────────────────────────────┤
+│                    Hardware                          │
+└─────────────────────────────────────────────────────┘
+```
 
-
-
-
-
+The key difference shown in these diagrams is that containers share the host OS kernel, while VMs each run their own complete guest operating system.
