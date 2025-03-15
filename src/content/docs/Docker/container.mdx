@@ -68,17 +68,17 @@ Containers are lightweight, standalone, executable software packages that includ
 #### Container Architecture
 ```text
 ┌─────────────────────────────────────────────────┐
-│                  Applications                    │
+│                  Applications                   │
 ├─────────────┬─────────────────┬─────────────────┤
 │  Container  │    Container    │    Container    │
 │      A      │        B        │        C        │
 │  (Node.js)  │    (Redis)      │   (MongoDB)     │
 ├─────────────┴─────────────────┴─────────────────┤
-│                Docker Engine                     │
+│                Docker Engine                    │
 ├─────────────────────────────────────────────────┤
-│                   Host OS                        │
+│                   Host OS                       │
 ├─────────────────────────────────────────────────┤
-│                  Hardware                        │
+│                  Hardware                       │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -92,11 +92,11 @@ Containers are lightweight, standalone, executable software packages that includ
 ├───────────────┤  ├───────────────┤  ├───────────────┤
 │      VM A     │  │      VM B     │  │      VM C     │
 ├───────────────┴──┴───────────────┴──┴───────────────┤
-│                   Hypervisor                         │
+│                   Hypervisor                        │
 ├─────────────────────────────────────────────────────┤
-│                     Host OS                          │
+│                     Host OS                         │
 ├─────────────────────────────────────────────────────┤
-│                    Hardware                          │
+│                    Hardware                         │
 └─────────────────────────────────────────────────────┘
 ```
 
