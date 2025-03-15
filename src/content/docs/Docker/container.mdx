@@ -1,0 +1,63 @@
+---
+title: "Docker Container"
+description: "Docker Container"
+---
+
+## Raw Server
+
+Raw servers refer to traditional physical machines running a single operating system directly on hardware. While powerful, they have significant limitations:
+
+- **Resource Underutilization**: Most applications use only a fraction of server capacity
+- **Difficult Scaling**: Adding capacity requires new physical hardware
+- **Long Provisioning Time**: Setting up new servers takes days or weeks
+- **High Maintenance Costs**: Each server needs physical space, power, cooling
+- **Limited Isolation**: Applications on the same server can interfere with each other
+
+## Hypervisors: The First Solution
+
+These limitations led to the development of hypervisors in the early 2000s:
+
+- **Type 1 (Bare Metal)**: Run directly on hardware (VMware ESXi, Microsoft Hyper-V)
+- **Type 2 (Hosted)**: Run on a host OS (VirtualBox, VMware Workstation)
+
+Hypervisors enabled virtual machines (VMs) that:
+- Improved resource utilization through consolidation
+- Provided better isolation between workloads
+- Enabled faster provisioning compared to physical servers
+
+However, VMs still had drawbacks:
+- Each VM required a full OS installation
+- Significant resource overhead
+- Limited portability between different environments
+
+## Docker: The Container Revolution
+
+Docker emerged in 2013 to address VM limitations by using container technology:
+
+- **Shared Kernel**: Containers share the host OS kernel, eliminating OS duplication
+- **Lightweight**: Start in seconds instead of minutes, use minimal resources
+- **Portable**: Run consistently across development, testing, and production
+- **Isolated**: Applications and dependencies packaged together
+- **Efficient**: Run many more containers than VMs on the same hardware
+
+Docker's key innovations:
+- Simplified container creation with Dockerfile
+- Standardized container format
+- Container registries for sharing images
+- Rich ecosystem of tools and services
+
+Containers represent the evolution from monolithic physical servers to highly efficient, portable application deployment units.
+
+## Containers: Definition
+
+Containers are lightweight, standalone, executable software packages that include everything needed to run an application: code, runtime, system tools, libraries, and settings. They isolate software from its environment and ensure it works uniformly despite differences in infrastructure.
+
+
+
+
+
+
+
+
+
+

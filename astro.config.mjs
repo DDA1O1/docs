@@ -54,6 +54,10 @@ export default defineConfig({
             autogenerate: { directory: 'Database' },
           },
           {
+            label: 'AWS',
+            autogenerate: { directory: 'AWS' },
+          },
+          {
             label: 'Web',
             items: [
               //   { label: 'HTML', slug: 'web_dev/html' }, 
