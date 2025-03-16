@@ -1,0 +1,10 @@
+.delayed-button {
+  opacity: 0;
+  animation: simpleAppear 0.5s ease forwards;
+  animation-delay: 2s;
+}
+
+@keyframes simpleAppear {
+  from { opacity: 0; }
+  to { opacity: 1; }
+} 

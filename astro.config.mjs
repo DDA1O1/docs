@@ -25,6 +25,7 @@ export default defineConfig({
       customCss:[
           // Path to your Tailwind base styles:
         './src/tailwind.css',
+        './src/styles/custom.css',
         ],
       social: {
           github: 'https://github.com/DDA1O1',
