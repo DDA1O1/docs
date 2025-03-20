@@ -502,6 +502,10 @@ function ThemedButton() {
 
 #### useRef
 Persists values between renders without causing re-renders.
+- Hold mutable values that persist across renders
+- Access DOM elements directly
+- Store values that don't trigger re-renders when changed
+
 ```jsx
 function TextInput() {
   const inputRef = useRef();
