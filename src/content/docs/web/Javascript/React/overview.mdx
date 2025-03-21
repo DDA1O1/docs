@@ -469,6 +469,15 @@ function Counter() {
 
 #### useEffect
 Handles side effects (API calls, subscriptions, DOM updates).
+The dependency array controls when the effect runs:
+
+- Empty array `[]`: Effect runs only on mount, cleanup runs only on unmount
+- With dependencies `[dep1, dep2]`: 
+  1. Cleanup code from previous render runs first (if exists)
+  2. Then effect code runs with new values
+- No dependency array: Effect runs on every render
+
+
 ```jsx
 useEffect(() => {
   // Effect code
@@ -491,6 +500,7 @@ function UserProfile({ userId }) {
 
 #### useContext
 Access context values without prop drilling.
+
 ```jsx
 const ThemeContext = createContext('light');
 
