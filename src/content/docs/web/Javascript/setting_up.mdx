@@ -65,6 +65,32 @@ let variableName = "value";
 const constantName = "value";
 var variableName2 = "value";
 ```
+```javascript
+// With Objects
+const user = { name: "John", age: 25 };
+user.name = "Jane";     // ✅ OK - Modifying property
+user.age = 26;         // ✅ OK - Modifying property
+delete user.age;       // ✅ OK - Deleting property
+user.location = "NYC"; // ✅ OK - Adding new property
+
+user = { name: "Bob" }; // ❌ ERROR - Cannot reassign const
+
+// With Arrays
+const numbers = [1, 2, 3];
+numbers.push(4);      // ✅ OK - Modifying array
+numbers.pop();        // ✅ OK - Modifying array
+numbers[0] = 10;      // ✅ OK - Modifying element
+
+numbers = [5, 6, 7];  // ❌ ERROR - Cannot reassign const
+
+// With Sets (like our clients Set)
+const clientSet = new Set();
+clientSet.add("client1");    // ✅ OK - Modifying Set
+clientSet.delete("client1"); // ✅ OK - Modifying Set
+clientSet.clear();          // ✅ OK - Modifying Set
+
+clientSet = new Set();      // ❌ ERROR - Cannot reassign const
+```
 :::caution[var]
  **var** is used to declare a variable in older versions of Javascript.It is not recommended to use var in modern Javascript.Due to its function scope,it passes the value of local variable to the global scope.This can lead to unexpected behaviour in the code.
 :::
