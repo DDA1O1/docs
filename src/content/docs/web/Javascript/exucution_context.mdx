@@ -204,6 +204,45 @@ try {
 } finally {
     console.log("Cleanup code");
 }
+
+1. When no error occurs
+
+try {
+  console.log("try");
+  return;  // returns undefined, but catch won't run
+} catch (error) {
+  console.log("catch"); // this won't execute
+}
+
+2. When error occurs
+
+try {
+  console.log("try");
+  throw new Error("oops");  // this causes catch to run
+  return;  // this line never executes
+} catch (error) {
+  console.log("catch"); // this will execute
+  return;  // returns undefined
+}
+
+3. If you want to run the catch block even if there is no error
+
+try {
+  console.log("try");
+  return true;  
+} catch (error) {
+  console.log("catch"); // this will execute
+  return false;
+}
+
+// the catch block is only executed when an exception is thrown in the try block. The presence or absence of a return statement (with or without a value) doesn't change this behavior.
+
+try {
+  console.log("try");
+  throw new Error("oops");
+} catch (error) {
+  console.log("catch"); // this will execute
+}
 ```
 
 :::note
