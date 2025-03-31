@@ -565,3 +565,70 @@ result();  //10 20
 </script>
 </html>
 ```
+
+```javascript
+const express = require('express');
+const app = express();
+
+// Store client handler functions in this array
+// Each function will maintain closure over its specific client's response object
+const clientHandlers = [];
+
+// Function to broadcast updates to all connected clients
+function broadcastUpdates(data) {
+  console.log(`Broadcasting update: ${data} to ${clientHandlers.length} clients`);
+  
+  // Iterate through all stored client handlers
+  clientHandlers.forEach((handler, index) => {
+    // Call each handler with the new data
+    // The handler remembers its specific response object through closure
+    try {
+      handler(data);
+    } catch (error) {
+      console.log(`Error sending to client ${index}: ${error.message}`);
+      // Remove failed handlers
+      clientHandlers.splice(index, 1);
+    }
+  });
+}
+
+// Set up SSE endpoint
+app.get('/updates', (req, res) => {
+  // Set headers for SSE
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  
+  // Send initial connection message
+  res.write(`data: ${JSON.stringify({ message: "Connected to server" })}\n\n`);
+  
+  // Create a handler function that closes over this specific response object
+  // This demonstrates closure - the function "remembers" which client's res to write to
+  const clientHandler = (data) => {
+    res.write(`data: ${JSON.stringify({ message: data })}\n\n`);
+  };
+  
+  // Store the handler in our array for future updates
+  clientHandlers.push(clientHandler);
+  
+  // Remove handler when client disconnects
+  req.on('close', () => {
+    const index = clientHandlers.indexOf(clientHandler);
+    if (index > -1) {
+      clientHandlers.splice(index, 1);
+      console.log(`Client disconnected. Total connected: ${clientHandlers.length}`);
+    }
+  });
+});
+
+// Start server
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+  
+  // Simulate updates every 10 seconds
+  setInterval(() => {
+    const update = `Update at ${new Date().toLocaleTimeString()}`;
+    broadcastUpdates(update);
+  }, 10000);
+});
+```
