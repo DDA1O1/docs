@@ -4,7 +4,7 @@
 
 React Native was introduced by Facebook (now Meta) in 2015 as a solution to a growing challenge in mobile development. The framework was born out of Facebook's internal hackathon project, addressing the need to maintain separate codebases for iOS and Android apps while ensuring consistent user experiences.
 
-## History and Purpose
+### History and Purpose
 
 The key innovation was enabling developers to write once and deploy across multiple platforms while maintaining native performance. Unlike previous cross-platform solutions, React Native renders using actual native UI components rather than webviews, resulting in apps that are indistinguishable from those built with native languages like Swift or Kotlin.
 
@@ -15,7 +15,7 @@ React Native rapidly gained popularity because it:
 - Provided access to native features when needed
 - Allowed web developers to transition to mobile development
 
-### JavaScript Interface(JSI)
+## JavaScript Interface(JSI)
 
 JSI is a key part of React Native's New Architecture that replaces the old bridge system. It's a C++ layer that lets JavaScript talk directly to native code.
 
@@ -75,7 +75,7 @@ Fabric is React Native's new rendering system in the New Architecture. It comple
 
 Fabric creates a persistent C++ rendering layer that exists on both JavaScript and native sides, allowing for more consistent UI behavior and better performance when handling complex interfaces.
 
-### Expo
+## Expo
 
 Expo is a platform built on top of React Native that provides a managed development environment with simplified workflows.
 
@@ -179,6 +179,40 @@ React Native uses Flexbox as its primary layout system by default, while React w
 
 **Navigation**:
 React web typically uses libraries like React Router, while React Native employs specialized navigation libraries such as React Navigation.
+
+### TailwindCSS in React Native
+
+Unlike web development where TailwindCSS is directly supported, React Native requires special libraries to use Tailwind's utility-first styling approach.
+
+#### NativeWind
+
+NativeWind is the primary solution for bringing TailwindCSS to React Native applications. It allows developers to use familiar Tailwind classes across all platforms.
+
+**How NativeWind Works:**
+- Compiles Tailwind classes into platform-specific styles (StyleSheet.create for native, CSS StyleSheet for web)
+- Processes styles during build time with minimal runtime for reactive styles
+- Supports most Tailwind features including media queries, dark mode, and CSS variables
+
+**Example Usage:**
+```jsx
+// React Native with NativeWind
+import { View, Text } from 'react-native';
+import { styled } from 'nativewind';
+
+// Create styled components
+const StyledView = styled(View);
+const StyledText = styled(Text);
+
+export default function App() {
+  return (
+    <StyledView className="flex-1 items-center justify-center bg-slate-100">
+      <StyledText className="text-lg font-medium text-slate-900">
+        Hello TailwindCSS in React Native!
+      </StyledText>
+    </StyledView>
+  );
+}
+```
 
 
 
