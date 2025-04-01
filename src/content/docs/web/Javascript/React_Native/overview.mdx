@@ -1,0 +1,90 @@
+---
+ title: React Native
+---
+
+# React Native
+
+React Native was introduced by Facebook (now Meta) in 2015 as a solution to a growing challenge in mobile development. The framework was born out of Facebook's internal hackathon project, addressing the need to maintain separate codebases for iOS and Android apps while ensuring consistent user experiences.
+
+## History and Purpose
+
+The key innovation was enabling developers to write once and deploy across multiple platforms while maintaining native performance. Unlike previous cross-platform solutions, React Native renders using actual native UI components rather than webviews, resulting in apps that are indistinguishable from those built with native languages like Swift or Kotlin.
+
+React Native rapidly gained popularity because it:
+- Reduced development time and costs
+- Enabled code sharing between platforms
+- Offered hot reloading for faster iteration
+- Provided access to native features when needed
+- Allowed web developers to transition to mobile development
+
+### JavaScript Interface(JSI)
+
+JSI is a key part of React Native's New Architecture that replaces the old bridge system. It's a C++ layer that lets JavaScript talk directly to native code.
+
+#### Old vs New Architecture
+
+**Old Bridge System:**
+- Used JSON to pass messages between JavaScript and native code
+- All communication was asynchronous (had to wait for responses)
+- Required extra processing to convert data
+
+**JSI Benefits:**
+- Direct communication with native code
+- Can be synchronous (immediate) when needed
+- Faster performance with less memory use
+- Quicker app startup
+- Enables modern React features like Suspense
+
+### Turbo Modules
+
+Turbo Modules are the improved version of Native Modules in React Native's New Architecture. They allow JavaScript code to access native platform features and APIs more efficiently.
+
+#### How They Improve Native Modules
+
+**Old Native Modules:**
+- Loaded at app startup (even if never used)
+- Communicated through the bridge with JSON serialization
+- Async-only communication
+- No type safety between JavaScript and native code
+
+**Turbo Modules Benefits:**
+- Lazy loading (only load when needed)
+- Direct communication via JSI (no bridge)
+- Support both sync and async calls
+- Type-safe through CodeGen
+- Better memory management
+- Faster execution
+
+Turbo Modules work hand-in-hand with JSI, giving JavaScript direct access to native functionality while maintaining the write-once-run-anywhere philosophy of React Native.
+
+### Fabric
+
+Fabric is React Native's new rendering system in the New Architecture. It completely reimagines how React components are rendered on mobile devices.
+
+#### How Fabric Improves Rendering
+
+**Old Rendering System:**
+- Single-threaded UI updates
+- Asynchronous layout calculations
+- Required bridge serialization for all UI operations
+- Limited concurrent work
+
+**Fabric Benefits:**
+- Multi-threaded rendering (smoother UI)
+- Synchronous layout measurements when needed
+- Direct access to native UI components via JSI
+- Persistent UI trees for better state management
+
+Fabric creates a persistent C++ rendering layer that exists on both JavaScript and native sides, allowing for more consistent UI behavior and better performance when handling complex interfaces.
+
+
+
+
+
+
+
+
+
+
+
+
