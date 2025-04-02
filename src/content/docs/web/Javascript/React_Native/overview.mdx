@@ -299,7 +299,188 @@ This indicates that EAS Build is creating and storing your keystore securely on 
 
 For production apps, EAS provides additional options like Play App Signing integration, which adds an extra layer of security by allowing Google to manage your release keys.
 
-### TailwindCSS in React Native
+## Setting up React Native
+
+There are two main approaches to setting up a React Native development environment:
+
+### 1. Using Expo (Recommended for Beginners)
+
+Expo provides the easiest way to start with React Native development:
+
+```bash
+# Install Expo CLI globally
+npm install -g expo-cli
+
+# Create a new project
+npx create-expo-app MyApp
+cd MyApp
+
+# Start the development server
+npx expo start
+```
+
+**Development Options with Expo:**
+- Use Expo Go app for quick testing
+- Create development builds for custom native code
+- Deploy to app stores using EAS Build
+
+### 2. React Native CLI (Traditional Setup)
+
+This is the traditional setup that gives you full control over the native code. Follow these steps based on your operating system:
+
+#### Installing Dependencies
+
+1. **Node & Watchman** (macOS and Linux):
+```bash
+# Using Homebrew on macOS
+brew install node
+brew install watchman
+
+# On Linux - use your system's package manager for Node
+# Watchman needs to be built from source
+```
+
+2. **Java Development Kit**:
+- Install OpenJDK 17 (recommended version)
+- On macOS:
+```bash
+brew install --cask zulu@17
+```
+- Set JAVA_HOME environment variable:
+```bash
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+```
+
+3. **Android Development Environment**:
+
+a. Install Android Studio
+- Download and install Android Studio
+- During installation, ensure these are selected:
+  - Android SDK
+  - Android SDK Platform
+  - Android Virtual Device
+
+b. Configure Android SDK
+- Open Android Studio's SDK Manager
+- Install Android 15 (VanillaIceCream) SDK:
+  - Android SDK Platform 35
+  - Intel x86 Atom_64 System Image or Google APIs Intel x86 Atom System Image
+  - Android SDK Build-Tools 35.0.0
+
+c. Configure Environment Variables
+- For macOS/Linux (add to ~/.zshrc or ~/.bash_profile):
+```bash
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+```
+- For Windows (System Properties > Environment Variables):
+```
+ANDROID_HOME: %LOCALAPPDATA%\Android\Sdk
+Path: Add %LOCALAPPDATA%\Android\Sdk\platform-tools
+```
+
+4. **iOS Development Setup** (macOS only):
+- Install Xcode via the Mac App Store
+- Install Xcode Command Line Tools:
+```bash
+xcode-select --install
+```
+- Install CocoaPods:
+```bash
+sudo gem install cocoapods
+```
+
+#### Creating a New Project
+
+```bash
+npx react-native@latest init MyApp
+cd MyApp
+
+# iOS setup (macOS only)
+cd ios && pod install && cd ..
+
+# Start Metro Bundler
+npm start
+
+# Run on Android
+npm run android
+
+# Run on iOS (macOS only)
+npm run ios
+```
+
+#### Setting Up a Device
+
+**For Android:**
+1. Enable Developer Options on your device
+2. Enable USB Debugging
+3. Connect device via USB
+4. Run `adb devices` to verify connection
+
+**For iOS (macOS only):**
+1. Connect device via USB
+2. Trust the development computer
+3. Register for an Apple Developer account
+4. Add device to provisioning profile
+
+**Using Android Virtual Device (AVD):**
+1. Open Android Studio
+2. Open "AVD Manager"
+3. Create Virtual Device
+4. Select "VanillaIceCream" API Level 35 image
+5. Launch emulator
+
+**Using a Physical Device via Wifi**
+1.Enable Developer Options and USB Debugging on your device
+2.Connect your device to the same Wi-Fi network as your development machine
+3.Go to Wireless debugging on your device and pair with your development machine `adb pair <DEVICE_IP_ADDRESS>:<PAIRING_PORT>`
+4.Run `adb connect <device-ip>:5555` (replace `<device-ip>` with your device's IP address)
+5.Verify connection with `adb devices`
+6.Run `npx react-native run-android`
+
+
+
+### Development Environment Requirements
+
+#### For All Developers:
+- Node.js (LTS version recommended)
+- Git
+- A code editor (VS Code recommended)
+- Terminal/Command Prompt
+
+
+### Troubleshooting Common Setup Issues
+
+1. **Android Build Failures:**
+   - Check Android SDK installation
+   - Verify environment variables
+   - Clean and rebuild project:
+     ```bash
+     cd android
+     ./gradlew clean
+     ```
+
+2. **iOS Build Issues:**
+   - Update CocoaPods
+   - Reinstall dependencies:
+     ```bash
+     cd ios
+     pod deintegrate
+     pod install
+     ```
+
+3. **Metro Bundler Issues:**
+   - Clear Metro cache:
+     ```bash
+     npm start -- --reset-cache
+     ```
+
+4. **Device Connection Problems:**
+   - For Android: Enable USB debugging
+   - For iOS: Trust developer certificate
+
+## TailwindCSS in React Native
 
 Unlike web development where TailwindCSS is directly supported, React Native requires special libraries to use Tailwind's utility-first styling approach.
 
