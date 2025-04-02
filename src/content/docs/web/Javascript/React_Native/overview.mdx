@@ -180,39 +180,7 @@ React Native uses Flexbox as its primary layout system by default, while React w
 **Navigation**:
 React web typically uses libraries like React Router, while React Native employs specialized navigation libraries such as React Navigation.
 
-### TailwindCSS in React Native
 
-Unlike web development where TailwindCSS is directly supported, React Native requires special libraries to use Tailwind's utility-first styling approach.
-
-#### NativeWind
-
-NativeWind is the primary solution for bringing TailwindCSS to React Native applications. It allows developers to use familiar Tailwind classes across all platforms.
-
-**How NativeWind Works:**
-- Compiles Tailwind classes into platform-specific styles (StyleSheet.create for native, CSS StyleSheet for web)
-- Processes styles during build time with minimal runtime for reactive styles
-- Supports most Tailwind features including media queries, dark mode, and CSS variables
-
-**Example Usage:**
-```jsx
-// React Native with NativeWind
-import { View, Text } from 'react-native';
-import { styled } from 'nativewind';
-
-// Create styled components
-const StyledView = styled(View);
-const StyledText = styled(Text);
-
-export default function App() {
-  return (
-    <StyledView className="flex-1 items-center justify-center bg-slate-100">
-      <StyledText className="text-lg font-medium text-slate-900">
-        Hello TailwindCSS in React Native!
-      </StyledText>
-    </StyledView>
-  );
-}
-```
 #### Setting up Expo
 
 ```bash
@@ -331,10 +299,241 @@ This indicates that EAS Build is creating and storing your keystore securely on 
 
 For production apps, EAS provides additional options like Play App Signing integration, which adds an extra layer of security by allowing Google to manage your release keys.
 
+### TailwindCSS in React Native
 
+Unlike web development where TailwindCSS is directly supported, React Native requires special libraries to use Tailwind's utility-first styling approach.
 
+#### NativeWind
 
+NativeWind is the primary solution for bringing TailwindCSS to React Native applications. It allows developers to use familiar Tailwind classes across all platforms.
 
+**How NativeWind Works:**
+- Compiles Tailwind classes into platform-specific styles (StyleSheet.create for native, CSS StyleSheet for web)
+- Processes styles during build time with minimal runtime for reactive styles
+- Supports most Tailwind features including media queries, dark mode, and CSS variables
+
+**Example Usage:**
+```jsx
+// React Native with NativeWind
+import { View, Text } from 'react-native';
+import { styled } from 'nativewind';
+
+// Create styled components
+const StyledView = styled(View);
+const StyledText = styled(Text);
+
+export default function App() {
+  return (
+    <StyledView className="flex-1 items-center justify-center bg-slate-100">
+      <StyledText className="text-lg font-medium text-slate-900">
+        Hello TailwindCSS in React Native!
+      </StyledText>
+    </StyledView>
+  );
+}
+```
+
+#### Integrating with React Native
+
+Okay, thank you for providing the specific installation steps, likely from the NativeWind v4 documentation (as they differ significantly from v2/v3). This process involves processing a CSS file via Metro, which is a newer approach.
+
+Let's refine and structure these steps into a clear guide for integrating NativeWind v4 (or later versions following this pattern) into a React Native CLI project.
+
+---
+
+**Integrating NativeWind v4+ into a React Native CLI Project ("Framework-less")**
+
+This guide follows the newer NativeWind installation method involving direct CSS file processing.
+
+**1. Prerequisites:**
+
+*   **React Native Environment:** Ensure you have a working React Native development environment set up for the CLI. Follow the official React Native documentation for [Environment Setup](https://reactnative.dev/docs/environment-setup).
+*   **Node.js & npm/yarn/pnpm/bun:** Required for package management and running scripts.
+*   **React Native Project:** An existing project created with `npx react-native init ...` or a new one.
+
+**2. Install Dependencies:**
+
+Install `nativewind`, `tailwindcss`, and the required peer dependencies `react-native-reanimated` and `react-native-safe-area-context`.
+
+```bash
+# Using npm
+npm install nativewind tailwindcss react-native-reanimated react-native-safe-area-context
+# Ensure you use a compatible Tailwind CSS version if specified, e.g.:
+# npm install nativewind tailwindcss@^3.4.1 react-native-reanimated react-native-safe-area-context
+
+# Using yarn
+yarn add nativewind tailwindcss react-native-reanimated react-native-safe-area-context
+# yarn add nativewind tailwindcss@^3.4.1 react-native-reanimated react-native-safe-area-context
+
+# Using pnpm
+pnpm add nativewind tailwindcss react-native-reanimated react-native-safe-area-context
+# pnpm add nativewind tailwindcss@^3.4.1 react-native-reanimated react-native-safe-area-context
+
+# Using bun
+bun add nativewind tailwindcss react-native-reanimated react-native-safe-area-context
+# bun add nativewind tailwindcss@^3.4.1 react-native-reanimated react-native-safe-area-context
+```
+
+**Link Native Dependencies (iOS):**
+
+After installing packages with native modules like `react-native-reanimated` and `react-native-safe-area-context`, run `pod install` in the `ios` directory.
+
+```bash
+npx pod-install
+# or
+cd ios && pod install && cd ..
+```
+
+**3. Initialize & Configure Tailwind CSS:**
+
+*   **Generate Config File:** Create the `tailwind.config.js` file.
+    ```bash
+    npx tailwindcss init
+    ```
+
+*   **Configure `tailwind.config.js`:** Update the file to include:
+    *   Paths to your component files in the `content` array.
+    *   The `nativewind/preset`.
+
+    ```javascript
+    // tailwind.config.js
+    /** @type {import('tailwindcss').Config} */
+    module.exports = {
+      // Update this array to include paths to all files where you use Tailwind classes
+      content: [
+        "./App.{js,jsx,ts,tsx}",
+        "./src/**/*.{js,jsx,ts,tsx}" // Add other directories/patterns as needed
+      ],
+      presets: [require("nativewind/preset")], // Add the NativeWind preset
+      theme: {
+        extend: {},
+      },
+      plugins: [],
+    }
+    ```
+
+*   **Create Global CSS File:** Create a CSS file (e.g., `global.css` in your project root or `src` directory) and add the Tailwind directives.
+
+    ```css
+    /* global.css (or your chosen path) */
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+    ```
+    *Remember the relative path to this file for the next steps.*
+
+**4. Add the NativeWind Babel Preset:**
+
+Modify your `babel.config.js` file to include the `nativewind/babel` preset. **Note:** The documentation uses the term "preset" here, not "plugin".
+
+```javascript
+// babel.config.js
+module.exports = {
+  // Make sure to keep your existing presets (like 'module:@react-native/babel-preset')
+  presets: [
+    'module:@react-native/babel-preset',
+    'nativewind/babel' // Add this line
+  ],
+  // Keep existing plugins if any
+  plugins: [
+    // Add 'react-native-reanimated/plugin' HERE if you haven't already
+    // IMPORTANT: Reanimated plugin must be listed last.
+    'react-native-reanimated/plugin',
+  ],
+};
+```
+*   **Important:** If you are using `react-native-reanimated`, its Babel plugin (`react-native-reanimated/plugin`) **must be listed last** in the `plugins` array.
+*   After modifying `babel.config.js`, you **must** restart your Metro bundler, often with a cache reset.
+
+**5. Configure Metro:**
+
+Modify your `metro.config.js` to use NativeWind's Metro processor. This step integrates Tailwind CSS processing into the React Native build process.
+
+```javascript
+// metro.config.js
+const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
+const { withNativeWind } = require("nativewind/metro");
+
+/**
+ * Metro configuration
+ * https://facebook.github.io/metro/docs/configuration
+ *
+ * @type {import('metro-config').MetroConfig}
+ */
+const config = {}; // You can start with an empty object or your existing custom config
+
+// Make sure to replace './global.css' with the correct relative path to your CSS file
+module.exports = withNativeWind(mergeConfig(getDefaultConfig(__dirname), config), {
+  input: "./global.css", // <--- Or your relative path e.g., "./src/global.css"
+  output: "nativewind-output.js", // Optional: specify the output file name
+});
+```
+
+*   Ensure the `input` path correctly points to the `global.css` file you created in Step 3.
+*   After modifying `metro.config.js`, you **must** restart your Metro bundler, often with a cache reset.
+
+**6. Import CSS File in Your App Entry Point:**
+
+Import the CSS file you created directly into your main application file (usually `App.js` or `App.tsx`). This ensures the styles processed by Metro are loaded into your application.
+
+```typescript
+// App.tsx (or App.js)
+import "./global.css"; // <-- Import the CSS file (use the correct path)
+
+import React from 'react';
+import {SafeAreaView, View, Text, StatusBar} from 'react-native';
+
+const App = () => {
+  return (
+    <SafeAreaView className="flex-1 items-center justify-center bg-white dark:bg-black">
+      <StatusBar barStyle={'dark-content'} />
+      <View className="p-5 bg-blue-500 rounded-lg">
+        <Text className="text-white text-xl font-bold">Hello NativeWind v4!</Text>
+      </View>
+      <Text className="mt-4 text-lg text-gray-700 dark:text-gray-300 ios:font-semibold">
+        Styled with Tailwind!
+      </Text>
+    </SafeAreaView>
+  );
+};
+
+export default App;
+```
+
+**7. TypeScript Configuration (If Applicable):**
+
+If you are using TypeScript, ensure type support for the `className` prop. Create a type declaration file (e.g., `nativewind-env.d.ts` or add to an existing one like `global.d.ts`) in your project root or `src` directory:
+
+```typescript
+// nativewind-env.d.ts or global.d.ts
+/// <reference types="nativewind/types" />
+```
+
+Make sure this file is included by your `tsconfig.json` (it usually is by default if placed appropriately).
+
+**8. Run Your Application (with Cache Reset):**
+
+Start Metro and run your app. **Crucially**, because you've modified `babel.config.js` and `metro.config.js`, you should reset the cache when starting:
+
+```bash
+# Using npm
+npm start -- --reset-cache
+# In another terminal:
+npm run ios
+# or
+npm run android
+
+# Using yarn
+yarn start --reset-cache
+# In another terminal:
+yarn ios
+# or
+yarn android
+```
+
+If styles still don't apply, try more aggressive cleaning (delete `node_modules`, `ios/build`, `android/build`, `android/app/build`, Pods, etc., and reinstall).
+
+You have now set up NativeWind v4+ in your React Native CLI project using the CSS import method! You can use Tailwind utility classes via the `className` prop on standard React Native components.
 
 
 
