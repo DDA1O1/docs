@@ -439,46 +439,18 @@ npm run ios
 5.Verify connection with `adb devices`
 6.Run `npx react-native run-android`
 
+**Reverse Tethering**
 
+Reverse tethering allows your Android device to use your development machine's local services. This is particularly useful when:
 
-### Development Environment Requirements
+- You need to access local development servers that are only available on your development machine
 
-#### For All Developers:
-- Node.js (LTS version recommended)
-- Git
-- A code editor (VS Code recommended)
-- Terminal/Command Prompt
+To set up reverse tethering:
+1. Run `adb reverse tcp:8081 tcp:8081`
+2. Start your React Native app with `npx react-native start`
 
+This ensures your device can access the Metro bundler and other local development services through the USB connection/Wireless debugging.
 
-### Troubleshooting Common Setup Issues
-
-1. **Android Build Failures:**
-   - Check Android SDK installation
-   - Verify environment variables
-   - Clean and rebuild project:
-     ```bash
-     cd android
-     ./gradlew clean
-     ```
-
-2. **iOS Build Issues:**
-   - Update CocoaPods
-   - Reinstall dependencies:
-     ```bash
-     cd ios
-     pod deintegrate
-     pod install
-     ```
-
-3. **Metro Bundler Issues:**
-   - Clear Metro cache:
-     ```bash
-     npm start -- --reset-cache
-     ```
-
-4. **Device Connection Problems:**
-   - For Android: Enable USB debugging
-   - For iOS: Trust developer certificate
 
 ## TailwindCSS in React Native
 
