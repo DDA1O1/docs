@@ -1501,3 +1501,48 @@ export const {
    - Centralized logic
    - Easy to add features
    - Better code organization
+
+:::note
+
+:::
+
+:::note
+React-Redux Hooks Usage Limitations
+
+The `useSelector` and `useDispatch` hooks from React-Redux can only be used within:
+- React functional components
+- Custom React hooks
+
+If you need to access the Redux store outside of these contexts (like in regular JavaScript functions, utilities, or services), you must import and use the store object directly:
+
+```js
+// ❌ Won't work - Regular function outside React
+function updateUserData(userData) {
+  const dispatch = useDispatch(); // This will fail
+  dispatch(updateUser(userData));
+}
+
+// ✅ Correct way - Import store directly
+import { store } from './store';
+
+function updateUserData(userData) {
+  store.dispatch(updateUser(userData));
+}
+
+// ✅ Works fine - React component
+function UserComponent() {
+  const dispatch = useDispatch();
+  const userData = useSelector(state => state.user);
+  // ...
+}
+
+// ✅ Works fine - Custom hook
+function useUserActions() {
+  const dispatch = useDispatch();
+  return {
+    updateUser: (data) => dispatch(updateUser(data))
+  };
+}
+```
+:::
+
