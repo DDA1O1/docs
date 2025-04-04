@@ -1,0 +1,85 @@
+---
+title: "Github Codespaces"
+sidebar: {
+    order: 2
+}
+---
+
+## Github Codespaces
+
+Github Codespaces is a development environment that is hosted and managed by Github. It is a browser-based development environment that allows you to code anywhere, anytime, and on any device.
+
+### Why Use Github Codespaces for React Native Development
+
+Building React Native applications locally can be demanding on system resources. The process of configuring, building, and executing React Native apps often consumes significant CPU and memory resources, causing your computer to heat up considerably. While doing this occasionally might be manageable, repeatedly building and testing React Native applications can take a toll on computers with limited resources, especially those with less than 8GB of RAM.
+
+#### Benefits of Github Codespaces:
+
+- **Access to Higher Compute Resources**: Codespaces provides Ubuntu-based virtual machines with higher specifications than many local development machines.
+  
+- **Pre-configured Development Environment**: The IDE comes already set up with the necessary tools for React Native development, eliminating the need for complex local configurations.
+  
+- **Reduced Local Resource Usage**: Your local machine acts primarily as a terminal to the cloud-based development environment, significantly reducing CPU and memory usage.
+  
+- **Consistent Development Experience**: Work with the same environment across different machines without worrying about configuration differences.
+  
+- **Device Independence**: Develop on any device with a browser, even on hardware that would normally struggle with React Native development.
+
+#### Setting Up React Native in Github Codespaces
+
+- Any new machine will already have nodejs(v18.20.7/ v20.19.0/) and java(17.0.14-ms/ 21.0.6-ms/) installed.
+
+Now we need to set up `Android Command Line Tools`:
+
+```bash
+  //Creates the android-sdk directory in your home directory (~)
+  mkdir -p ~/android-sdk
+  cd ~/android-sdk
+  //Downloads the command line tools
+  wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+  //Unzips the command line tools
+  unzip commandlinetools-linux-9477386_latest.zip
+  //Creates a directory path cmdline-tools/latest.
+  mkdir cmdline-tools/latest
+  //Moves all contents from cmdline-tools/ to cmdline-tools/latest/
+  mv cmdline-tools/* cmdline-tools/latest/ 2>/dev/null || true
+```
+
+Now we need to set the `ANDROID_HOME` environment variable:
+
+```bash
+  //This line sets the ANDROID_HOME environment variable to point to the location of your Android SDK, which is assumed to be in the android-sdk directory within your home folder.
+  echo "export ANDROID_HOME=$HOME/android-sdk" >> ~/.bashrc
+```
+
+Now we need to set the `PATH` environment variable so that you can use the Android SDK tools from the command line:
+
+```bash
+  //This line appends the android-sdk/cmdline-tools/latest/bin and android-sdk/platform-tools directories to the PATH environment variable.
+  echo "export PATH=\$PATH:\$ANDROID_HOME/cmdline-tools/latest/bin:\$ANDROID_HOME/platform-tools" >> ~/.bashrc && source ~/.bashrc
+```
+
+Now we need to install the Android SDK components:
+
+```bash
+// Accept the licenses
+yes | ~/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+// Install the Android SDK components
+~/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;26.1.10909125"
+```
+
+```bash
+cd /workspaces/react-native && npm install
+cd android
+//Make the gradlew file executable
+chmod +x gradlew
+//Clean and build the app
+./gradlew clean && ./gradlew assembleDebug
+//Install the app on the device
+adb install android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+
+
+
+
