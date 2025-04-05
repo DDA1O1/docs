@@ -111,4 +111,14 @@ in the builtype change singingconfig to release type
 ```gradle
 signingConfig signingConfigs.release
 ```
- 
+to generate the release.keystore since you are releasing now
+```bash
+ keytool -genkey -v -keystore android/app/release.keystore -alias your-key-alias -keyalg RSA -keysize 2048 -validity 10000 
+ ```
+ create a file called keystore.properties like you create environment variables
+ ```javascript
+storeFile=release.keystore
+storePassword=<your password>
+keyAlias=your-key-alias
+keyPassword=<same password>
+```
