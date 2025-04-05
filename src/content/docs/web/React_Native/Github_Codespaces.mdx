@@ -122,3 +122,35 @@ storePassword=<your password>
 keyAlias=your-key-alias
 keyPassword=<same password>
 ```
+
+- if you dont need a universal apk 
+
+enablr abi splitting
+
+ABI splitting creates separate APK files for each processor architecture instead of one large APK containing code for all architectures. Benefits include:
+Smaller download sizes for users (they only get the code needed for their device)
+Potentially better performance since the app includes only the native code for that specific architecture
+Reduces app size by excluding unnecessary binary code
+
+```gradle
+splits {
+        abi {
+            enable true
+            reset()
+            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            universalApk false
+        }
+    }
+```
+
+```gradle
+// make this true 
+enableProguardInReleaseBuilds = true
+// in buildtype to realse add these
+release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+```        
