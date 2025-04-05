@@ -64,6 +64,8 @@ export default defineConfig({
               //   { label: 'HTML', slug: 'web_dev/html' }, 
                 { label: 'JavaScript' ,badge: 'Finished', autogenerate: { directory: 'web/Javascript' } },
                 { label: 'CSS' , autogenerate: { directory: 'web/CSS' } },
+                { label: 'React' , autogenerate: { directory: 'web/React' } },
+                { label: 'React Native' , autogenerate: { directory: 'web/React_Native' } }
             ]
           },
           {
