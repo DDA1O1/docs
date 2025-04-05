@@ -96,5 +96,19 @@ def keystoreProperties = new Properties()
 // If it exists, loads its contents into the keystoreProperties object
 if (keystorePropertiesFile.exists()) { keystoreProperties.load(new FileInputStream(keystorePropertiesFile)) }
 ```
+- To read the key value pairs
 
+in android.singingconfig.release
+```gradle
+release {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+```        
+in the builtype change singingconfig to release type
+```gradle
+signingConfig signingConfigs.release
+```
  
