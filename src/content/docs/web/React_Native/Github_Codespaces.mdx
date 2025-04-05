@@ -1,139 +1,155 @@
 ---
-title: "Github Codespaces"
+title: "React Native Development with Github Codespaces"
 sidebar: {
     order: 2
 }
 ---
 
-## Github Codespaces
+## Introduction to Github Codespaces
 
-Github Codespaces is a development environment that is hosted and managed by Github. It is a browser-based development environment that allows you to code anywhere, anytime, and on any device.
+Github Codespaces is a cloud-based development environment that enables coding from anywhere, on any device, through your browser. This guide explains how to set up and use Github Codespaces for React Native development.
 
-### Why Use Github Codespaces for React Native Development
+## Why Choose Github Codespaces for React Native?
 
-Building React Native applications locally can be demanding on system resources. The process of configuring, building, and executing React Native apps often consumes significant CPU and memory resources, causing your computer to heat up considerably. While doing this occasionally might be manageable, repeatedly building and testing React Native applications can take a toll on computers with limited resources, especially those with less than 8GB of RAM.
+### Resource Management Benefits
+- **Reduced Local Resource Usage**: Your computer acts as a terminal to the cloud environment
+- **Access to Better Hardware**: Ubuntu-based VMs with higher specifications
+- **Device Independence**: Develop on any device with a browser
+- **Temperature Management**: Avoid overheating your local machine during resource-intensive builds
 
-#### Benefits of Github Codespaces:
+### Development Experience Benefits
+- **Pre-configured Environment**: Ready-to-use development setup
+- **Consistent Experience**: Same environment across different machines
+- **Simplified Configuration**: Eliminates complex local setup requirements
 
-- **Access to Higher Compute Resources**: Codespaces provides Ubuntu-based virtual machines with higher specifications than many local development machines.
-  
-- **Pre-configured Development Environment**: The IDE comes already set up with the necessary tools for React Native development, eliminating the need for complex local configurations.
-  
-- **Reduced Local Resource Usage**: Your local machine acts primarily as a terminal to the cloud-based development environment, significantly reducing CPU and memory usage.
-  
-- **Consistent Development Experience**: Work with the same environment across different machines without worrying about configuration differences.
-  
-- **Device Independence**: Develop on any device with a browser, even on hardware that would normally struggle with React Native development.
+## Setup Guide
 
-#### Setting Up React Native in Github Codespaces
+### 1. Prerequisites
+Github Codespaces comes with pre-installed:
+- Node.js (v18.20.7 or v20.19.0)
+- Java (17.0.14-ms or 21.0.6-ms)
 
-- Any new machine will already have nodejs(v18.20.7/ v20.19.0/) and java(17.0.14-ms/ 21.0.6-ms/) installed.
+### 2. Android SDK Setup
 
-Now we need to set up `Android Command Line Tools`:
-
+#### 2.1 Install Android Command Line Tools
 ```bash
-  . Creates the android-sdk directory in your home directory (~)
-  mkdir -p ~/android-sdk
-  cd ~/android-sdk
-  . Downloads the command line tools
-  wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-  . Unzips the command line tools
-  unzip commandlinetools-linux-9477386_latest.zip
-  . Creates a directory path cmdline-tools/latest.
-  mkdir cmdline-tools/latest
-  . Moves all contents from cmdline-tools/ to cmdline-tools/latest/
-  mv cmdline-tools/* cmdline-tools/latest/ 2>/dev/null || true
+# Create and navigate to android-sdk directory
+mkdir -p ~/android-sdk
+cd ~/android-sdk
+
+# Download and extract command line tools
+wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+unzip commandlinetools-linux-9477386_latest.zip
+
+# Set up proper directory structure
+mkdir cmdline-tools/latest
+mv cmdline-tools/* cmdline-tools/latest/ 2>/dev/null || true
 ```
 
-Now we need to set the `ANDROID_HOME` environment variable:
-
+#### 2.2 Configure Environment Variables
 ```bash
-  . This line sets the ANDROID_HOME environment variable to point to the location of your Android SDK, which is assumed to be in the android-sdk directory within your home folder.
-  echo "export ANDROID_HOME=$HOME/android-sdk" >> ~/.bashrc
+# Set ANDROID_HOME
+echo "export ANDROID_HOME=$HOME/android-sdk" >> ~/.bashrc
+
+# Update PATH
+echo "export PATH=\$PATH:\$ANDROID_HOME/cmdline-tools/latest/bin:\$ANDROID_HOME/platform-tools" >> ~/.bashrc
+source ~/.bashrc
 ```
 
-Now we need to set the `PATH` environment variable so that you can use the Android SDK tools from the command line:
-
+#### 2.3 Install SDK Components
 ```bash
-  . This line appends the android-sdk/cmdline-tools/latest/bin and android-sdk/platform-tools directories to the PATH environment variable.
-  echo "export PATH=\$PATH:\$ANDROID_HOME/cmdline-tools/latest/bin:\$ANDROID_HOME/platform-tools" >> ~/.bashrc && source ~/.bashrc
-```
-
-Now we need to install the Android SDK components:
-
-```bash
-. Accept the licenses
+# Accept licenses
 yes | ~/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-. Install the Android SDK components
+
+# Install required components
 ~/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;26.1.10909125"
 ```
 
+### 3. Project Setup and Debug Build
 ```bash
+# Install dependencies and prepare project
 cd /workspaces/react-native && npm install
 cd android
-. Make the gradlew file executable
 chmod +x gradlew
-. Clean and build the app
 ./gradlew clean && ./gradlew assembleDebug
-. Install the app on the device by downloading the apk
+
+# Debug APK location
 android/app/build/outputs/apk/debug/app-debug.apk
 ```
+
+### 4. Running the App
 ```bash
-- {/* once installed, run this command on the codespace terminal to start the app */}
 npx react-native start
-- {/* it will create an metrodevelopment server on codespace make sure to make it public copy the url and open your app on your phone.Shake your phone to open the dev menu -> Go to settings -> Debug server host & port for device -> paste the url without http:// or https:// -> click on Reload/reopen app */}
 ```
-### Release the apk
-- This is a security best practice for storing signing credentials. Instead of hardcoding passwords directly in build.gradle   (which might end up in version control), you keep them in a separate file that's excluded from git. The properties file would contain values like:
 
-In build.gradle file
-```gradle
-// Creates a File object that points to the keystore.properties file in your app directory
-def keystorePropertiesFile = rootProject.file("app/keystore.properties")
-// Creates a new Properties object, which can hold key-value pairs
-def keystoreProperties = new Properties()
-// Checks if the properties file exists
-// If it exists, loads its contents into the keystoreProperties object
-if (keystorePropertiesFile.exists()) { keystoreProperties.load(new FileInputStream(keystorePropertiesFile)) }
-```
-- To read the key value pairs
+**Device Setup Instructions:**
+1. Open the app on your phone
+2. Shake device to open dev menu
+3. Go to Settings
+4. Select "Debug server host & port for device"
+5. Paste the Codespace URL (without http:// or https://)
+6. Click Reload/reopen app
 
-in android.singingconfig.release
-```gradle
-release {
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-        }
-```        
-in the builtype change singingconfig to release type
-```gradle
-signingConfig signingConfigs.release
-```
-to generate the release.keystore since you are releasing now
-```bash
- keytool -genkey -v -keystore android/app/release.keystore -alias your-key-alias -keyalg RSA -keysize 2048 -validity 10000 
- ```
- create a file called keystore.properties like you create environment variables
- ```javascript
+## Release Build Guide
+
+### 1. Signing Configuration
+
+#### 1.1 Setup Keystore Properties
+Create `app/keystore.properties`:
+```javascript
 storeFile=release.keystore
 storePassword=<your password>
 keyAlias=your-key-alias
 keyPassword=<same password>
 ```
 
-- if you dont need a universal apk 
-
-enablr abi splitting
-
-ABI splitting creates separate APK files for each processor architecture instead of one large APK containing code for all architectures. Benefits include:
-Smaller download sizes for users (they only get the code needed for their device)
-Potentially better performance since the app includes only the native code for that specific architecture
-Reduces app size by excluding unnecessary binary code
-
+#### 1.2 Configure build.gradle
 ```gradle
-splits {
+
+/**
+ * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
+ */
+def enableProguardInReleaseBuilds = true
+
+
+def keystorePropertiesFile = rootProject.file("app/keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    signingConfigs {
+        release {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+    }
+    
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+}
+```
+
+### 2. Generate Release Keystore
+```bash
+keytool -genkey -v -keystore android/app/release.keystore -alias your-key-alias -keyalg RSA -keysize 2048 -validity 10000
+```
+
+### 3. Optimize APK Size (Optional)
+
+Enable ABI splitting to create architecture-specific APKs:
+```gradle
+android {
+    splits {
         abi {
             enable true
             reset()
@@ -141,23 +157,18 @@ splits {
             universalApk false
         }
     }
+}
 ```
 
-```gradle
-// make this true 
-enableProguardInReleaseBuilds = true
-// in buildtype to realse add these
-release {
-            signingConfig signingConfigs.release
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-        }
-``` 
+**Architecture Guide:**
+- arm64-v8a: Modern Android phones (64-bit)
+- armeabi-v7a: Older Android phones (32-bit)
+- x86_64: Android emulators and Intel devices (64-bit)
+- x86: Older emulators (32-bit)
 
-```text
-arm64-v8a: Most modern Android phones (64-bit ARM)
-armeabi-v7a: Older Android phones (32-bit ARM)
-x86_64: Some Android emulators and rare Intel-based devices (64-bit)
-x86: Older Android emulators (32-bit)
+### 4. Build Release APK
+```bash
+./gradlew clean
+./gradlew assembleRelease
 ```
+
