@@ -32,57 +32,58 @@ Building React Native applications locally can be demanding on system resources.
 Now we need to set up `Android Command Line Tools`:
 
 ```bash
-  //Creates the android-sdk directory in your home directory (~)
+  . Creates the android-sdk directory in your home directory (~)
   mkdir -p ~/android-sdk
   cd ~/android-sdk
-  //Downloads the command line tools
+  . Downloads the command line tools
   wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-  //Unzips the command line tools
+  . Unzips the command line tools
   unzip commandlinetools-linux-9477386_latest.zip
-  //Creates a directory path cmdline-tools/latest.
+  . Creates a directory path cmdline-tools/latest.
   mkdir cmdline-tools/latest
-  //Moves all contents from cmdline-tools/ to cmdline-tools/latest/
+  . Moves all contents from cmdline-tools/ to cmdline-tools/latest/
   mv cmdline-tools/* cmdline-tools/latest/ 2>/dev/null || true
 ```
 
 Now we need to set the `ANDROID_HOME` environment variable:
 
 ```bash
-  //This line sets the ANDROID_HOME environment variable to point to the location of your Android SDK, which is assumed to be in the android-sdk directory within your home folder.
+  . This line sets the ANDROID_HOME environment variable to point to the location of your Android SDK, which is assumed to be in the android-sdk directory within your home folder.
   echo "export ANDROID_HOME=$HOME/android-sdk" >> ~/.bashrc
 ```
 
 Now we need to set the `PATH` environment variable so that you can use the Android SDK tools from the command line:
 
 ```bash
-  //This line appends the android-sdk/cmdline-tools/latest/bin and android-sdk/platform-tools directories to the PATH environment variable.
+  . This line appends the android-sdk/cmdline-tools/latest/bin and android-sdk/platform-tools directories to the PATH environment variable.
   echo "export PATH=\$PATH:\$ANDROID_HOME/cmdline-tools/latest/bin:\$ANDROID_HOME/platform-tools" >> ~/.bashrc && source ~/.bashrc
 ```
 
 Now we need to install the Android SDK components:
 
 ```bash
-// Accept the licenses
+. Accept the licenses
 yes | ~/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-// Install the Android SDK components
+. Install the Android SDK components
 ~/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;26.1.10909125"
 ```
 
 ```bash
 cd /workspaces/react-native && npm install
 cd android
-//Make the gradlew file executable
+. Make the gradlew file executable
 chmod +x gradlew
-//Clean and build the app
+. Clean and build the app
 ./gradlew clean && ./gradlew assembleDebug
-//Install the app on the device by downloading the apk
+. Install the app on the device by downloading the apk
 android/app/build/outputs/apk/debug/app-debug.apk
 ```
 ```bash
-{/* once installed, run this command on the codespace terminal to start the app */}
+- {/* once installed, run this command on the codespace terminal to start the app */}
 npx react-native start
-{/* it will create an metrodevelopment server on codespace make sure to make it public copy the url and open your app on your phone.Shake your phone to open the dev menu -> Go to settings -> Debug server host & port for device -> paste the url without http:// or https:// -> click on Reload/reopen app */}
+- {/* it will create an metrodevelopment server on codespace make sure to make it public copy the url and open your app on your phone.Shake your phone to open the dev menu -> Go to settings -> Debug server host & port for device -> paste the url without http:// or https:// -> click on Reload/reopen app */}
 ```
 
 
 
+ 
