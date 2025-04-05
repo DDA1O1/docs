@@ -75,11 +75,14 @@ cd android
 chmod +x gradlew
 //Clean and build the app
 ./gradlew clean && ./gradlew assembleDebug
-//Install the app on the device
-adb install android/app/build/outputs/apk/debug/app-debug.apk
+//Install the app on the device by downloading the apk
+android/app/build/outputs/apk/debug/app-debug.apk
 ```
-
-
+```bash
+{/* once installed, run this command on the codespace terminal to start the app */}
+npx react-native start
+{/* it will create an metrodevelopment server on codespace make sure to make it public copy the url and open your app on your phone.Shake your phone to open the dev menu -> Go to settings -> Debug server host & port for device -> paste the url without http:// or https:// -> click on Reload/reopen app */}
+```
 
 
 
