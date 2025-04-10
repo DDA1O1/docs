@@ -1,145 +1,130 @@
 ---
 title: "Database Overview"
-description: "An overview of databases and their types."
+description: "An overview of databases, their key characteristics, common types, and related concepts like ORMs and cloud providers."
 ---
+
+import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
 
 ## What is a Database?
 
 A database is an organized collection of structured information, or data, typically stored electronically in a computer system. Databases are designed to efficiently store, retrieve, and manage data, making it accessible for various applications and users.
 
-### Key Characteristics:
-- **Data Organization:** Structured in tables, documents, or key-value pairs
-- **Data Integrity:** Ensures accuracy and consistency of data
-- **Concurrency Control:** Allows multiple users to access data simultaneously
-- **Security:** Provides access control and data protection
+<Aside type="note" title="Key Characteristics">
+  - **Data Organization:** Data is often structured in tables, documents, key-value pairs, or graph relationships depending on the database type.
+  - **Data Integrity:** Mechanisms ensure the accuracy, consistency, and validity of data.
+  - **Concurrency Control:** Systems manage simultaneous access and modifications by multiple users to prevent conflicts.
+  - **Security:** Features protect data through access control, authentication, and encryption.
+  - **Scalability:** Databases can often be scaled vertically (more power) or horizontally (more machines) to handle growing amounts of data and users.
+</Aside>
 
 ## Types of Databases
 
-### 1. Relational Databases (SQL)
-- Store data in tables with rows and columns
-- Use SQL (Structured Query Language) for querying
-- Examples: MySQL, PostgreSQL, Oracle
+Databases come in various types, each suited for different kinds of data and use cases.
 
-### 2. NoSQL Databases
-- Designed for unstructured or semi-structured data
-- Flexible schema design
-- Types:
-  - Document-oriented (MongoDB)
-  - Key-value stores (Redis)
-  - Wide-column stores (Cassandra)
-  - Graph databases (Neo4j)
-
-### 3. In-Memory Databases
-- Store data in main memory for faster access
-- Ideal for real-time applications
-- Examples: Redis, Memcached
-
-### 4. Time Series Databases
-- Optimized for time-stamped data
-- Used for IoT, financial data, and monitoring systems
-- Examples: InfluxDB, TimescaleDB
-
-### 5. Cloud Databases
-- Hosted on cloud platforms
-- Scalable and managed services
-- Examples: Amazon RDS, Google Cloud Firestore, Azure Cosmos DB
+<CardGrid>
+  <Card title="Relational (SQL)" icon="database">
+    Store data in structured tables with predefined schemas (rows and columns). Use SQL (Structured Query Language) for querying.
+    *Examples: MySQL, PostgreSQL, SQL Server, Oracle*
+  </Card>
+  <Card title="NoSQL" icon="document">
+    Designed for unstructured or semi-structured data with flexible schemas. Various models exist:
+    - **Document:** MongoDB, Couchbase
+    - **Key-Value:** Redis, Memcached
+    - **Wide-Column:** Cassandra, HBase
+    - **Graph:** Neo4j, ArangoDB
+  </Card>
+  <Card title="In-Memory" icon="rocket">
+    Store data primarily in main memory (RAM) for extremely fast read/write operations. Often used for caching or real-time analytics.
+    *Examples: Redis, Memcached, Hazelcast*
+  </Card>
+  <Card title="Time Series" icon="stopwatch">
+    Optimized for time-stamped or time-series data, like monitoring metrics, IoT sensor data, or financial market data.
+    *Examples: InfluxDB, TimescaleDB, Prometheus*
+  </Card>
+  <Card title="Cloud Databases" icon="cloud">
+    Managed database services offered by cloud providers. They handle infrastructure, scaling, backups, and maintenance. Can be SQL or NoSQL.
+    *Examples: Amazon RDS, Azure SQL Database, Google Cloud SQL, DynamoDB, Cosmos DB, Firestore*
+  </Card>
+  <Card title="Search Engine Databases" icon="magnifying-glass">
+    Optimized for fast text search and analytics on large volumes of (often text-based) data.
+    *Examples: Elasticsearch, OpenSearch, Solr*
+  </Card>
+</CardGrid>
 
 ## Object-Relational Mapping (ORM)
 
-```python
-# ORM Example (SQLAlchemy)
-user = session.query(User).filter_by(username='john').first()
+An Object-Relational Mapper (ORM) is a library or framework that bridges the gap between object-oriented programming languages and relational databases. It allows developers to interact with database tables and rows using familiar programming objects and methods, abstracting away much of the raw SQL.
 
-# Raw SQL Equivalent
-cursor.execute("SELECT * FROM users WHERE username = 'john'")
-user = cursor.fetchone()
+<Aside type="note" title="Why Use an ORM?">
+  - **Solves Impedance Mismatch:** Reconciles differences between object models (classes, inheritance) and relational models (tables, relations).
+  - **Developer Productivity:** Reduces boilerplate SQL code, enabling faster development.
+  - **Database Abstraction:** Makes it easier (though not always seamless) to switch between different database systems.
+  - **Code Maintainability:** Database interactions are integrated more cleanly into the application code.
+  - **Potential for Type Safety:** Some modern ORMs provide strong type checking for queries.
+</Aside>
+
+### Comparison: ORM vs. Raw SQL
+
+While ORMs offer convenience, it's important to understand the trade-offs compared to writing SQL directly.
+
+**Code Example:**
+
+```python {title="ORM Example (SQLAlchemy)"}
+# Find a user by username using the ORM
+user = session.query(User).filter_by(username='john').first()
+print(f"Found user: {user.name}, Email: {user.email}")
 ```
 
-- **Popular Implementations**:
-  - SQLAlchemy 
-  - Django ORM 
-  - Mongoose (MongoDB)
-  - Prisma
-  - Drizzle ORM
+```sql {title="Raw SQL Equivalent"}
+-- Find a user by username using direct SQL
+sql_query = "SELECT id, name, email FROM users WHERE username = %s"
+cursor.execute(sql_query, ('john',))
+user_row = cursor.fetchone()
+if user_row:
+    print(f"Found user: {user_row[1]}, Email: {user_row[2]}")
+```
 
-- **Comparison Table**:
+**Key Differences:**
 
-<table class="table-auto min-w-full border-collapse my-4">
-  <thead>
-    <tr class="bg-black text-white">
-      <th class="border px-4 py-2 text-left">ORM Features</th>
-      <th class="border px-4 py-2 text-left">Raw SQL</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr class="bg-black text-white">
-      <td class="border px-4 py-2">Object-oriented interface</td>
-      <td class="border px-4 py-2">Manual query writing</td>
-    </tr>
-    <tr class="bg-black text-white">
-      <td class="border px-4 py-2">Automatic connection pool</td>
-      <td class="border px-4 py-2">Direct DB connections</td>
-    </tr>
-    <tr class="bg-black text-white">
-      <td class="border px-4 py-2">Type-safe queries</td>
-      <td class="border px-4 py-2">String-based queries</td>
-    </tr>
-  </tbody>
-</table>
+| Feature                 | ORM Approach                                  | Raw SQL Approach                              |
+| :---------------------- | :-------------------------------------------- | :-------------------------------------------- |
+| **Interaction Model**   | Object-oriented (Classes, Methods)            | Procedural (SQL Statements)                   |
+| **Query Writing**       | Programmatic (e.g., `filter_by`, `select`)    | Manual SQL string composition                 |
+| **Abstraction Level**   | High (Hides SQL details)                      | Low (Direct database interaction)             |
+| **Portability**         | Generally higher across supported databases   | Specific to SQL dialect                       |
+| **Performance Control** | Less direct; relies on ORM optimization       | Full control over query optimization          |
+| **Learning Curve**      | Requires learning the ORM library             | Requires learning SQL                         |
+| **Boilerplate Code**    | Less for basic CRUD operations                | More for mapping results to objects/structs |
 
-## Cloud Databases
+### Popular ORM Implementations
 
-### Cloud Database Providers
+- **Python:** SQLAlchemy, Django ORM, Peewee
+- **JavaScript/TypeScript:** Prisma, TypeORM, Sequelize, Drizzle ORM
+- **Java:** Hibernate, JPA (Specification)
+- **C#:** Entity Framework Core
+- **Go:** GORM, SQLc (Code generation, not strictly an ORM)
+- **NoSQL (ODM - Object Document Mapper):** Mongoose (MongoDB)
 
-**AWS**
-- Amazon RDS (Relational)
-- DynamoDB (NoSQL)
-- Redshift (Data Warehouse)
+## Cloud Database Providers
 
-**GCP**
-- Cloud SQL
-- Firestore
-- Bigtable
+Major cloud providers offer a wide range of managed database services.
 
-**Azure**
-- Azure SQL Database
-- Cosmos DB
-- Synapse Analytics
-
-## ORM Framework
-- **Purpose**: Bridges object-oriented programming with relational databases
-- **Why We Use It**:
-  - Solves object-relational impedance mismatch
-  - Enables working with database entities as programming objects
-  - Simplifies database schema changes
-  - Provides type-safe query building
-- **Key Benefits**:
-  - Database abstraction layer
-  - Reduces boilerplate SQL code
-  - Improves code maintainability
-  - Automatic query optimization
-  - Database portability
-- **Popular Implementations**:
-  - SQLAlchemy (Python)
-  - Django ORM (Python)
-  - Mongoose (MongoDB)
-  - Prisma
-  - Drizzle ORM
-
-- **Comparison with Raw SQL**:
-  ```python
-  # ORM Example (SQLAlchemy)
-  user = session.query(User).filter_by(username='john').first()
-  
-  # Raw SQL Equivalent
-  cursor.execute("SELECT * FROM users WHERE username = 'john'")
-  user = cursor.fetchone()
-  ```
-- **Typical Use Cases**:
-  - Rapid application development
-  - Complex data relationships
-  - Applications requiring multiple database backends
-  - Teams using object-oriented programming paradigms
-
-
-
+<CardGrid>
+  <Card title="AWS (Amazon Web Services)" icon="aws">
+    - **Relational:** RDS (PostgreSQL, MySQL, MariaDB, Oracle, SQL Server), Aurora (MySQL/PostgreSQL compatible)
+    - **NoSQL:** DynamoDB (Key-Value/Document), DocumentDB (MongoDB compatible), Keyspaces (Cassandra compatible), Neptune (Graph), Timestream (Time Series)
+    - **Data Warehouse:** Redshift
+    - **In-Memory:** ElastiCache (Redis, Memcached)
+  </Card>
+  <Card title="GCP (Google Cloud Platform)" icon="google-cloud">
+    - **Relational:** Cloud SQL (PostgreSQL, MySQL, SQL Server), Spanner (Globally Distributed Relational)
+    - **NoSQL:** Firestore (Document), Bigtable (Wide-Column), Memorystore (Redis, Memcached)
+    - **Data Warehouse:** BigQuery
+  </Card>
+  <Card title="Azure (Microsoft Azure)" icon="microsoft-azure">
+    - **Relational:** Azure SQL Database (SQL Server), Azure Database for PostgreSQL/MySQL/MariaDB
+    - **NoSQL:** Cosmos DB (Multi-model: Document, Key-Value, Graph, Column-family), Azure Cache for Redis
+    - **Data Warehouse:** Synapse Analytics
+  </Card>
+</CardGrid>
+```
