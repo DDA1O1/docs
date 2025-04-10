@@ -1,703 +1,406 @@
+
 ---
- title: React Native
- sidebar: {
-    order: 1
-}
+title: Introduction to React Native
+description: Explore React Native's history, core concepts like the New Architecture (JSI, Turbo Modules, Fabric), Expo, environment setup, and styling with TailwindCSS/NativeWind.
+sidebar:
+  order: 1
 ---
 
-React Native was introduced by Facebook (now Meta) in 2015 as a solution to a growing challenge in mobile development. The framework was born out of Facebook's internal hackathon project, addressing the need to maintain separate codebases for iOS and Android apps while ensuring consistent user experiences.
+import { Steps, Aside, Tabs, TabItem, Card, CardGrid } from '@astrojs/starlight/components';
 
-### History and Purpose
+React Native, introduced by Facebook (now Meta) in 2015, revolutionized mobile development by allowing developers to build native-performing iOS and Android apps from a single JavaScript codebase. It renders using actual native UI components, creating apps indistinguishable from those built with Swift or Kotlin.
 
-The key innovation was enabling developers to write once and deploy across multiple platforms while maintaining native performance. Unlike previous cross-platform solutions, React Native renders using actual native UI components rather than webviews, resulting in apps that are indistinguishable from those built with native languages like Swift or Kotlin.
+**Key Benefits:**
 
-React Native rapidly gained popularity because it:
-- Reduced development time and costs
-- Enabled code sharing between platforms
-- Offered hot reloading for faster iteration
-- Provided access to native features when needed
-- Allowed web developers to transition to mobile development
+*   Reduced development time and cost.
+*   Significant code sharing between platforms.
+*   Faster iteration with Hot Reloading.
+*   Access to native device features.
+*   Easier transition for web developers into mobile development.
 
-## JavaScript Interface(JSI)
+## The New Architecture
 
-JSI is a key part of React Native's New Architecture that replaces the old bridge system. It's a C++ layer that lets JavaScript talk directly to native code.
+React Native's New Architecture significantly improves performance and capabilities by replacing the old asynchronous bridge. It consists of several key components:
 
-#### Old vs New Architecture
+<CardGrid stagger>
+  <Card title="JavaScript Interface (JSI)">
+    A C++ layer enabling direct, synchronous communication between JavaScript and native code, eliminating the need for JSON serialization used by the old bridge.
+    **Benefits:** Faster performance, lower memory usage, quicker startup, enables modern React features like Suspense.
+  </Card>
+  <Card title="Turbo Modules">
+    The evolution of Native Modules. They load lazily (only when needed) and use JSI for direct, efficient communication with native platform APIs.
+    **Benefits:** Lazy loading, direct JSI communication (faster), supports sync/async calls, type-safe (via CodeGen), better memory management.
+  </Card>
+  <Card title="Fabric">
+    The new rendering system. It uses JSI for direct UI manipulation and enables multi-threaded rendering for a smoother user experience.
+    **Benefits:** Multi-threaded rendering, synchronous layout potential, direct native UI access via JSI, improved state management with persistent C++ UI trees.
+  </Card>
+</CardGrid>
 
-**Old Bridge System:**
-- Used JSON to pass messages between JavaScript and native code
-- All communication was asynchronous (had to wait for responses)
-- Required extra processing to convert data
+### Old Bridge vs. New Architecture (JSI)
 
-**JSI Benefits:**
-- Direct communication with native code
-- Can be synchronous (immediate) when needed
-- Faster performance with less memory use
-- Quicker app startup
-- Enables modern React features like Suspense
+<Tabs>
+  <TabItem label="Old Bridge">
+    *   Asynchronous communication only.
+    *   Used JSON serialization/deserialization (overhead).
+    *   All Native Modules loaded at startup.
+    *   Single-threaded UI updates.
+    *   Slower performance and higher memory usage.
+  </TabItem>
+  <TabItem label="New Architecture (JSI)">
+    *   Supports synchronous communication.
+    *   Direct C++ layer (no JSON bridge).
+    *   Lazy loading of Turbo Modules.
+    *   Multi-threaded rendering with Fabric.
+    *   Faster performance, lower memory usage, faster startup.
+  </TabItem>
+</Tabs>
 
-### Turbo Modules
+## Expo: Simplifying React Native Development
 
-Turbo Modules are the improved version of Native Modules in React Native's New Architecture. They allow JavaScript code to access native platform features and APIs more efficiently.
+Expo is an open-source framework and platform built *on top* of React Native. It provides a managed workflow with pre-built tools and services, abstracting away much of the native configuration complexity.
 
-#### How They Improve Native Modules
+**Core Features:**
 
-**Old Native Modules:**
-- Loaded at app startup (even if never used)
-- Communicated through the bridge with JSON serialization
-- Async-only communication
-- No type safety between JavaScript and native code
+*   **Expo CLI:** Development command-line tool.
+*   **Expo Go:** A client app to instantly run projects on physical devices without native builds.
+*   **Expo SDK:** A curated set of native APIs and components (location, camera, etc.).
+*   **EAS (Expo Application Services):** Cloud build, submission, and update services.
 
-**Turbo Modules Benefits:**
-- Lazy loading (only load when needed)
-- Direct communication via JSI (no bridge)
-- Support both sync and async calls
-- Type-safe through CodeGen
-- Better memory management
-- Faster execution
+**Why Recommended:**
 
-Turbo Modules work hand-in-hand with JSI, giving JavaScript direct access to native functionality while maintaining the write-once-run-anywhere philosophy of React Native.
+*   **Rapid Start:** Minimal setup required (`npx create-expo-app`).
+*   **Simplified Workflow:** Often avoids direct interaction with native Xcode/Android Studio projects.
+*   **Easy Testing:** Instantly preview on devices using Expo Go.
+*   **Over-the-Air (OTA) Updates:** Push JS updates directly to users via EAS Update.
+*   **Managed Builds:** EAS Build handles native compilation in the cloud.
 
-### Fabric
+### Expo Go vs. Development Builds
 
-Fabric is React Native's new rendering system in the New Architecture. It completely reimagines how React components are rendered on mobile devices.
+Expo offers two main ways to run your app during development:
 
-#### How Fabric Improves Rendering
+<Tabs>
+<TabItem label="Expo Go">
+  **What:** A pre-built app from the App/Play Store containing the Expo SDK.
+  **Pros:**
+  *   Fastest way to start and test.
+  *   No native build tools needed initially.
+  *   Instantly run code on a physical device.
+  **Cons:**
+  *   Limited to native modules included in the Expo SDK version.
+  *   Cannot add custom native code or libraries not in Expo Go.
+  *   Limited native configuration (app icon, splash screen require a build).
+  **Use When:** Starting new projects, prototyping, learning, apps using only Expo SDK APIs.
+</TabItem>
+<TabItem label="Development Build">
+  **What:** A custom build of your *own* app that includes `expo-dev-client`.
+  **Pros:**
+  *   Full access to *any* native module (Expo SDK or third-party).
+  *   Allows custom native code modifications.
+  *   Full control over native configuration (app icon, etc.).
+  *   Retains Expo workflow benefits (Fast Refresh, Dev Menu).
+  **Cons:**
+  *   Requires an initial native build (local or via EAS Build).
+  *   Slightly longer setup than Expo Go.
+  **Use When:** Needing custom native modules, modifying native config, preparing for production.
 
-**Old Rendering System:**
-- Single-threaded UI updates
-- Asynchronous layout calculations
-- Required bridge serialization for all UI operations
-- Limited concurrent work
+  **Creating a Development Build (using EAS):**
+  ```bash
+  # Install EAS CLI (if needed)
+  npm install -g eas-cli
+  # Log in
+  eas login
+  # Configure project (if needed)
+  eas build:configure
+  # Build for platform
+  eas build --profile development --platform android # or ios
+  ```
+  Run with: `npx expo start --dev-client`
+</TabItem>
+</Tabs>
 
-**Fabric Benefits:**
-- Multi-threaded rendering (smoother UI)
-- Synchronous layout measurements when needed
-- Direct access to native UI components via JSI
-- Persistent UI trees for better state management
+<Aside type="note" title="Android Keystores & EAS Build">
+  When building Android apps for release (or even development builds sometimes), a signing keystore is required. EAS Build simplifies this by offering to generate and securely manage your keystore in the cloud, removing the burden of local keystore management and backup. You can also upload your own existing keystore if needed.
+</Aside>
 
-Fabric creates a persistent C++ rendering layer that exists on both JavaScript and native sides, allowing for more consistent UI behavior and better performance when handling complex interfaces.
+## React vs. React Native Syntax
 
-## Expo
+While built on React, React Native uses native components instead of web elements (HTML DOM).
 
-Expo is a platform built on top of React Native that provides a managed development environment with simplified workflows.
+**Similarities:**
 
-#### What is Expo
+*   JSX syntax.
+*   Component-based architecture.
+*   React Hooks (`useState`, `useEffect`, etc.).
+*   Props system.
+*   State management principles.
 
-Expo is an open-source framework and platform that creates an abstraction layer on top of React Native. It provides:
-- A set of pre-built components and APIs
-- Development tools like Expo CLI and Expo Go
-- Build services that handle native code compilation
-- Over-the-air updates without app store approvals
+**Key Differences:**
 
-#### Why React Native Recommends Expo
+<Tabs>
+<TabItem label="Core Components">
 
-React Native documentation often suggests Expo for beginners and many projects because:
-- **Quick Setup**: Start a new project with minimal configuration
-- **Simplified Development**: Build without dealing with native code
-- **Device Testing**: Preview apps instantly on physical devices via Expo Go
-- **Managed Updates**: Push updates directly to users without app store reviews
-- **Excellent Documentation**: Well-structured guides for beginners
-
-#### Expo vs React+Vite
-
-The Expo development experience is similar to React+Vite web development:
-- Both prioritize developer experience with minimal configuration
-- Both offer fast refresh for immediate feedback during development
-- Both abstract away complex build processes
-- Both provide optimized production builds
-- Both focus on rapid iteration and testing
-
-### React vs React Native Syntax
-
-React and React Native share core principles and syntax structure, but have key differences in implementation.
-
-#### Similarities
-
-- **Component Architecture**: Both use component-based structure with JSX
-- **Lifecycle Methods**: Same component lifecycle methods (componentDidMount, etc.)
-- **Hooks**: Both support React hooks (useState, useEffect, useContext)
-- **State Management**: Same approaches to managing state
-- **Props System**: Identical prop passing between components
-
-#### Differences
-
-**Core Components**:
 ```jsx
-// React Web
+// React (Web)
 <div>
-  <h1>Hello World</h1>
-  <p>This is a paragraph</p>
+  <h1>Title</h1>
+  <p>Paragraph</p>
+  <img src="..." alt="..." />
+  <input type="text" />
 </div>
+```
 
+```jsx
 // React Native
+import { View, Text, Image, TextInput } from 'react-native';
+
 <View>
-  <Text>Hello World</Text>
-  <Text>This is a paragraph</Text>
+  <Text style={{fontWeight: 'bold'}}>Title</Text>
+  <Text>Paragraph</Text>
+  <Image source={{ uri: '...' }} style={{width: 50, height: 50}} />
+  <TextInput />
 </View>
 ```
 
-**Styling**:
-```jsx
-// React Web
-<div style={{ color: 'blue', marginTop: '20px' }}>
-  Styled div
-</div>
+</TabItem>
+<TabItem label="Styling">
+React Native uses JavaScript objects for styling, similar to inline styles in web, but commonly uses `StyleSheet.create` for organization and performance. It primarily uses **Flexbox** for layout (applied by default to `<View>`).
 
-// React Native
-<View style={{ color: 'blue', marginTop: 20 }}>
-  <Text>Styled view</Text>
-</View>
-```
-
-React Native also commonly uses StyleSheet:
 ```jsx
-// React Native with StyleSheet
+// React Native Styling
+import { StyleSheet, View, Text } from 'react-native';
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+    flex: 1, // Take up available space
+    padding: 20,
+    backgroundColor: 'white',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'blue',
+    marginBottom: 10, // Use numbers for pixel values
   }
 });
 
 <View style={styles.container}>
-  <Text>Styled with StyleSheet</Text>
+  <Text style={styles.title}>Styled Title</Text>
 </View>
 ```
 
-**Event Handling**:
-```jsx
-// React Web
-<button onClick={handleClick}>Click me</button>
+</TabItem>
+<TabItem label="Event Handling">
+Event names differ (`onClick` vs. `onPress`). React Native provides touchable components like `TouchableOpacity` or `Pressable`.
 
+```jsx
+// React (Web)
+<button onClick={handleClick}>Click</button>
+```
+
+```jsx
 // React Native
+import { TouchableOpacity, Text } from 'react-native';
+
 <TouchableOpacity onPress={handlePress}>
-  <Text>Press me</Text>
+  <Text>Press Me</Text>
 </TouchableOpacity>
 ```
 
-**Layout System**:
-React Native uses Flexbox as its primary layout system by default, while React web uses the traditional CSS layout system (including Flexbox, Grid, etc.).
+</TabItem>
+<TabItem label="Navigation">
+Web uses libraries like `react-router-dom`. React Native uses dedicated libraries like `react-navigation` designed for native stack, tab, and drawer navigation patterns.
+</TabItem>
+</Tabs>
 
-**Navigation**:
-React web typically uses libraries like React Router, while React Native employs specialized navigation libraries such as React Navigation.
+## Environment Setup
 
+Choose the setup method that best suits your needs.
 
-#### Setting up Expo
+### 1. Using Expo (Recommended Start)
 
-```bash
-npx create-expo-app@latest
-```
+The quickest way to get started.
 
-#### Expo Go vs Development Build
-
-Expo offers two primary development environments: Expo Go and Development Builds. Understanding the differences helps developers choose the right approach for their project needs.
-
-**Expo Go:**
-- A pre-built native app available on the App Store and Google Play Store
-- Contains a fixed set of native libraries and APIs from the Expo SDK
-- Perfect for quickly starting new projects and prototyping
-- Limitations:
-  - Cannot add custom native code or third-party native modules not included in Expo Go
-  - Cannot modify native app configuration (app icons, splash screens, etc.) without building
-  - Only supports the native libraries included in the specific Expo Go version
-
-**Development Build:**
-- Your own custom version of the Expo client
-- Created specifically for your project with your required native modules
-- Allows full customization of native code and configuration
-- Benefits:
-  - Freedom to use any native library or module
-  - Ability to modify native app configuration
-  - Custom native code alongside the benefits of Expo's development workflow
-
-**When to Use Expo Go:**
-- For new projects just getting started
-- When your app only needs APIs included in the Expo SDK
-- For rapid prototyping and iteration
-- For educational purposes and learning React Native
-
-**When to Use Development Build:**
-- When you need native modules not included in Expo Go
-- When you need to modify native app configuration
-- For production-ready applications that require customization
-- When transitioning from Expo Go as your project requirements grow
-
-**Creating a Development Build:**
-
-```bash
-# Install EAS CLI
-npm install -g eas-cli
-
-# Log in to your Expo account
-eas login
-
-# Configure your project
-eas build:configure
-
-# Create a development build
-eas build --profile development --platform ios
-# or
-eas build --profile development --platform android
-```
-
-The Development Build workflow retains most of Expo's developer-friendly features like hot reloading, over-the-air updates, and simplified API access while giving you the flexibility to customize the native layer of your application when needed.
-
-**Using the Development Build with Expo Dev Client:**
-
-Development builds include the `expo-dev-client` library, which allows your app to connect to the Expo development server. After installing your development build on a device or simulator:
-
-```bash
-# Start the development server
-npx expo start --dev-client
-```
-
-This launches the Expo development server with the Dev Client option enabled. When you open your development build, you'll see a development menu that allows you to:
-
-- Connect to the development server on your machine
-- Enable/disable fast refresh
-- Access developer tools
-- View logs and performance metrics
-
-Any changes you make to your JavaScript code will be reflected in real-time while maintaining full access to custom native modules and configurations.
-
-#### Android Keystores in Expo Development
-
-When building Android applications, you need a keystore file to sign your app. This digital signature is crucial for several reasons:
-
-- **App Identity**: The Google Play Store identifies your app by its signing certificate
-- **Update Integrity**: Updates must be signed with the same key as the original app
-- **Security**: Prevents unauthorized modifications to your app
-
-A keystore is a binary file that contains one or more private keys and their corresponding certificates. There are two types of keystores used in Android development:
-
-- **Debug Keystore**: Used during development, automatically generated by development tools
-- **Release Keystore**: Used for production apps distributed to users, must be kept secure
-
-**EAS Build and Keystores**
-
-When using EAS Build for Android applications, you have two options for keystores:
-
-1. **Supply your own keystore**: Upload your existing keystore if you have one
-2. **Let EAS generate and manage a keystore**: Secure cloud-based keystore management
-
-When you run `eas build` for the first time, you'll see output similar to this:
-
-```
-✔ Initialized versionCode with 1.
-✔ Using remote Android credentials (Expo server)
-√ Generate a new Android Keystore? ... yes
-Detected that you do not have keytool installed locally 
-✔ Generating keystore in the cloud...
-✔ Created keystore
-```
-
-This indicates that EAS Build is creating and storing your keystore securely on Expo's servers. This approach has several advantages:
-
-- **Simplicity**: No need to manage keystores locally
-- **Security**: Reduces risk of losing your keystore file
-- **Team Collaboration**: Authorized team members can build without sharing sensitive keystore files
-- **Backup**: Expo maintains backups of your keystore
-
-For production apps, EAS provides additional options like Play App Signing integration, which adds an extra layer of security by allowing Google to manage your release keys.
-
-## Setting up React Native
-
-There are two main approaches to setting up a React Native development environment:
-
-### 1. Using Expo (Recommended for Beginners)
-
-Expo provides the easiest way to start with React Native development:
-
-```bash
-# Install Expo CLI globally
-npm install -g expo-cli
-
-# Create a new project
-npx create-expo-app MyApp
-cd MyApp
-
-# Start the development server
-npx expo start
-```
-
-**Development Options with Expo:**
-- Use Expo Go app for quick testing
-- Create development builds for custom native code
-- Deploy to app stores using EAS Build
-
-### 2. React Native CLI (Traditional Setup)
-
-This is the traditional setup that gives you full control over the native code. Follow these steps based on your operating system:
-
-#### Installing Dependencies
-
-1. **Node & Watchman** (macOS and Linux):
-```bash
-# Using Homebrew on macOS
-brew install node
-brew install watchman
-
-# On Linux - use your system's package manager for Node
-# Watchman needs to be built from source
-```
-
-2. **Java Development Kit**:
-- Install OpenJDK 17 (recommended version)
-- On macOS:
-```bash
-brew install --cask zulu@17
-```
-- Set JAVA_HOME environment variable:
-```bash
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
-```
-
-3. **Android Development Environment**:
-
-a. Install Android Studio
-- Download and install Android Studio
-- During installation, ensure these are selected:
-  - Android SDK
-  - Android SDK Platform
-  - Android Virtual Device
-
-b. Configure Android SDK
-- Open Android Studio's SDK Manager
-- Install Android 15 (VanillaIceCream) SDK:
-  - Android SDK Platform 35
-  - Intel x86 Atom_64 System Image or Google APIs Intel x86 Atom System Image
-  - Android SDK Build-Tools 35.0.0
-
-c. Configure Environment Variables
-- For macOS/Linux (add to ~/.zshrc or ~/.bash_profile):
-```bash
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-```
-- For Windows (System Properties > Environment Variables):
-```
-ANDROID_HOME: %LOCALAPPDATA%\Android\Sdk
-Path: Add %LOCALAPPDATA%\Android\Sdk\platform-tools
-```
-
-4. **iOS Development Setup** (macOS only):
-- Install Xcode via the Mac App Store
-- Install Xcode Command Line Tools:
-```bash
-xcode-select --install
-```
-- Install CocoaPods:
-```bash
-sudo gem install cocoapods
-```
-
-#### Creating a New Project
-
-```bash
-npx react-native@latest init MyApp
-cd MyApp
-
-# iOS setup (macOS only)
-cd ios && pod install && cd ..
-
-# Start Metro Bundler
-npm start
-
-# Run on Android
-npm run android
-
-# Run on iOS (macOS only)
-npm run ios
-```
-
-#### Setting Up a Device
-
-**For Android:**
-1. Enable Developer Options on your device
-2. Enable USB Debugging
-3. Connect device via USB
-4. Run `adb devices` to verify connection
-
-**For iOS (macOS only):**
-1. Connect device via USB
-2. Trust the development computer
-3. Register for an Apple Developer account
-4. Add device to provisioning profile
-
-**Using Android Virtual Device (AVD):**
-1. Open Android Studio
-2. Open "AVD Manager"
-3. Create Virtual Device
-4. Select "VanillaIceCream" API Level 35 image
-5. Launch emulator
-
-**Using a Physical Device via Wifi**
-1.Enable Developer Options and USB Debugging on your device
-2.Connect your device to the same Wi-Fi network as your development machine
-3.Go to Wireless debugging on your device and pair with your development machine `adb pair <DEVICE_IP_ADDRESS>:<PAIRING_PORT>`
-4.Run `adb connect <device-ip>:5555` (replace `<device-ip>` with your device's IP address)
-5.Verify connection with `adb devices`
-6.Run `npx react-native run-android`
-
-**Reverse Tethering**
-
-Reverse tethering allows your Android device to use your development machine's local services. This is particularly useful when:
-
-- You need to access local development servers that are only available on your development machine
-
-To set up reverse tethering:
-1. Run `adb reverse tcp:8081 tcp:8081`
-2. Start your React Native app with `npx react-native start`
-
-This ensures your device can access the Metro bundler and other local development services through the USB connection/Wireless debugging.
-
-
-## TailwindCSS in React Native
-
-Unlike web development where TailwindCSS is directly supported, React Native requires special libraries to use Tailwind's utility-first styling approach.
-
-#### NativeWind
-
-NativeWind is the primary solution for bringing TailwindCSS to React Native applications. It allows developers to use familiar Tailwind classes across all platforms.
-
-**How NativeWind Works:**
-- Compiles Tailwind classes into platform-specific styles (StyleSheet.create for native, CSS StyleSheet for web)
-- Processes styles during build time with minimal runtime for reactive styles
-- Supports most Tailwind features including media queries, dark mode, and CSS variables
-
-**Example Usage:**
-```jsx
-// React Native with NativeWind
-import { View, Text } from 'react-native';
-import { styled } from 'nativewind';
-
-// Create styled components
-const StyledView = styled(View);
-const StyledText = styled(Text);
-
-export default function App() {
-  return (
-    <StyledView className="flex-1 items-center justify-center bg-slate-100">
-      <StyledText className="text-lg font-medium text-slate-900">
-        Hello TailwindCSS in React Native!
-      </StyledText>
-    </StyledView>
-  );
-}
-```
-
-#### Integrating with React Native
-
-Okay, thank you for providing the specific installation steps, likely from the NativeWind v4 documentation (as they differ significantly from v2/v3). This process involves processing a CSS file via Metro, which is a newer approach.
-
-Let's refine and structure these steps into a clear guide for integrating NativeWind v4 (or later versions following this pattern) into a React Native CLI project.
-
----
-
-**Integrating NativeWind v4+ into a React Native CLI Project ("Framework-less")**
-
-This guide follows the newer NativeWind installation method involving direct CSS file processing.
-
-**1. Prerequisites:**
-
-*   **React Native Environment:** Ensure you have a working React Native development environment set up for the CLI. Follow the official React Native documentation for [Environment Setup](https://reactnative.dev/docs/environment-setup).
-*   **Node.js & npm/yarn/pnpm/bun:** Required for package management and running scripts.
-*   **React Native Project:** An existing project created with `npx react-native init ...` or a new one.
-
-**2. Install Dependencies:**
-
-Install `nativewind`, `tailwindcss`, and the required peer dependencies `react-native-reanimated` and `react-native-safe-area-context`.
-
-```bash
-# Using npm
-npm install nativewind tailwindcss react-native-reanimated react-native-safe-area-context
-# Ensure you use a compatible Tailwind CSS version if specified, e.g.:
-# npm install nativewind tailwindcss@^3.4.1 react-native-reanimated react-native-safe-area-context
-
-# Using yarn
-yarn add nativewind tailwindcss react-native-reanimated react-native-safe-area-context
-# yarn add nativewind tailwindcss@^3.4.1 react-native-reanimated react-native-safe-area-context
-
-# Using pnpm
-pnpm add nativewind tailwindcss react-native-reanimated react-native-safe-area-context
-# pnpm add nativewind tailwindcss@^3.4.1 react-native-reanimated react-native-safe-area-context
-
-# Using bun
-bun add nativewind tailwindcss react-native-reanimated react-native-safe-area-context
-# bun add nativewind tailwindcss@^3.4.1 react-native-reanimated react-native-safe-area-context
-```
-
-**Link Native Dependencies (iOS):**
-
-After installing packages with native modules like `react-native-reanimated` and `react-native-safe-area-context`, run `pod install` in the `ios` directory.
-
-```bash
-npx pod-install
-# or
-cd ios && pod install && cd ..
-```
-
-**3. Initialize & Configure Tailwind CSS:**
-
-*   **Generate Config File:** Create the `tailwind.config.js` file.
+<Steps>
+1.  **Install Expo CLI (Optional but Recommended):**
     ```bash
-    npx tailwindcss init
+    npm install -g expo-cli
+    ```
+2.  **Create a New Project:**
+    ```bash
+    npx create-expo-app@latest YourProjectName
+    cd YourProjectName
+    ```
+3.  **Start the Development Server:**
+    ```bash
+    npx expo start
+    ```
+    Scan the QR code with the Expo Go app on your device, or use the commands to open in an emulator/simulator. For custom native code, create a Development Build (see above).
+</Steps>
+
+### 2. Using React Native CLI (Bare Workflow)
+
+Provides full control over the native project files. Requires more setup.
+
+<Aside type="caution" title="Setup Complexity">
+The React Native CLI setup involves installing specific versions of Node, JDK, Android Studio components, and potentially Xcode (macOS). Carefully follow the **official React Native documentation** for the ["Environment Setup" -> "React Native CLI Quickstart"](https://reactnative.dev/docs/environment-setup) specific to your Development OS (macOS, Windows, Linux) and Target OS (Android, iOS).
+</Aside>
+
+**General Steps (Summarized - Refer to Official Docs for Details):**
+
+<Steps>
+1.  **Install Core Dependencies:**
+    *   **Node.js:** Use the LTS version.
+    *   **Watchman:** (Recommended for macOS/Linux) File watching service. `brew install watchman`
+    *   **Java Development Kit (JDK):** Typically OpenJDK 17. Use package managers like `brew` (macOS) or download directly. Set `JAVA_HOME`.
+2.  **Install Android Dependencies:**
+    *   **Android Studio:** Install the latest version.
+    *   **Android SDK:** Use Android Studio's SDK Manager to install the required SDK Platform (e.g., Android 14 - API 34) and Build-Tools. Ensure Command-line Tools are installed.
+    *   **Emulator/Device:** Set up an Android Virtual Device (AVD) via Android Studio or enable USB Debugging on a physical device.
+    *   **Configure Environment Variables:** Set `ANDROID_HOME` and add platform-tools/emulator to your `PATH`.
+3.  **Install iOS Dependencies (macOS Only):**
+    *   **Xcode:** Install from the Mac App Store.
+    *   **Xcode Command Line Tools:** Install via Xcode or `xcode-select --install`.
+    *   **CocoaPods:** Dependency manager for iOS. `sudo gem install cocoapods`
+4.  **Create React Native CLI Project:**
+    ```bash
+    npx react-native@latest init YourProjectName
+    cd YourProjectName
+    ```
+5.  **Run the App:**
+    *   **Start Metro Bundler:** `npx react-native start` (or `npm start` / `yarn start`).
+    *   **(New Terminal) Run on Platform:**
+        ```bash
+        # Android
+        npx react-native run-android
+        # iOS (macOS only)
+        npx react-native run-ios
+        ```
+        *iOS may require `cd ios && pod install && cd ..` first.*
+</Steps>
+
+**Device Connection Tips:**
+
+*   **Android USB:** Enable Developer Options & USB Debugging. Connect via USB. Verify with `adb devices`.
+*   **Android WiFi:** Enable Wireless Debugging. Pair device (`adb pair ...`). Connect (`adb connect ...`).
+*   **iOS USB (macOS):** Connect via USB. Trust the computer. May need Apple Developer account setup in Xcode.
+*   **Reverse Tethering (for accessing local dev server):** `adb reverse tcp:8081 tcp:8081` (Ensure Metro runs on port 8081).
+
+## Styling with TailwindCSS (NativeWind)
+
+NativeWind brings the utility-first power of TailwindCSS to React Native. It compiles Tailwind classes into `StyleSheet` objects.
+
+### Integrating NativeWind v4+ (CLI Project)
+
+This setup uses Metro to process a global CSS file.
+
+<Steps>
+1.  **Install Dependencies:**
+    ```bash
+    npm install nativewind tailwindcss react-native-reanimated react-native-safe-area-context
+    # or yarn add ..., pnpm add ..., bun add ...
+    ```
+    <Aside type="note">Check NativeWind docs for compatible `tailwindcss` versions if specified.</Aside>
+
+2.  **Link Native Dependencies (iOS):**
+    ```bash
+    npx pod-install
     ```
 
-*   **Configure `tailwind.config.js`:** Update the file to include:
-    *   Paths to your component files in the `content` array.
-    *   The `nativewind/preset`.
+3.  **Initialize & Configure Tailwind:**
+    *   Generate config: `npx tailwindcss init`
+    *   Edit `tailwind.config.js`:
+        ```javascript {4-7,8}
+        // tailwind.config.js
+        /** @type {import('tailwindcss').Config} */
+        module.exports = {
+          content: [
+            "./App.{js,jsx,ts,tsx}",
+            "./src/**/*.{js,jsx,ts,tsx}" // Adjust paths as needed
+          ],
+          presets: [require("nativewind/preset")], // Add preset
+          theme: { extend: {} },
+          plugins: [],
+        }
+        ```
+    *   Create `global.css` (e.g., in root or `./src`):
+        ```css
+        /* global.css */
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+        ```
 
-    ```javascript
-    // tailwind.config.js
-    /** @type {import('tailwindcss').Config} */
+4.  **Configure Babel:** Add the preset to `babel.config.js`.
+    ```javascript {5,9}
+    // babel.config.js
     module.exports = {
-      // Update this array to include paths to all files where you use Tailwind classes
-      content: [
-        "./App.{js,jsx,ts,tsx}",
-        "./src/**/*.{js,jsx,ts,tsx}" // Add other directories/patterns as needed
+      presets: [
+        'module:@react-native/babel-preset',
+        'nativewind/babel' // Add NativeWind preset
       ],
-      presets: [require("nativewind/preset")], // Add the NativeWind preset
-      theme: {
-        extend: {},
-      },
-      plugins: [],
-    }
+      plugins: [
+        // Reanimated plugin must be LAST
+        'react-native-reanimated/plugin',
+      ],
+    };
     ```
 
-*   **Create Global CSS File:** Create a CSS file (e.g., `global.css` in your project root or `src` directory) and add the Tailwind directives.
+5.  **Configure Metro:** Use `withNativeWind` in `metro.config.js`.
+    ```javascript {2,12-15}
+    // metro.config.js
+    const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
+    const { withNativeWind } = require("nativewind/metro");
 
-    ```css
-    /* global.css (or your chosen path) */
-    @tailwind base;
-    @tailwind components;
-    @tailwind utilities;
+    /** @type {import('metro-config').MetroConfig} */
+    const config = {}; // Your base config
+
+    module.exports = withNativeWind(
+      mergeConfig(getDefaultConfig(__dirname), config),
+      {
+        // Correct relative path to your CSS file:
+        input: "./global.css",
+        // Optional output file name:
+        // output: "nativewind-output.js",
+      }
+    );
     ```
-    *Remember the relative path to this file for the next steps.*
 
-**4. Add the NativeWind Babel Preset:**
+6.  **Import CSS in App Entry:** Import the CSS file in `App.js` or `App.tsx`.
+    ```typescript {2}
+    // App.tsx
+    import "./global.css"; // Import the CSS file
 
-Modify your `babel.config.js` file to include the `nativewind/babel` preset. **Note:** The documentation uses the term "preset" here, not "plugin".
+    import React from 'react';
+    // ... other imports
+    import { SafeAreaView, View, Text } from 'react-native';
 
-```javascript
-// babel.config.js
-module.exports = {
-  // Make sure to keep your existing presets (like 'module:@react-native/babel-preset')
-  presets: [
-    'module:@react-native/babel-preset',
-    'nativewind/babel' // Add this line
-  ],
-  // Keep existing plugins if any
-  plugins: [
-    // Add 'react-native-reanimated/plugin' HERE if you haven't already
-    // IMPORTANT: Reanimated plugin must be listed last.
-    'react-native-reanimated/plugin',
-  ],
-};
+    const App = () => {
+      return (
+        <SafeAreaView className="flex-1 items-center justify-center">
+          <Text className="text-xl text-blue-600 dark:text-blue-400">
+            Hello NativeWind!
+          </Text>
+        </SafeAreaView>
+      );
+    };
+    export default App;
+    ```
+
+7.  **TypeScript Setup (If using TS):** Create a type definition file (e.g., `nativewind-env.d.ts`).
+    ```typescript
+    /// <reference types="nativewind/types" />
+    ```
+
+8.  **Restart with Cache Reset:** Crucial after config changes!
+    ```bash
+    npm start -- --reset-cache
+    # or yarn start --reset-cache
+    ```
+    Then run `npx react-native run-android` or `run-ios` in another terminal.
+</Steps>
+
+<Aside type="caution" title="Clean Builds">
+If styles don't apply after resetting the cache, try a full clean: delete `node_modules`, `ios/build`, `android/build`, `android/app/build`, run `watchman watch-del-all`, `npm install`, `npx pod-install`, and then restart Metro with reset cache.
+</Aside>
 ```
-*   **Important:** If you are using `react-native-reanimated`, its Babel plugin (`react-native-reanimated/plugin`) **must be listed last** in the `plugins` array.
-*   After modifying `babel.config.js`, you **must** restart your Metro bundler, often with a cache reset.
-
-**5. Configure Metro:**
-
-Modify your `metro.config.js` to use NativeWind's Metro processor. This step integrates Tailwind CSS processing into the React Native build process.
-
-```javascript
-// metro.config.js
-const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
-const { withNativeWind } = require("nativewind/metro");
-
-/**
- * Metro configuration
- * https://facebook.github.io/metro/docs/configuration
- *
- * @type {import('metro-config').MetroConfig}
- */
-const config = {}; // You can start with an empty object or your existing custom config
-
-// Make sure to replace './global.css' with the correct relative path to your CSS file
-module.exports = withNativeWind(mergeConfig(getDefaultConfig(__dirname), config), {
-  input: "./global.css", // <--- Or your relative path e.g., "./src/global.css"
-  output: "nativewind-output.js", // Optional: specify the output file name
-});
-```
-
-*   Ensure the `input` path correctly points to the `global.css` file you created in Step 3.
-*   After modifying `metro.config.js`, you **must** restart your Metro bundler, often with a cache reset.
-
-**6. Import CSS File in Your App Entry Point:**
-
-Import the CSS file you created directly into your main application file (usually `App.js` or `App.tsx`). This ensures the styles processed by Metro are loaded into your application.
-
-```typescript
-// App.tsx (or App.js)
-import "./global.css"; // <-- Import the CSS file (use the correct path)
-
-import React from 'react';
-import {SafeAreaView, View, Text, StatusBar} from 'react-native';
-
-const App = () => {
-  return (
-    <SafeAreaView className="flex-1 items-center justify-center bg-white dark:bg-black">
-      <StatusBar barStyle={'dark-content'} />
-      <View className="p-5 bg-blue-500 rounded-lg">
-        <Text className="text-white text-xl font-bold">Hello NativeWind v4!</Text>
-      </View>
-      <Text className="mt-4 text-lg text-gray-700 dark:text-gray-300 ios:font-semibold">
-        Styled with Tailwind!
-      </Text>
-    </SafeAreaView>
-  );
-};
-
-export default App;
-```
-
-**7. TypeScript Configuration (If Applicable):**
-
-If you are using TypeScript, ensure type support for the `className` prop. Create a type declaration file (e.g., `nativewind-env.d.ts` or add to an existing one like `global.d.ts`) in your project root or `src` directory:
-
-```typescript
-// nativewind-env.d.ts or global.d.ts
-/// <reference types="nativewind/types" />
-```
-
-Make sure this file is included by your `tsconfig.json` (it usually is by default if placed appropriately).
-
-**8. Run Your Application (with Cache Reset):**
-
-Start Metro and run your app. **Crucially**, because you've modified `babel.config.js` and `metro.config.js`, you should reset the cache when starting:
-
-```bash
-# Using npm
-npm start -- --reset-cache
-# In another terminal:
-npm run ios
-# or
-npm run android
-
-# Using yarn
-yarn start --reset-cache
-# In another terminal:
-yarn ios
-# or
-yarn android
-```
-
-If styles still don't apply, try more aggressive cleaning (delete `node_modules`, `ios/build`, `android/build`, `android/app/build`, Pods, etc., and reinstall).
-
-
-
-
-
-
-
-
-
-
-
-
-
