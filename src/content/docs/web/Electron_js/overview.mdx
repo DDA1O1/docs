@@ -107,6 +107,10 @@ This guide walks through the process of setting up a new Electron project using 
     *   **Consistency:** Ensures the build and release process is the same every time, reducing errors caused by local environment differences.
     *   **Free for Public Repos:** GitHub Actions provides generous free tiers, especially for open-source projects.
 
+    :::danger[package.json]
+     - Do not forget to update the the version of you application in package.json before running the `Github Actions` to reflect the new configurations in your app without you will stuck to the previous versions even if you push the updates 
+    :::
+    
     ```yml
     # .github/workflows/release.yml
 
