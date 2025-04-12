@@ -94,4 +94,38 @@ This guide walks through the process of setting up a new Electron project using 
         ```
         This will now generate an NSIS-based `.exe` installer that provides the familiar wizard interface.
 
+5.  **Automating Releases with GitHub Actions**
+
+    Initially, publishing was done locally using `npm run publish`. However, this proved to be **very slow** due to the large size of the distributable files (`.exe`, `.zip`, `.deb`, etc.) being uploaded over your local internet connection. Electron apps bundle the Chromium runtime, leading to package sizes often exceeding 100MB per platform.
+
+    To address this bottleneck and automate the release process, we implemented a **GitHub Actions workflow**.
+
+    **Why GitHub Actions?**
+
+    *   **Speed:** GitHub Actions run on servers with very fast internet connections, dramatically reducing the time spent uploading large artifact files.
+    *   **Automation:** The entire process of building for multiple platforms and publishing to GitHub Releases is triggered automatically when you push a specific Git tag (e.g., `v1.2.3`).
+    *   **Consistency:** Ensures the build and release process is the same every time, reducing errors caused by local environment differences.
+    *   **Free for Public Repos:** GitHub Actions provides generous free tiers, especially for open-source projects.
+
+    **How the Workflow Works (`.github/workflows/release.yml`)**
+
+    The workflow consists of multiple jobs designed to build the application on different operating systems and then consolidate the results into a single GitHub Release:
+
+    1.  **Trigger:** The entire workflow is triggered **only** when a Git tag matching the pattern `v*.*.*` is pushed to the repository.
+    2.  **Build Jobs (`build-windows-x64`, `build-windows-arm64`, `build-linux`):**
+        *   These jobs run **in parallel** on different virtual machines (`windows-latest` or `ubuntu-latest`).
+        *   Each job checks out the code, sets up Node.js, installs dependencies (`npm ci`), and runs `npm run make` specifically targeting one platform and architecture (e.g., `--platform=win32 --arch=x64`).
+        *   Crucially, each build job uploads its resulting distributables (from the `out/make` directory) as a named **artifact** (e.g., `windows-x64-artifact`). Artifacts are temporary storage for files within a workflow run.
+    3.  **Release Job (`release`):**
+        *   This job **waits** for all the build jobs to complete successfully (`needs: [...]`).
+        *   It runs on an `ubuntu-latest` runner.
+        *   It **downloads** all the artifacts created by the build jobs into a `staging` directory.
+        *   **Artifact Renaming:** It includes steps to rename the Windows artifacts (like `Setup.exe`, `.nupkg`) within their specific subdirectories (`staging/windows-x64/squirrel.windows/x64`, etc.) to prevent naming collisions when uploading multiple versions of the same filename to the GitHub Release. This was a key debugging step we went through, ensuring the renaming script targeted the correct nested directories where the maker placed the files.
+        *   **Create GitHub Release:** It uses the `softprops/action-gh-release` action to:
+            *   Create a new GitHub Release associated with the triggering tag (`${{ github.ref_name }}`).
+            *   Upload *all* files found within the `staging` directory (including the renamed ones in their subdirectories) as assets to that release.
+        *   **Authentication:** It uses the automatically provided `GITHUB_TOKEN` secret (enabled via the `permissions: contents: write` setting) for authenticating with GitHub to create the release and upload assets. No manual Personal Access Token is needed in the workflow file itself.
+
+    By using this GitHub Actions workflow, the time-consuming build and upload process is offloaded to GitHub's infrastructure, resulting in a much faster and fully automated release pipeline for your Electron application whenever you push a new version tag.
+
 </Steps>
