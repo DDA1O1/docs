@@ -226,6 +226,21 @@ This guide walks through the process of setting up a new Electron project using 
      - Do not forget to update the the version of you application in package.json before running the `Github Actions` to reflect the new configurations in your app without you will stuck to the previous versions even if you push the updates
     :::
 
+    **Setting up GitHub Token for Publishing**
+
+    Before running `npm run publish`, set your GitHub token as an environment variable based on your operating system:
+
+    ```bash
+    # Windows (Command Prompt)
+    set GITHUB_TOKEN=YOUR_COPIED_TOKEN_HERE
+
+    # Windows (PowerShell)
+    $env:GITHUB_TOKEN="YOUR_COPIED_TOKEN_HERE"
+
+    # macOS / Linux (Bash, Zsh)
+    export GITHUB_TOKEN="YOUR_COPIED_TOKEN_HERE"
+    ```
+
     ```yml
     # .github/workflows/release.yml
 
