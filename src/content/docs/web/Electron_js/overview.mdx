@@ -244,217 +244,268 @@ This guide walks through the process of setting up a new Electron project using 
     ```yml
     # .github/workflows/release.yml
 
-    name: Release Electron App
+        name: Release Electron App
 
-    on:
-    # Triggers the workflow on pushes that create a tag matching the pattern v*.*.* (e.g., v1.0.0, v1.2.3)
-    push:
-        tags:
-        - 'v*.*.*'
+        on:
+        # Triggers the workflow on pushes that create a tag matching the pattern v*.*.* (e.g., v1.0.0, v1.2.3)
+        push:
+            tags:
+            - 'v*.*.*'
 
-    jobs:
-    # Job to build for Windows x64
-    build-windows-x64:
-        name: Build Windows (x64)
-        runs-on: windows-latest # Native x64 runner
-        steps:
-        - name: Checkout Repository
-            uses: actions/checkout@v4
-            with:
-            fetch-depth: 0
+        jobs:
+        # Job to build for Windows x64
+        build-windows-x64:
+            name: Build Windows (x64)
+            runs-on: windows-latest # Native x64 runner
+            steps:
+            - name: Checkout Repository
+                uses: actions/checkout@v4
+                with:
+                fetch-depth: 0
 
-        - name: Setup Node.js
-            uses: actions/setup-node@v4
-            with:
-            node-version: '20'
-            cache: 'npm'
+            - name: Setup Node.js
+                uses: actions/setup-node@v4
+                with:
+                node-version: '20'
+                cache: 'npm'
 
-        - name: Install Dependencies
-            # npm ci will download win32-x64 ffmpeg via ffmpeg-static
-            run: npm ci
+            - name: Install Dependencies
+                # npm ci will download win32-x64 ffmpeg via ffmpeg-static
+                run: npm ci
 
-        - name: Build Windows x64 (Make)
-            # Electron Forge should auto-detect win32/x64 here, or use explicit flags
-            run: npm run make # Optional: -- --platform=win32 --arch=x64
+            - name: Build Windows x64 (Make)
+                # Electron Forge should auto-detect win32/x64 here, or use explicit flags
+                run: npm run make # Optional: -- --platform=win32 --arch=x64
 
-        - name: Upload Windows x64 Artifact
-            uses: actions/upload-artifact@v4
-            with:
-            name: windows-x64-artifact
-            path: out/make/**/* # Upload squirrel/zip output
+            - name: Upload Windows x64 Artifact
+                uses: actions/upload-artifact@v4
+                with:
+                name: windows-x64-artifact
+                path: out/make/**/* # Upload squirrel/zip output
 
-    # Job to build for Linux x64
-    build-linux-x64:
-        name: Build Linux (x64)
-        runs-on: ubuntu-latest # Native x64 runner
-        steps:
-        - name: Checkout Repository
-            uses: actions/checkout@v4
-            with:
-            fetch-depth: 0
+        # Job to build for Windows ARM64
+        build-windows-arm64:
+            name: Build Windows (ARM64)
+            # --- USE NATIVE ARM64 RUNNER ---
+            runs-on: windows-11-arm
+            steps:
+            - name: Checkout Repository
+                uses: actions/checkout@v4
+                with:
+                fetch-depth: 0
 
-        - name: Setup Node.js
-            uses: actions/setup-node@v4
-            with:
-            node-version: '20'
-            cache: 'npm'
+            - name: Setup Node.js
+                uses: actions/setup-node@v4
+                with:
+                node-version: '20'
+                cache: 'npm'
 
-        # No extra dependencies needed for native x64 build usually
-        # - name: Install Linux Build Dependencies ...
+            - name: Install Dependencies
+                # npm ci will download win32-arm64 ffmpeg via ffmpeg-static
+                run: npm ci
 
-        - name: Install Project Dependencies
-            # npm ci will download linux-x64 ffmpeg via ffmpeg-static
-            run: npm ci
+            - name: Build Windows arm64 (Make)
+                # Electron Forge should auto-detect win32/arm64 here, or use explicit flags
+                run: npm run make # Optional: -- --platform=win32 --arch=arm64
 
-        - name: Build Linux x64 (Make)
-            # Electron Forge should auto-detect linux/x64 here, or use explicit flags
-            run: npm run make # Optional: -- --platform=linux --arch=x64
+            - name: Upload Windows arm64 Artifact
+                uses: actions/upload-artifact@v4
+                with:
+                name: windows-arm64-artifact
+                path: out/make/**/* # Upload squirrel/zip output
 
-        - name: Upload Linux x64 Artifact
-            uses: actions/upload-artifact@v4
-            with:
-            # --- UNIQUE ARTIFACT NAME ---
-            name: linux-x64-artifact
-            path: out/make/**/* # Upload deb/rpm/etc. output
+        # Job to build for Linux x64
+        build-linux-x64:
+            name: Build Linux (x64)
+            runs-on: ubuntu-latest # Native x64 runner
+            steps:
+            - name: Checkout Repository
+                uses: actions/checkout@v4
+                with:
+                fetch-depth: 0
 
-    # Job to build for Linux arm64
-    build-linux-arm64:
-        name: Build Linux (ARM64)
-        # --- USE NATIVE ARM64 RUNNER ---
-        runs-on: ubuntu-22.04-arm
-        steps:
-        - name: Checkout Repository
-            uses: actions/checkout@v4
-            with:
-            fetch-depth: 0
+            - name: Setup Node.js
+                uses: actions/setup-node@v4
+                with:
+                node-version: '20'
+                cache: 'npm'
 
-        - name: Setup Node.js
-            uses: actions/setup-node@v4
-            with:
-            node-version: '20'
-            cache: 'npm'
+            # No extra dependencies needed for native x64 build usually
+            # - name: Install Linux Build Dependencies ...
 
-        # No extra dependencies needed for native arm64 build usually
-        # - name: Install Linux Build Dependencies ...
+            - name: Install Project Dependencies
+                # npm ci will download linux-x64 ffmpeg via ffmpeg-static
+                run: npm ci
 
-        - name: Install Project Dependencies
-            # npm ci will download linux-arm64 ffmpeg via ffmpeg-static
-            run: npm ci
+            - name: Build Linux x64 (Make)
+                # Electron Forge should auto-detect linux/x64 here, or use explicit flags
+                run: npm run make # Optional: -- --platform=linux --arch=x64
 
-        - name: Build Linux arm64 (Make)
-            # Electron Forge should auto-detect linux/arm64 here, or use explicit flags
-            run: npm run make # Optional: -- --platform=linux --arch=arm64
+            - name: Upload Linux x64 Artifact
+                uses: actions/upload-artifact@v4
+                with:
+                # --- UNIQUE ARTIFACT NAME ---
+                name: linux-x64-artifact
+                path: out/make/**/* # Upload deb/rpm/etc. output
 
-        - name: Upload Linux arm64 Artifact
-            uses: actions/upload-artifact@v4
-            with:
-            # --- UNIQUE ARTIFACT NAME ---
-            name: linux-arm64-artifact
-            path: out/make/**/* # Upload deb/rpm/etc. output
+        # Job to build for Linux arm64
+        build-linux-arm64:
+            name: Build Linux (ARM64)
+            # --- USE NATIVE ARM64 RUNNER ---
+            runs-on: ubuntu-22.04-arm
+            steps:
+            - name: Checkout Repository
+                uses: actions/checkout@v4
+                with:
+                fetch-depth: 0
 
-    # Job to create the GitHub Release and upload all built artifacts
-    release:
-        name: Create GitHub Release
-        runs-on: ubuntu-latest
-        # --- UPDATE DEPENDENCIES TO INCLUDE ALL 4 BUILD JOBS ---
-        needs: [build-windows-x64, build-linux-x64, build-linux-arm64]
-        permissions:
-        contents: write # Needed to create releases and upload assets
+            - name: Setup Node.js
+                uses: actions/setup-node@v4
+                with:
+                node-version: '20'
+                cache: 'npm'
 
-        steps:
-        - name: Checkout Repository # Needed to get tag info
-            uses: actions/checkout@v4
+            # No extra dependencies needed for native arm64 build usually
+            # - name: Install Linux Build Dependencies ...
 
-        # Create a directory to download all artifacts into
-        - name: Create Staging Directory
-            run: mkdir staging
+            - name: Install Project Dependencies
+                # npm ci will download linux-arm64 ffmpeg via ffmpeg-static
+                run: npm ci
 
-        # --- UPDATE ARTIFACT DOWNLOADS ---
-        - name: Download Windows x64 Artifact
-            uses: actions/download-artifact@v4
-            with:
-            name: windows-x64-artifact
-            path: staging/windows-x64
+            - name: Build Linux arm64 (Make)
+                # Electron Forge should auto-detect linux/arm64 here, or use explicit flags
+                run: npm run make # Optional: -- --platform=linux --arch=arm64
 
+            - name: Upload Linux arm64 Artifact
+                uses: actions/upload-artifact@v4
+                with:
+                # --- UNIQUE ARTIFACT NAME ---
+                name: linux-arm64-artifact
+                path: out/make/**/* # Upload deb/rpm/etc. output
 
-        - name: Download Linux x64 Artifact
-            uses: actions/download-artifact@v4
-            with:
-            name: linux-x64-artifact
-            path: staging/linux-x64 # Store in separate sub-directory
+        # Job to create the GitHub Release and upload all built artifacts
+        release:
+            name: Create GitHub Release
+            runs-on: ubuntu-latest
+            # --- UPDATE DEPENDENCIES TO INCLUDE ALL 4 BUILD JOBS ---
+            needs: [build-windows-x64, build-windows-arm64, build-linux-x64, build-linux-arm64]
+            permissions:
+            contents: write # Needed to create releases and upload assets
 
-        - name: Download Linux arm64 Artifact
-            uses: actions/download-artifact@v4
-            with:
-            name: linux-arm64-artifact
-            path: staging/linux-arm64 # Store in separate sub-directory
+            steps:
+            - name: Checkout Repository # Needed to get tag info
+                uses: actions/checkout@v4
 
-        # --- RENAMING STEPS (Verify working-directory paths based on actual output) ---
-        # These assume default Forge output structure like out/make/squirrel.windows/x64/*.exe etc.
-        # Adjust paths if your makers produce different structures.
-        - name: Rename Windows x64 Artifacts for Uniqueness
-            # !! Verify this path matches the actual downloaded structure !!
-            working-directory: staging/windows-x64/squirrel.windows/x64
-            run: |
-            echo "--- Files before renaming in $(pwd) ---"; ls -l
-            for FILE in *; do
-                if [[ -f "$FILE" ]]; then
-                FILENAME="${FILE%.*}"; EXTENSION="${FILE##*.}"
-                if [[ "$FILENAME" == "$EXTENSION" ]] || [[ "$FILENAME" == "" ]]; then NEW_NAME="${FILE}-x64"; else NEW_NAME="${FILENAME}-x64.${EXTENSION}"; fi
-                echo "Renaming '$FILE' to '$NEW_NAME'"; mv "$FILE" "$NEW_NAME"
-                fi
-            done
-            echo "--- Files after renaming in $(pwd) ---"; ls -l
-            # Continue even if no files are found (e.g., if maker changes)
-            continue-on-error: true
+            # Create a directory to download all artifacts into
+            - name: Create Staging Directory
+                run: mkdir staging
 
+            # --- UPDATE ARTIFACT DOWNLOADS ---
+            - name: Download Windows x64 Artifact
+                uses: actions/download-artifact@v4
+                with:
+                name: windows-x64-artifact
+                path: staging/windows-x64
 
-        # Optional: Rename Linux artifacts if needed (e.g., add arch to .deb)
-        - name: Rename Linux x64 Artifacts for Uniqueness
-            # !! Verify this path matches the actual downloaded structure (e.g., deb/x64 or similar) !!
-            working-directory: staging/linux-x64/deb/x64 # Example path for deb maker
-            run: |
-            echo "--- Files before renaming in $(pwd) ---"; ls -l
-            for FILE in *.deb; do # Adjust wildcard if using rpm etc.
-                if [[ -f "$FILE" ]] && [[ ! "$FILE" =~ -x64\.deb$ ]]; then # Avoid double-renaming
-                    NEW_NAME="${FILE%.deb}-x64.deb"
+            - name: Download Windows arm64 Artifact
+                uses: actions/download-artifact@v4
+                with:
+                name: windows-arm64-artifact
+                path: staging/windows-arm64
+
+            - name: Download Linux x64 Artifact
+                uses: actions/download-artifact@v4
+                with:
+                name: linux-x64-artifact
+                path: staging/linux-x64 # Store in separate sub-directory
+
+            - name: Download Linux arm64 Artifact
+                uses: actions/download-artifact@v4
+                with:
+                name: linux-arm64-artifact
+                path: staging/linux-arm64 # Store in separate sub-directory
+
+            # --- RENAMING STEPS (Verify working-directory paths based on actual output) ---
+            # These assume default Forge output structure like out/make/squirrel.windows/x64/*.exe etc.
+            # Adjust paths if your makers produce different structures.
+            - name: Rename Windows x64 Artifacts for Uniqueness
+                # !! Verify this path matches the actual downloaded structure !!
+                working-directory: staging/windows-x64/squirrel.windows/x64
+                run: |
+                echo "--- Files before renaming in $(pwd) ---"; ls -l
+                for FILE in *; do
+                    if [[ -f "$FILE" ]]; then
+                    FILENAME="${FILE%.*}"; EXTENSION="${FILE##*.}"
+                    if [[ "$FILENAME" == "$EXTENSION" ]] || [[ "$FILENAME" == "" ]]; then NEW_NAME="${FILE}-x64"; else NEW_NAME="${FILENAME}-x64.${EXTENSION}"; fi
                     echo "Renaming '$FILE' to '$NEW_NAME'"; mv "$FILE" "$NEW_NAME"
-                fi
-            done
-            echo "--- Files after renaming in $(pwd) ---"; ls -l
-            # Continue even if no files are found
-            continue-on-error: true
+                    fi
+                done
+                echo "--- Files after renaming in $(pwd) ---"; ls -l
+                # Continue even if no files are found (e.g., if maker changes)
+                continue-on-error: true
 
-        - name: Rename Linux arm64 Artifacts for Uniqueness
-            # !! Verify this path matches the actual downloaded structure (e.g., deb/arm64 or similar) !!
-            working-directory: staging/linux-arm64/deb/arm64 # Example path for deb maker
-            run: |
-            echo "--- Files before renaming in $(pwd) ---"; ls -l
-            for FILE in *.deb; do # Adjust wildcard if using rpm etc.
-                if [[ -f "$FILE" ]] && [[ ! "$FILE" =~ -arm64\.deb$ ]]; then # Avoid double-renaming
-                    NEW_NAME="${FILE%.deb}-arm64.deb"
+            - name: Rename Windows arm64 Artifacts for Uniqueness
+                # !! Verify this path matches the actual downloaded structure !!
+                working-directory: staging/windows-arm64/squirrel.windows/arm64
+                run: |
+                echo "--- Files before renaming in $(pwd) ---"; ls -l
+                for FILE in *; do
+                    if [[ -f "$FILE" ]]; then
+                    FILENAME="${FILE%.*}"; EXTENSION="${FILE##*.}"
+                    if [[ "$FILENAME" == "$EXTENSION" ]] || [[ "$FILENAME" == "" ]]; then NEW_NAME="${FILE}-arm64"; else NEW_NAME="${FILENAME}-arm64.${EXTENSION}"; fi
                     echo "Renaming '$FILE' to '$NEW_NAME'"; mv "$FILE" "$NEW_NAME"
-                fi
-            done
-            echo "--- Files after renaming in $(pwd) ---"; ls -l
-            # Continue even if no files are found
-            continue-on-error: true
-        # --- END OF RENAMING STEPS ---
+                    fi
+                done
+                echo "--- Files after renaming in $(pwd) ---"; ls -l
+                # Continue even if no files are found
+                continue-on-error: true
 
-        - name: List final staging files Tree
-            run: ls -R staging
+            # Optional: Rename Linux artifacts if needed (e.g., add arch to .deb)
+            - name: Rename Linux x64 Artifacts for Uniqueness
+                # !! Verify this path matches the actual downloaded structure (e.g., deb/x64 or similar) !!
+                working-directory: staging/linux-x64/deb/x64 # Example path for deb maker
+                run: |
+                echo "--- Files before renaming in $(pwd) ---"; ls -l
+                for FILE in *.deb; do # Adjust wildcard if using rpm etc.
+                    if [[ -f "$FILE" ]] && [[ ! "$FILE" =~ -x64\.deb$ ]]; then # Avoid double-renaming
+                        NEW_NAME="${FILE%.deb}-x64.deb"
+                        echo "Renaming '$FILE' to '$NEW_NAME'"; mv "$FILE" "$NEW_NAME"
+                    fi
+                done
+                echo "--- Files after renaming in $(pwd) ---"; ls -l
+                # Continue even if no files are found
+                continue-on-error: true
 
-        # Use a dedicated action to create the release and upload all artifacts
-        - name: Create GitHub Release and Upload Artifacts
-            uses: softprops/action-gh-release@v2
-            with:
-            tag_name: ${{ github.ref_name }}
-            name: Release ${{ github.ref_name }}
-            # Glob pattern should find all files within the staging directory,
-            # including those renamed within their subdirectories.
-            files: staging/**/*
-            env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Rename Linux arm64 Artifacts for Uniqueness
+                # !! Verify this path matches the actual downloaded structure (e.g., deb/arm64 or similar) !!
+                working-directory: staging/linux-arm64/deb/arm64 # Example path for deb maker
+                run: |
+                echo "--- Files before renaming in $(pwd) ---"; ls -l
+                for FILE in *.deb; do # Adjust wildcard if using rpm etc.
+                    if [[ -f "$FILE" ]] && [[ ! "$FILE" =~ -arm64\.deb$ ]]; then # Avoid double-renaming
+                        NEW_NAME="${FILE%.deb}-arm64.deb"
+                        echo "Renaming '$FILE' to '$NEW_NAME'"; mv "$FILE" "$NEW_NAME"
+                    fi
+                done
+                echo "--- Files after renaming in $(pwd) ---"; ls -l
+                # Continue even if no files are found
+                continue-on-error: true
+            # --- END OF RENAMING STEPS ---
+
+            - name: List final staging files Tree
+                run: ls -R staging
+
+            # Use a dedicated action to create the release and upload all artifacts
+            - name: Create GitHub Release and Upload Artifacts
+                uses: softprops/action-gh-release@v2
+                with:
+                tag_name: ${{ github.ref_name }}
+                name: Release ${{ github.ref_name }}
+                # Glob pattern should find all files within the staging directory,
+                # including those renamed within their subdirectories.
+                files: staging/**/*
+                env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     ```
 
     **How the Workflow Works (`.github/workflows/release.yml`)**
