@@ -59,6 +59,10 @@ export default defineConfig({
             autogenerate: { directory: 'Docker' },
           },
           {
+            label: 'Authentication',
+            autogenerate: { directory: 'Authentication'}
+          },
+          {
             label: 'Web',
             items: [
               //   { label: 'HTML', slug: 'web_dev/html' }, 

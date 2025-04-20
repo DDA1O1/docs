@@ -1,0 +1,123 @@
+---
+title: Stop! Don't Roll Your Own Authentication (Probably)
+description: Why building your own authentication system is usually a costly distraction for SaaS products and startups, presented with Starlight components.
+---
+
+import { Aside, Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+So, you're building a new application, maybe a SaaS product, maybe an MVP. One of the first hurdles is user management: sign-up, login, password resets. The temptation is strong for many developers: "I can build this myself!"
+
+<Aside type="danger" title="Resist the Temptation">
+  For the vast majority of products, especially in the early and growth stages, building your own authentication system is a significant drain on resources, offers little competitive advantage, and is fraught with security risks.
+</Aside>
+
+Let's break down why.
+
+## Your Users Don't Care (About Your Custom Auth)
+
+Nobody signs up for your product because you have a clever, home-brewed authentication system. They sign up for the *core value* your product provides. Authentication is a necessary gateway, but it's not the destination. Spending precious development cycles on building login screens, password hashing, token management, and email verification is time *not* spent on building the features that actually attract and retain users.
+
+<Aside type="note">
+No investor or user is impressed that you built your own auth. They're impressed if your product solves their problem effectively. Authentication is plumbing; focus on the house.
+</Aside>
+
+## The MVP Trap: Zero to Few Users
+
+If you have an MVP with zero users, building custom auth is premature optimization of the highest order. Your primary goal is to validate the core product idea.
+
+**Recommendation:** Use a third-party service to get authentication working in hours or days, not weeks or months.
+
+<CardGrid>
+    <LinkCard title="Auth0" href="https://auth0.com/" />
+    <LinkCard title="Firebase Auth" href="https://firebase.google.com/docs/auth" />
+    <LinkCard title="Clerk" href="https://clerk.com/" />
+    <LinkCard title="Supabase Auth" href="https://supabase.com/docs/guides/auth" />
+    <LinkCard title="AWS Cognito" href="https://aws.amazon.com/cognito/" />
+    <LinkCard title="Okta" href="https://www.okta.com/" />
+</CardGrid>
+<br />
+
+## The Growth Fallacy: Free to Paid Transition
+
+You've got some traction, maybe a mix of free and potentially paying users. Now you think, "Okay, *now* I need robust, custom auth to handle subscriptions!"
+
+Hold on. You mentioned a critical scenario: *"the moment you tried to roll out a subscription your application dies your users left"*. If users leave the instant you ask for payment, the problem isn't your authentication system. The problem is likely **product-market fit** or your **value proposition** for the paid tier. Building a complex, custom authentication system *won't fix that*.
+
+<Aside type="caution">
+Investing heavily in complex infrastructure like custom auth *before* validating your paid model makes potential failure much more costly. Fail fast, learn, and pivot if necessary. Don't let auth become an expensive anchor.
+</Aside>
+
+Spending, say, 50% of your time building and managing auth that users ultimately won't pay to use is a recipe for burnout and wasted investment.
+
+## The Deceptive Complexity of "Simple" Authentication
+
+"It's just login and password reset, right?" **Wrong.** Modern, secure, and user-friendly authentication is incredibly complex. What starts as a simple form quickly balloons. Consider the pieces involved:
+
+<CardGrid>
+	<Card title="Core Backend Logic" icon="rocket">
+		- DB connection management
+        - Securely accepting user input
+        - Input validation (format, strength)
+        - DB interactions (storing credentials)
+        - Secure password hashing (bcrypt, Argon2)
+        - Session management / Token generation (JWT)
+        - Secure cookie/localStorage handling
+        - Route protection middleware
+	</Card>
+	<Card title="Application Infrastructure" icon="setting">
+        - Application routing logic
+        - API endpoint security
+        - Architectural patterns (MVC, etc.)
+        - Reliable email sending (verification/resets)
+        - Environment variable management (secrets!)
+        - Testing frameworks and tools
+        - Web server/framework specifics
+        - Robust debugging and logging
+	</Card>
+    <Card title="Real-World Security & Features" icon="shield">
+        - Social Logins (**OAuth2 / OIDC**)
+        - **OpenID Connect Standards**
+        - Public key management (**JWKS**)
+        - Enterprise Federation (**SAML**)
+        - Correct **OAuth2** flows
+        - Secure **Refresh Tokens**
+        - Short-lived **Access Tokens**
+        - Multi-Factor Authentication (MFA)
+        - Password leak detection
+        - Account recovery flows
+        - Rate limiting / Brute-force protection
+        - Security logging & auditing
+        - Compliance (GDPR, SOC2, etc.)
+	</Card>
+</CardGrid>
+
+<Aside type="caution" title="Security is Paramount">
+  Authentication and authorization code is security-critical. A single mistake in hashing, token validation, or session management can lead to catastrophic data breaches, destroying user trust and potentially your business. Dedicated providers have teams of security experts focused *only* on this. Don't underestimate the risk.
+</Aside>
+
+Building *and maintaining* all of this correctly, securely, and reliably is a full-time job for a dedicated team, not a side-task for your product developers.
+
+## When is Custom Auth Justified? The Rare Exceptions
+
+Okay, are there *any* scenarios where building your own makes sense? Yes, but they are rare and typically apply to companies operating at a scale or with requirements most startups and SaaS products don't have:
+
+<CardGrid>
+    <Card title="1. Massive Scale from Day One" icon="laptop">
+        Launching with *millions* of active users or *hundreds of thousands* of immediate paying customers where third-party costs *might* become prohibitive, *and* you have the expert team.
+    </Card>
+    <Card title="2. Core Business is Identity" icon="approve-user">
+        Your company's primary product *is* an identity platform or offers unique authentication mechanisms as a core competitive feature.
+    </Card>
+    <Card title="3. Extreme Customization/Regulatory Needs" icon="puzzle">
+        Highly specific, complex, or niche regulatory/technical requirements unmet by existing providers (verify this carefully, providers are flexible).
+    </Card>
+</CardGrid>
+
+<br />
+For everyone else, the answer is almost certainly: **Use a managed authentication service.**
+
+## Conclusion: Focus on Your Strengths
+
+<Aside type="tip" title="Key Takeaway">
+Building a successful product is hard enough. Don't make it harder by reinventing the wheel for a complex, security-critical component like authentication. Leverage the expertise, security, and features of dedicated providers. Focus your time, energy, and resources on building the **unique value proposition** of your product – that's what your users *actually* care about.
+</Aside>
