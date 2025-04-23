@@ -63,6 +63,10 @@ export default defineConfig({
             autogenerate: { directory: 'Authentication'}
           },
           {
+            label: 'Go Lang',
+            autogenerate: { directory: 'Go_Lang' },
+          },
+          {
             label: 'Web',
             items: [
               //   { label: 'HTML', slug: 'web_dev/html' }, 
