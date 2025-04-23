@@ -1,6 +1,6 @@
 ---
-title:Go Language Overview
-description:Go is a statically typed, compiled programming language designed for simplicity and efficiency. It is known for its concurrency support and strong standard library.
+title: Go Language Overview
+description: Go is a statically typed, compiled programming language designed for simplicity and efficiency. It is known for its concurrency support and strong standard library.
 ---
 
 ## What is Go?
@@ -19,3 +19,86 @@ Go offers several compelling advantages:
 *   **Strong Tooling:** Go comes with a robust standard library and excellent built-in tools for formatting (`gofmt`), testing (`go test`), documentation (`godoc`), and dependency management.
 *   **Scalability:** Its efficiency, concurrency model, and suitability for microservices and cloud-native applications make it excellent for building systems that need to handle significant load.
 *   **Cross-Platform:** Go easily cross-compiles to different operating systems and architectures, simplifying deployment.
+
+## Installation
+
+You can install Go on Windows, macOS, and Linux. The primary method is downloading an installer or archive from the official Go website.
+
+### Official Download
+
+1.  Visit the official Go downloads page: [go.dev/dl/](https://go.dev/dl/)
+2.  Download the appropriate package for your operating system (Windows `.msi`, macOS `.pkg`, Linux `.tar.gz`).
+
+### Installation Steps
+
+#### Windows
+
+1.  Run the downloaded MSI installer.
+2.  Follow the prompts. By default, Go is installed in `C:\Program Files\Go` (or `C:\Go` in some versions) and the `C:\Go\bin` directory will be added to your system `PATH` environment variable.
+3.  Open a new Command Prompt or PowerShell window (important to apply PATH changes) and verify the installation:
+    ```bash
+    go version
+    ```
+    This should print the installed Go version.
+
+#### macOS
+
+1.  Run the downloaded PKG installer.
+2.  Follow the prompts. Go will be installed in `/usr/local/go` and the `/usr/local/go/bin` directory should be added to your `PATH`.
+3.  Open a new Terminal window (important to apply PATH changes) and verify the installation:
+    ```bash
+    go version
+    ```
+    This should print the installed Go version.
+4.  If the command isn't found, you may need to manually add `/usr/local/go/bin` to your PATH by editing your shell profile (`~/.zshrc`, `~/.bash_profile`, or `~/.profile`). Add the line:
+    ```bash
+    export PATH=$PATH:/usr/local/go/bin
+    ```
+    Then, reload the profile (e.g., `source ~/.zshrc`) or open a new terminal window.
+
+#### Linux (Using Tarball)
+
+1.  **Remove previous installations (if any):** It's recommended to remove any existing Go installation located at `/usr/local/go` before installing a new version from the tarball:
+    ```bash
+    sudo rm -rf /usr/local/go
+    ```
+2.  **Extract the archive:** Extract the downloaded tarball into `/usr/local`. This will create a new Go tree in `/usr/local/go`:
+    ```bash
+    # Replace go1.x.x.linux-amd64.tar.gz with the actual filename
+    sudo tar -C /usr/local -xzf go1.x.x.linux-amd64.tar.gz
+    ```
+3.  **Add Go to PATH:** Add the Go binary directory to your system's PATH environment variable. Edit your shell profile file (`~/.profile`, `~/.bashrc`, or `~/.zshrc`) and add the following line:
+    ```bash
+    export PATH=$PATH:/usr/local/go/bin
+    ```
+4.  **Apply changes:** Reload your profile file (e.g., `source ~/.profile`) or log out and log back in.
+5.  **Verify installation:** Open a terminal and run:
+    ```bash
+    go version
+    ```
+    This should print the installed Go version.
+
+#### Linux (Package Managers - Alternative)
+
+*   **Debian/Ubuntu:** While the official tarball method is recommended for the latest version, you might install using `apt` (though it might not be the most recent Go release):
+    ```bash
+    sudo apt update
+    sudo apt install golang-go
+    ```
+    Alternatively, PPAs or snaps might offer newer versions.
+*   **Fedora/CentOS/RHEL:**
+    ```bash
+    sudo dnf install golang
+    ```
+    or
+    ```bash
+    sudo yum install golang
+    ```
+
+### Verify Installation
+
+Regardless of the method, always verify your installation by opening a **new** terminal or command prompt and running:
+
+```bash
+go version
+```
