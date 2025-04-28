@@ -406,3 +406,204 @@ When working with containers, you can use either the container ID or the contain
 <Aside type="note" title="Container Names">
 If you don't specify a name when running a container (using `--name`), Docker will generate a random name combining an adjective and a famous scientist/hacker's name, like `eager_einstein` or `focused_feynman`.
 </Aside>
+
+## Writing Dockerfiles
+
+A Dockerfile is a text document containing instructions to build a Docker image. Understanding how to write an efficient Dockerfile is crucial for creating optimized container images.
+
+### Dockerfile Basic Structure
+
+```dockerfile
+# Use an official base image
+FROM node:20-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy application code
+COPY . .
+
+# Expose port
+EXPOSE 3000
+
+# Define the command to run
+CMD ["npm", "start"]
+```
+
+### Common Dockerfile Instructions
+
+<Steps>
+  <ol>
+    <li>
+      **FROM**
+      ```dockerfile
+      FROM <image>:<tag>
+      ```
+      Specifies the base image. Always start with this instruction.
+    </li>
+    <li>
+      **WORKDIR**
+      ```dockerfile
+      WORKDIR /path/to/directory
+      ```
+      Sets the working directory for subsequent instructions. Use absolute paths.
+    </li>
+    <li>
+      **COPY and ADD**
+      ```dockerfile
+      COPY <src> <dest>
+      ADD <src> <dest>  # Can handle URLs and auto-extract archives
+      ```
+      Copies files from host to container. Prefer COPY unless you need ADD's special features.
+    </li>
+    <li>
+      **RUN**
+      ```dockerfile
+      RUN <command>
+      ```
+      Executes commands in a new layer. Combine multiple commands with && to reduce layers.
+    </li>
+    <li>
+      **ENV**
+      ```dockerfile
+      ENV KEY=value
+      ```
+      Sets environment variables that persist in the container.
+    </li>
+    <li>
+      **EXPOSE**
+      ```dockerfile
+      EXPOSE <port>
+      ```
+      Documents which ports the container listens on.
+    </li>
+    <li>
+      **CMD**
+      ```dockerfile
+      CMD ["executable", "param1", "param2"]
+      ```
+      Provides defaults for executing container. Only one CMD instruction is effective.
+    </li>
+  </ol>
+</Steps>
+
+### Understanding Layer Optimization
+
+<Aside type="tip" title="Docker Image Layers">
+Each instruction in a Dockerfile creates a new layer in the image. Layers are cached and reused, which can significantly impact build time and image size.
+</Aside>
+
+#### Layer Best Practices
+
+1. **Combine Related Commands**
+```dockerfile
+# Bad - Creates two layers
+RUN apt-get update
+RUN apt-get install -y python3
+
+# Good - Creates single layer
+RUN apt-get update && \
+    apt-get install -y python3 && \
+    rm -rf /var/lib/apt/lists/*
+```
+
+2. **Order Instructions by Change Frequency**
+```dockerfile
+# Good - Less frequently changed files first
+COPY package.json package-lock.json ./
+RUN npm install
+COPY . .  # Source code changes more frequently
+```
+
+3. **Use Multi-stage Builds**
+```dockerfile
+# Build stage
+FROM node:20 AS builder
+WORKDIR /app
+COPY . .
+RUN npm install && npm run build
+
+# Production stage
+FROM node:20-alpine
+COPY --from=builder /app/dist ./dist
+CMD ["node", "dist/main.js"]
+```
+
+### Using .dockerignore
+
+The `.dockerignore` file helps exclude files and directories from the build context, improving build performance and security.
+
+```text
+# Example .dockerignore file
+node_modules
+npm-debug.log
+Dockerfile
+.dockerignore
+.git
+.gitignore
+README.md
+.env
+*.log
+dist
+build
+```
+
+<Aside type="caution" title="Security Consideration">
+Always use `.dockerignore` to prevent sensitive files (like `.env`, `.git`, and encryption keys) from being copied into your image.
+</Aside>
+
+### Best Practices
+
+<Steps>
+  <ol>
+    <li>
+      **Use Specific Base Image Tags**
+      ```dockerfile
+      # Bad
+      FROM node:latest
+      
+      # Good
+      FROM node:20.11.1-alpine3.19
+      ```
+    </li>
+    <li>
+      **Run as Non-Root User**
+      ```dockerfile
+      RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+      USER appuser
+      ```
+    </li>
+    <li>
+      **Cache Dependencies Properly**
+      ```dockerfile
+      COPY package*.json ./
+      RUN npm ci
+      COPY . .
+      ```
+    </li>
+    <li>
+      **Use Build Arguments for Flexibility**
+      ```dockerfile
+      ARG NODE_ENV=production
+      ENV NODE_ENV=$NODE_ENV
+      ```
+    </li>
+    <li>
+      **Include Health Checks**
+      ```dockerfile
+      HEALTHCHECK --interval=30s --timeout=3s \
+        CMD curl -f http://localhost:3000/health || exit 1
+      ```
+    </li>
+  </ol>
+</Steps>
+
+<Aside type="note" title="Layer Caching">
+Docker caches each layer during the build process. When a layer changes, all subsequent layers must be rebuilt. This is why ordering instructions by change frequency is crucial for build performance.
+</Aside>
