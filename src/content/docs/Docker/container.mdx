@@ -66,6 +66,34 @@ Docker's key innovations simplified the use of containers:
 
 Containers are lightweight, standalone, executable software packages that bundle everything needed to run an application: code, runtime (e.g., Node.js, Python), system tools, system libraries, and settings. They isolate the application from its environment, ensuring it runs consistently regardless of the underlying infrastructure ("It works on my machine" problems are greatly reduced).
 
+### Docker Images vs Containers
+
+Understanding the distinction between Docker images and containers is crucial for working with Docker effectively. Here's how they differ:
+
+#### Docker Images
+* A Docker image is a read-only template containing instructions for creating a container
+* Think of it as a blueprint or snapshot of what will be in the container when it runs
+* Images are immutable - once created, they cannot be changed
+* Images are built in layers, with each layer representing a instruction in the Dockerfile
+* Images can be shared and reused through registries like Docker Hub
+* They contain all the necessary components to run an application: code, runtime, libraries, environment variables, and configuration files
+
+#### Docker Containers
+* A container is a runnable instance of a Docker image
+* Think of it as a running process that executes the image's instructions
+* Containers are mutable - they can be started, stopped, moved, and deleted
+* Each container has its own writable layer for storing runtime data
+* Multiple containers can be created from the same image, each running in isolation
+* Containers only live as long as the process inside them is running
+
+<Aside type="tip" title="Image vs Container Analogy">
+Think of it like a cooking recipe:
+* The **image** is like the recipe (instructions, ingredients list, etc.)
+* The **container** is like the actual prepared dish (the result of following the recipe)
+* You can make multiple dishes (containers) from the same recipe (image)
+* Each dish (container) exists independently and can be modified without affecting the original recipe (image)
+</Aside>
+
 ### Container vs. Virtual Machine (VM)
 
 | Feature          | Containers                         | Virtual Machines (VMs)              |
@@ -239,3 +267,142 @@ A simple way to test if Docker is installed and running correctly is to run the 
 ```bash
 docker run hello-world
 ```
+
+## Basic Docker Commands
+
+Here are the essential Docker commands you'll need to work with images and containers effectively.
+
+### Image Commands
+
+<Steps>
+  <ol>
+    <li>
+      **Pull an Image**
+      ```bash
+      docker pull <image-name>:<tag>
+      ```
+      Downloads an image from Docker Hub. If no tag is specified, it pulls the `latest` tag.
+    </li>
+    <li>
+      **List Images**
+      ```bash
+      docker images
+      # or
+      docker image ls
+      ```
+      Shows all locally stored Docker images.
+    </li>
+    <li>
+      **Remove Image**
+      ```bash
+      docker rmi <image-name>
+      # or force remove
+      docker rmi -f <image-name>
+      ```
+      Deletes an image from your local system.
+    </li>
+    <li>
+      **Build Image**
+      ```bash
+      docker build -t <image-name>:<tag> .
+      ```
+      Builds a new image from a Dockerfile in the current directory.
+    </li>
+  </ol>
+</Steps>
+
+### Container Commands
+
+<Steps>
+  <ol>
+    <li>
+      **Run Container**
+      ```bash
+      docker run <image-name>
+      # run in detached mode
+      docker run -d <image-name>
+      # run with port mapping
+      docker run -p <host-port>:<container-port> <image-name>
+      ```
+      Creates and starts a new container from an image.
+    </li>
+    <li>
+      **List Containers**
+      ```bash
+      # list running containers
+      docker ps
+      # list all containers (including stopped)
+      docker ps -a
+      ```
+      Shows currently running containers or all containers.
+    </li>
+    <li>
+      **Stop Container**
+      ```bash
+      docker stop <container-id/name>
+      ```
+      Gracefully stops a running container.
+    </li>
+    <li>
+      **Remove Container**
+      ```bash
+      docker rm <container-id/name>
+      # force remove running container
+      docker rm -f <container-id/name>
+      ```
+      Removes a stopped container (or force removes a running container).
+    </li>
+  </ol>
+</Steps>
+
+### Utility Commands
+
+<Steps>
+  <ol>
+    <li>
+      **Container Logs**
+      ```bash
+      docker logs <container-id/name>
+      # follow log output
+      docker logs -f <container-id/name>
+      ```
+      View the logs of a container.
+    </li>
+    <li>
+      **Execute Commands**
+      ```bash
+      docker exec -it <container-id/name> <command>
+      # example: open a shell
+      docker exec -it <container-id/name> bash
+      ```
+      Run a command in a running container.
+    </li>
+    <li>
+      **Container Information**
+      ```bash
+      docker inspect <container-id/name>
+      ```
+      Shows detailed information about a container.
+    </li>
+    <li>
+      **System Cleanup**
+      ```bash
+      # remove all stopped containers
+      docker container prune
+      # remove unused images
+      docker image prune
+      # remove all unused objects
+      docker system prune
+      ```
+      Clean up unused Docker objects.
+    </li>
+  </ol>
+</Steps>
+
+<Aside type="tip" title="Working with Containers">
+When working with containers, you can use either the container ID or the container name. Container IDs can be shortened to the first few unique characters. For example, if a container ID is `1234567890ab`, you can use just `1234` if it's unique enough to identify the container.
+</Aside>
+
+<Aside type="note" title="Container Names">
+If you don't specify a name when running a container (using `--name`), Docker will generate a random name combining an adjective and a famous scientist/hacker's name, like `eager_einstein` or `focused_feynman`.
+</Aside>
