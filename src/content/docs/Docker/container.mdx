@@ -407,6 +407,203 @@ When working with containers, you can use either the container ID or the contain
 If you don't specify a name when running a container (using `--name`), Docker will generate a random name combining an adjective and a famous scientist/hacker's name, like `eager_einstein` or `focused_feynman`.
 </Aside>
 
+## Docker Compose
+
+Docker Compose is a tool for defining and running multi-container Docker applications. It uses YAML files to configure application services, making it easy to manage complex applications with multiple interconnected containers.
+
+### What is Docker Compose?
+
+Docker Compose allows you to:
+* Define your application's environment in a `compose.yaml` file
+* Manage multiple containers as a single service
+* Maintain container relationships and dependencies
+* Scale services up or down easily
+* Persist data using volumes
+* Control startup order of services
+
+### Basic Docker Compose File Structure
+
+```yaml
+services:
+  web:
+    build: .
+    ports:
+      - "8000:5000"
+    volumes:
+      - .:/code
+    environment:
+      FLASK_DEBUG: 1
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+```
+
+### Common Docker Compose Commands
+
+<Steps>
+  <ol>
+    <li>
+      **Start Services**
+      ```bash
+      # Start and attach to containers
+      docker compose up
+      # Start in detached mode
+      docker compose up -d
+      ```
+    </li>
+    <li>
+      **Stop Services**
+      ```bash
+      # Stop containers
+      docker compose down
+      # Stop and remove volumes
+      docker compose down -v
+      ```
+    </li>
+    <li>
+      **View Status**
+      ```bash
+      # List containers
+      docker compose ps
+      # View logs
+      docker compose logs
+      ```
+    </li>
+    <li>
+      **Scale Services**
+      ```bash
+      # Scale a specific service
+      docker compose up -d --scale web=3
+      ```
+    </li>
+  </ol>
+</Steps>
+
+### Key Compose File Concepts
+
+#### Services
+```yaml
+services:
+  webapp:
+    build: ./webapp
+    ports:
+      - "80:8080"
+    depends_on:
+      - db
+      - redis
+```
+
+#### Volumes
+```yaml
+services:
+  db:
+    image: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
+```
+
+#### Networks
+```yaml
+services:
+  frontend:
+    networks:
+      - frontend-network
+  backend:
+    networks:
+      - backend-network
+      - frontend-network
+
+networks:
+  frontend-network:
+  backend-network:
+```
+
+<Aside type="tip" title="Best Practices">
+* Keep development and production configurations separate
+* Use environment variables for sensitive data
+* Define health checks for services
+* Use meaningful service names
+</Aside>
+
+### Environment Variables in Compose
+
+Docker Compose supports environment variables in two ways:
+
+1. **Environment File**
+```yaml
+services:
+  web:
+    env_file:
+      - .env
+```
+
+2. **Direct Environment Variables**
+```yaml
+services:
+  web:
+    environment:
+      - DEBUG=1
+      - API_KEY=${API_KEY}
+```
+
+<Aside type="caution" title="Security Note">
+Never commit sensitive environment variables to version control. Use `.env` files and add them to `.gitignore`.
+</Aside>
+
+### Example Multi-Service Application
+
+Here's a complete example of a web application with multiple services:
+
+```yaml
+services:
+  web:
+    build: ./web
+    ports:
+      - "80:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=db
+    depends_on:
+      - db
+      - redis
+    networks:
+      - frontend
+      - backend
+
+  db:
+    image: postgres:13
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=myapp
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+    networks:
+      - backend
+    secrets:
+      - db_password
+
+  redis:
+    image: redis:6-alpine
+    networks:
+      - backend
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  db-data:
+
+secrets:
+  db_password:
+    file: ./db_password.txt
+```
+
 ## Writing Dockerfiles
 
 A Dockerfile is a text document containing instructions to build a Docker image. Understanding how to write an efficient Dockerfile is crucial for creating optimized container images.
