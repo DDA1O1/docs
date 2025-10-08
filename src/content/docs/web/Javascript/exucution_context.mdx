@@ -1,0 +1,317 @@
+---
+title: Execution Context, Control Flow
+description: Execution Context and Control Flow in JavaScript
+sidebar: {
+    order: 3
+}
+---
+
+## What is Execution Context?
+
+Execution context is a fundamental concept in JavaScript that defines the environment where code is executed. Think of it as a container that stores:
+
+1. The code being executed
+2. The variables and functions available to that code
+3. The value of the `this` keyword
+4. The outer environment reference (scope chain)
+5. Is essential for debugging and understanding call stack
+6. Hoisting behavior.
+
+## How Execution Context Works
+
+### Types of Execution Context
+
+1. **Global Execution Context (GEC)**
+   - Created when JavaScript engine starts running your code
+   - Creates two important things:
+     - Global object (`window` in browsers, `global` in Node.js)
+     - `this` keyword (points to global object in non-strict mode)
+   - Serves as the base execution context
+
+2. **Function Execution Context (FEC)**
+   - Created whenever a function is called
+   - Each function gets its own execution context
+   - Multiple FECs can exist during runtime
+
+### Execution Context Lifecycle
+
+1. **Creation Phase (Memory Creation)**
+   - Creates the global object (for GEC)
+   - Sets up memory space for variables and functions
+
+2. **Execution Phase**
+   - Executes code line by line
+   - Assigns actual values to variables
+   - Executes function calls (creating new execution contexts)
+
+## Example
+
+```javascript
+let value1 = 20;
+let value2 = 30;
+
+function addValues(val1, val2) {
+    let sum = val1 + val2;
+    return sum;
+}
+
+let result_1 = addValues(value1, value2);
+let result_2 = addValues(6, 9);
+```
+
+```text
+                        JavaScript Execution Context
+                     ═══════════════════════════════════════
+
+                     ┌─────────────────────────────────────┐
+                     │            Global Context           │
+                     ├─────────────────────────────────────┤
+                     │             this: window            │
+                     └─────────────────┬───────────────────┘
+                                       │
+                                       ▼
+                     ┌─────────────────┴────────────────┐
+                     │                                  │
+                     ▼                                  ▼
+    ┌────────────────────────┐            ┌───────────────────────┐
+    │   Memory Creation      │            │    Execution Phase    │
+    ├────────────────────────┤            ├───────────────────────┤
+    │ • value1: undefined    │            │ • value1: 20          │
+    │ • value2: undefined    │            │ • value2: 30          │
+    │ • addValues: fn()      │            │ • result_1 ───┐       │
+    │ • result_1: undefined  │            │ • result_2 ─┐ │       │
+    │ • result_2: undefined  │            │             │ │       │
+    └────────────────────────┘            └─────────────┼─┼───────┘
+                                                        │ │
+    ┌────────────────────────┐                          │ │
+    │ Function Execution #1  │◄─────────────────────────┘ │
+    ├────────────────────────┤                            │
+    │ Variable Environment:  │                            │
+    │ • val1: 20             │                            │
+    │ • val2: 30             │                            │
+    │ • sum: undefined       │            ┌───────────────┘
+    │                        │            │
+    │ Execution Thread:      │            ▼
+    │ • sum = val1 + val2    │  ┌────────────────────────┐
+    │ • return sum (50)      │  │ Function Execution #2  │
+    └────────────────────────┘  ├────────────────────────┤
+                                │ Variable Environment:  │
+                                │ • val1: 6              │
+                                │ • val2: 9              │
+                                │ • sum: undefined       │
+                                │                        │
+                                │ Execution Thread:      │
+                                │ • sum = val1 + val2    │
+                                │ • return sum (15)      │
+                                └────────────────────────┘
+```
+
+:::note
+ - `result_1` and `result_2` are stored in the global execution context after the function calls.
+ - Function execution context is created when the function is called and destroyed when the function is finished.
+:::
+
+## Control Flow
+
+Control flow determines how JavaScript executes code from top to bottom. It includes various structures that alter this flow:
+
+### 1. Sequential Flow
+- Default execution order from top to bottom
+- Each statement is executed one after another
+
+```javascript
+let name = "John";
+let age = 30;
+console.log(name, age);
+```
+
+### 2. Conditional Flow
+- Uses `if`, `else if`, `else`, and `switch` statements
+- Code execution based on conditions
+
+```javascript
+if (age >= 18) {
+    console.log("Adult");
+} else {
+    console.log("Minor");
+}
+
+switch (name) {
+    case "John":
+        console.log("Hello John!");
+        break;
+    default:
+        console.log("Hello stranger!");
+}
+
+// `break` is used to stop the execution of the switch statement.
+// If there is no `break`, the execution will continue to the next case.
+// `default` is executed when none of the cases match.
+```
+
+### 3. Loop Flow
+- Repeats code blocks using `for`, `while`, `do...while`
+- Continues until a condition is met
+
+```javascript
+// For loop
+for (let i = 0; i < 3; i++) {
+    console.log(`Iteration ${i}`);
+}
+
+// While loop
+let counter = 0;
+while (counter < 3) {
+    console.log(`Count: ${counter}`);
+    counter++;
+}
+
+// `do...while` loop is similar to `while` loop, but it will execute the code block once before checking the condition.
+do {
+    console.log(`Count: ${counter}`);
+    counter++;
+} while (counter < 3); // `do...while` loop will execute the code block at least once.
+```
+
+### 4. Function Flow
+- Functions create their own execution context
+- Can alter flow through `return` statements
+- Includes function calls and callbacks
+
+```javascript
+function processData(data, callback) {
+    // Process data
+    let result = data * 2;
+    
+    // Alter flow with return
+    if (!result) return null;
+    
+    // Execute callback
+    callback(result); // `callback` is a function that is passed as an argument to `processData`.
+}
+```
+
+### 5. Error Handling Flow
+- Uses `try`, `catch`, and `finally` blocks
+- Handles exceptions and errors gracefully
+
+```javascript
+try {
+    // Risky code
+    throw new Error("Something went wrong");
+} catch (error) {
+    console.error(error.message);
+} finally {
+    console.log("Cleanup code");
+}
+
+1. When no error occurs
+
+try {
+  console.log("try");
+  return;  // returns undefined, but catch won't run
+} catch (error) {
+  console.log("catch"); // this won't execute
+}
+
+2. When error occurs
+
+try {
+  console.log("try");
+  throw new Error("oops");  // this causes catch to run
+  return;  // this line never executes
+} catch (error) {
+  console.log("catch"); // this will execute
+  return;  // returns undefined
+}
+
+3. If you want to run the catch block even if there is no error
+
+try {
+  console.log("try");
+  return true;  
+} catch (error) {
+  console.log("catch"); // this will execute
+  return false;
+}
+
+// the catch block is only executed when an exception is thrown in the try block. The presence or absence of a return statement (with or without a value) doesn't change this behavior.
+
+try {
+  console.log("try");
+  throw new Error("oops");
+} catch (error) {
+  console.log("catch"); // this will execute
+}
+```
+
+:::note
+Understanding control flow is crucial for:
+- Writing predictable code
+- Debugging effectively
+- Managing program complexity
+- Handling asynchronous operations
+:::
+
+#### Truthy and Falsy Values
+
+- In JavaScript, certain values are considered "truthy" or "falsy" in conditional statements.
+- Truthy values are values that are considered true in a boolean context.
+- Falsy values are values that are considered false in a boolean context.
+
+```javascript
+console.log(Boolean(0)); // false
+console.log(Boolean(null)); // false
+console.log(Boolean(undefined)); // false
+console.log(Boolean("")); // false
+console.log(Boolean(NaN)); // false
+console.log(Boolean({})); // true
+console.log(Boolean([])); // true
+console.log(Boolean(function () {})); // true
+console.log(Boolean(true)); // true
+console.log(Boolean(false)); // false
+console.log(Boolean("Hello")); // true
+console.log(Boolean(" ")); // true
+console.log(Boolean("0")); // true
+```
+
+:::note
+- `0`, `null`, `undefined`, `NaN`, `""` (empty string) are all falsy values.
+- Everything else is truthy.
+:::
+
+##### Nullish Coalescing Operator
+
+- The nullish coalescing operator (`??`) is a logical operator that returns its right operand when its left operand is `null` or `undefined`, and otherwise returns its left operand.
+- When getting a value from an object, we can use the nullish coalescing operator to return a default value if the value is `null` or `undefined`.
+
+```javascript
+let value = null ?? "Default Value";
+console.log(value); // "Default Value"
+```
+
+#### Ternary Operator
+
+- The ternary operator is a shorthand for an `if...else` statement.
+
+```javascript
+const age = 20;
+const drink = age >= 18 ? "Beer" : "Juice";
+console.log(drink); // "Beer"
+```
+#### Break and Continue
+
+- The `break` statement is used to terminate a loop or switch statement.
+- The `continue` statement is used to skip the rest of the current iteration of a loop.
+
+```javascript
+for (let i = 0; i < 10; i++) {
+    if (i === 5) break; // Terminate the loop when i is 5
+    console.log(i);
+}  // output: 0 1 2 3 4
+
+for (let i = 0; i < 10; i++) {
+    if (i === 5) continue; // Skip the rest of the loop when i is 5
+    console.log(i);
+}  // output: 0 1 2 3 4 6 7 8 9
+```

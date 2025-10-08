@@ -1,0 +1,44 @@
+---
+title: Get Started
+description: Get started building your docs site with Starlight.
+template: splash
+hero:
+  tagline: Welcome to Docs!
+  image:
+    html: |
+      <div style="max-width: 650px; margin: 0 auto; width: 100%;">
+        <div style="position: relative; padding-bottom: 77.78%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+          <!-- Loading indicator -->
+          <div id="iframe-loading" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #f0f0f0; color: #333; font-size: 1.2rem; z-index: 10; border-radius: 12px;">
+            Loading simulation...
+          </div>
+          <!-- Iframe content -->
+          <iframe
+            id="main-hero-iframe"
+            src="https://lorentz.d1o1.fun/"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; opacity: 0; transition: opacity 0.5s ease-in-out;"
+            loading="lazy"
+            allowfullscreen
+            onload="document.getElementById('main-hero-iframe').style.opacity = '1'; document.getElementById('iframe-loading').style.display = 'none';"
+          ></iframe>
+        </div>
+        <div style="text-align: center; margin-top: 8px;">
+          <a href="https://lorentz.d1o1.fun/" target="_blank" rel="noopener">View Full Screen ↗</a>
+        </div>
+      </div>
+  actions:
+    - text: Guide
+      link: /guides/overview/
+      icon: right-arrow
+      attrs:
+        class: delayed-button
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+	<Card title="Update content" icon="pencil">
+		Edit the content in <code>src/content/docs</code>.
+		<br />Click Edit link below.
+	</Card>	
+</CardGrid>

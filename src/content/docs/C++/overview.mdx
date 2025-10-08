@@ -1,0 +1,509 @@
+---
+title: "C++ Overview"
+description: "A brief overview of C++"
+sidebar: {
+    order: 1
+}
+---
+
+C++ is a powerful programming language that is widely used for system programming, game development, and other high-performance applications. It is an extension of the C language and adds object-oriented programming features to it.
+
+The OOPs concept was introduced by [Bjarne Stroustrup](https://en.wikipedia.org/wiki/Bjarne_Stroustrup).
+
+```txt
+Source Files (.cpp)  -->  Compiler (g++/clang++)  -->  Object Files (.o)  -->  Linker  -->  Executable
+```
+
+- Source Files (.cpp) are the files that contain the source code of the program.
+- Compiler (g++/clang++) is the program that compiles the source code into object files.
+- Object Files (.o) are the files that contain the compiled code of the program.
+- Linker is the program that links the object files into an executable.
+- Executable is the final program that can be run.
+
+```cpp
+#include <iostream>
+// #include is the preprocessor directive that is used to include the header file.
+// iostream is a header file that contains the definitions of the input and output stream objects.
+using namespace std;
+// main is the entry point of the program.
+// int is the return type of the main function.
+// return 0 is the statement that is used to return the value 0 to the operating system.
+int main() {   
+    cout << "Hello, World!" << endl;
+    return 0;
+}
+// endl is the manipulator that is used to insert a new line to the console.
+// you can also return 1,2,3, etc.But 0 is standard for all C++ programs.It represents that the program has executed successfully.
+```
+The `<iostream>` header file contains the definitions of the input and output stream objects `cout` and `cin`.
+`using namespace std;` is used to avoid writing `std::` before the input and output stream objects.
+`namespace` is used so that we can avoid naming conflicts from different libraries.
+
+```cpp
+// create your own namespace
+namespace first {
+    int x = 5;
+}
+
+int main() {
+    cout << first::x << endl;
+    return 0;
+}
+```
+> `namespace` like Eigen library, crow framework, Qt library, etc.
+
+### Variables
+```cpp
+int x = 5;
+```
+### Constants
+```cpp
+const int x = 5;
+```
+## Data Types
+- **Primitive Data Types:** Built-in data types provided by the language.
+    - int
+    - float
+    - double
+    - char
+    - string
+    - bool
+    - void   // Empty data type in C++
+- **Derived Data Types:** Data types that are derived from primitive data types.
+    - array  // collection of similar data types
+    - pointer // stores the address of the variable
+    - function // collection of statements to perform a specific task
+- **User-Defined Data Types:** Data types that are defined by the user.
+    - struct
+    - class
+    - union
+    - enum
+
+```cpp
+int x = 5;
+float pi = 3.14;
+double pi = 3.141592653589793;
+char grade = 'A';
+string name = "John";
+bool is_valid = true;
+
+// bool equivalent
+bool is_valid = 5; // 1
+bool is_invalid = 0; // 0
+bool is_valid = "Hello"; // 1
+bool is_valid = ""; // 1
+bool is_valid = 'A'; // 1
+bool is_valid = "false"; // 1
+bool is_invalid = false; // 0
+
+// char is a single character
+char grade = 'A'; // A
+char grade = '2'; // 2
+char grade = ' '; // space
+char grade = 'John'; // n
+char grade = '123'; // 3
+```
+[Data Types in C++](https://www.geeksforgeeks.org/data-types-in-c/)
+
+### Modifiers
+
+```cpp
+signed int x = 5; // both positive and negative numbers
+unsigned int x = 5; // only positive numbers
+long int x = 500000000000; 
+short int x = 5; 
+
+// garbage value
+unsigned int x = -5; // 4294967291
+
+// range of data types
+short int x = -32768 to 32767
+signed int x = -2147483648 to 2147483647
+unsigned int x = 0 to 4294967295
+long long int x = -9223372036854775808 to 9223372036854775807
+unsigned long long int x = 0 to 18446744073709551615
+```
+##### Type Casting
+- one data type to another data type
+```cpp
+float Price = 10.998; // 10.998
+int roundedPrice = (int)10.998; // 10
+int shortPrice = (short)10.998; // 10 // do not use short, if your number is more than 32767
+
+int quantity = 10;
+int total = quantity * roundedPrice; // 109
+double totalPrice = quantity * Price; // 109.98
+```
+### Strings
+
+```cpp
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    string name = "John";
+    string description = "is a \"good\" boy";  // (\) is used to escape the special character
+    cout << name << " " << description << endl; // John is a "good" boy
+    return 0;
+}
+```
+[Escape Sequences in C++](https://learn.microsoft.com/en-us/cpp/c-language/escape-sequences?view=msvc-170)
+- \n : new line
+- \t : tab
+- \\ : backslash
+- \" : double quote
+- \' : single quote
+
+#### Input and Output
+
+- cin : used to take input from the user
+- cout : used to print the output to the console
+- cerr : used to print the error message to the console
+- clog : used to print the log message to the console
+
+```cpp
+// getline is used to take the whole line as input.cin only takes the first word as input.
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    string userBag;
+    int bagQty;
+    int bagPrice;
+    int total = 0;  // 0 is the default value
+
+    cout << "Enter the name of your bag: \n";
+    getline(cin, userBag);  // getline is used to take the whole line as input.cin only takes the first word as input.
+    
+    cout << "Enter the quantity of your bag: \n";    
+    cin >> bagQty;
+
+    cout << "Enter the price of your bag: \n";
+    cin >> bagPrice;
+
+    total = bagQty * bagPrice;
+
+    cout << "Bag: " << userBag << endl;
+    cout << "Quantity: " << bagQty << endl;
+    cout << "Price: $" << bagPrice << endl;
+    cout << "Total: $" << total << endl;
+    return 0;
+}
+```
+
+### Operators
+
+- Arithmetic Operators: `+`, `-`, `*`, `/`, `%`
+- Assignment Operators: `=`, `+=`, `-=`, `*=`, `/=`, `%=`
+- Comparison Operators: `==`, `!=`, `>`, `<`, `>=`, `<=`
+- Logical Operators: `&&`, `||`, `!`
+- Bitwise Operators: `&`, `|`, `^`, `~`, `<<`, `>>`
+
+##### Bitwise Operators
+To understand it you have to know what are bits how logic gates are designed and their truth tables.
+
+- `&` : AND // `0 0 = 0`, `0 1 = 0`, `1 0 = 0`, `1 1 = 1`
+- `|` : OR // `0 0 = 0`, `0 1 = 1`, `1 0 = 1`, `1 1 = 1`
+- `^` : XOR // `0 0 = 0`, `0 1 = 1`, `1 0 = 1`, `1 1 = 0`
+- `~` : NOT // `0 = 1`, `1 = 0`
+- `<<` : Left Shift // `0010 << 1 = 0100`
+- `>>` : Right Shift // `0100 >> 1 = 0010`
+
+```cpp
+int x = 10; // 0000 1010
+int y = x << 1; // 0001 0100 = 20
+int z = x >> 1; // 0000 0101 = 5
+
+int main() {
+    cout << y << endl; // 20
+    cout << z << endl; // 5
+    
+    int stock = 7;
+    int sold = 3;   
+    if(stock & sold) {
+        cout << "Stock is available" << endl;
+    } else {
+        cout << "Stock is not available" << endl;
+    }
+    return 0;
+
+}
+```
+
+## Functions
+
+```cpp
+void printMessage() {
+    cout << "Hello, World!" << endl;
+}  // void is the return type of the function.Means we do not care about the return value of the function.
+
+int main() {
+    printMessage();
+    return 0;
+}
+
+// function overloading is a feature that allows you to define multiple functions with the same name but different parameters.
+void printMessage(string message) {
+    cout << message << endl;
+}
+void printMessage(int number,int times) {
+    for(int i = 0; i < times; i++) {
+        cout << number << endl;
+    }
+}
+int main() {
+    printMessage("Hello, World!");
+    printMessage(10, 5);
+    return 0;
+}
+
+// default arguments are the arguments that are given by default to the function.
+void printMessage(string message = "Hello, World!") {
+    cout << message << endl;
+}
+
+int main() {
+    printMessage();
+    return 0;
+}
+
+// inline function is a function that is expanded in line when it is called.
+inline int add(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    cout << add(1, 2) << endl; // 3
+    return 0;
+}
+
+// Pass by value 
+
+void passByValue(int x) {
+    x = x + 5;
+    cout << "x inside function: " << x << endl; // 15
+}
+
+int main() {
+    int x = 10;
+    passByValue(x);
+    cout << "x outside function: " << x << endl; // 10
+    return 0;
+}
+
+// Pass by reference
+// Changing the actual value of the variable.for example unique ID of a person.
+// & is used to declare the reference variable.
+void passByReference(int &x) {
+    x = x + 5;
+    cout << "x inside function: " << x << endl; // 15
+}
+
+int main() {
+    int x = 10;
+    passByReference(x);
+    cout << "x outside function: " << x << endl; // 15
+    return 0;
+}
+```
+### Lambda Functions
+
+- Anonymous function
+- Can be used to create quick and simple functions without a name.
+- Used for short functions that are used only once in the code.
+- Syntax: `[capture](parameters) -> return_type {function body}`
+- Majorily used in libraries and frameworks.
+- `auto` is used to automatically deduce the type of the variable.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    auto sum = [](int a, int b) -> int {return a + b};
+    cout << sum(1, 2) << endl; // 3
+    return 0;
+}
+// without return 
+int main() {
+    auto sum = [](int a, int b){
+        cout << "Sum of " << a << " and " << b << " is " << a + b << endl;
+    };
+    sum(1, 2); // Sum of 1 and 2 is 3
+    return 0;
+}
+```
+
+## Array and Pointer
+
+- Collection of similar data types.
+- Indexed based.
+- Can store only one type of data.
+- Continuous memory address allocation.
+
+```cpp
+int main() {
+    int numbers[5] = {1, 2, 3, 4, 5};
+    for(int i = 0; i < 5; i++) {
+        cout << numbers[i] << endl;
+    }
+    return 0;
+}
+```
+
+```text
+Memory Layout for int numbers[5]:
+┌─────────┬─────────┬─────────┬─────────┬─────────┐
+│ numbers │numbers+1│numbers+2│numbers+3│numbers+4│
+├─────────┼─────────┼─────────┼─────────┼─────────┤
+│    1    │    2    │    3    │    4    │    5    │
+├─────────┼─────────┼─────────┼─────────┼─────────┤
+│  2000   │  2004   │  2008   │  2012   │  2016   │
+└─────────┴─────────┴─────────┴─────────┴─────────┘
+   ^         ^         ^         ^         ^
+   │         │         │         │         │
+Memory addresses (assuming 4-byte integers)
+```
+```cpp
+int totalPrice(int price[],int size) {
+    int total = 0; // To prevent garbage value
+    for(int i = 0; i < size; i++) {
+        total = total + price[i];
+    }
+    return total;
+}
+int main() {
+    int price[5] = {10, 20, 30, 40, 50};
+    cout << "Total price is " << totalPrice(price, 5) << endl; // 150
+    return 0;
+}
+```
+- returning an array from a function in stack memory
+    - Stack memory,Fixed size
+    - Performance critical
+```cpp
+#include <iostream>
+using namespace std;
+
+void createArray(int arr[]) {
+    for(int i = 0; i < 5; i++) {
+        arr[i] = i + 1;
+    }
+}
+int main() {
+    int arr[5];
+    createArray(arr);
+    for(int i = 0; i < 5; i++) {
+        cout << arr[i] << endl;
+    }
+    return 0;
+}
+```
+### Pointer
+
+- A variable that stores the memory address of another variable.
+- Used to access the memory address of a variable.
+- Can be used to traverse through the array.
+- `*` is used to declare and store the memory address consider it as data type.It points to the memory location.
+- You cannot store memory address in `int`,`float`,`char`,etc.
+- `&` is used to get the memory address of a variable.
+- `*ptr` is to store the memory address of a variable in pointer data type.
+
+```cpp
+int main() {
+    int x = 10;
+    int* ptr = &x; 
+    cout << "Value of x is " << x << endl; // 10
+    cout << "Memory address of x is " << &x << endl; // 0x61ff0c
+    cout << *ptr << endl; // 10 // Dereferencing: Accessing the value stored at the memory address
+    cout << "Memory address of x is " << ptr << endl; // 0x61ff0c
+    cout << "Memory address of ptr is " << &ptr << endl; // 0x61ff08
+    return 0;
+}
+```
+### Heap Memory
+
+- Dynamic memory allocation.
+- Used to allocate memory at runtime.
+- Used to create dynamic objects.
+
+Stack Memory load the function ,declare the variable and free the memory automatically after the function call.
+Heap Memory load the function ,declare the variable but you have to free the memory manually.It does not free the memory automatically.
+- `new` keyword is used to allocate the memory in heap also called dynamic memory allocation.
+- `delete` keyword is used to free the memory allocated to the pointer.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    int* ptr = new int(10);
+    cout << "Value of ptr is " << *ptr << endl; // 10
+    delete ptr; // to free the memory allocated to the pointer
+    return 0;
+}
+```
+- returning an array from a function in heap/dynamic memory
+    - Heap memory,Dynamic size
+    - When array size is not known beforehand.
+    - Large size of array.
+    - Complex data structure for processing.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Function that returns dynamically allocated array based on user input
+int* createArray(int size) {
+    // Dynamically allocate memory for the array during runtime
+    int* arr = new int[size];
+
+    for(int i = 0; i < size; i++) {
+        arr[i] = i * 2;  // Fill the array with even numbers
+    }
+    return arr;
+}
+
+int main() {
+    int size;
+    cout << "Enter the size of the array: ";
+    cin >> size;
+    int* dynamicArray = createArray(size);
+    for(int i = 0; i < size; i++) {
+        cout << dynamicArray[i] << " ";
+    }
+    delete[] dynamicArray; // Free the dynamically allocated memory
+    return 0;
+}
+```
+> `int*` holds the memory address of the first element of the array.It does not hold the memory address of the array.
+
+:::danger[Note]
+- You must delete the dynamically allocated memory using `delete[]` to avoid memory leak.
+- Rule of thumb: If you use `new`, you must use `delete`.
+:::
+
+#### 2D Array
+
+> Matrix.
+
+```cpp
+int main() {
+    int arr[3][3] = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            cout << arr[i][j] << " ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
+```
