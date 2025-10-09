@@ -7,6 +7,15 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'My Docs',
+      head: [
+        {
+            tag: 'link',
+            attrs: {
+                rel: 'prefetch',
+                href: 'https://lorentz.d1o1.fun/',
+            },
+        },
+    ],
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
 			sidebar: [
 				{
