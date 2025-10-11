@@ -8,6 +8,9 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: "My Docs",
+			editLink: {
+				baseUrl: "https://github.com/DDA1O1/docs/tree/main",
+			},
 			head: [
 				{
 					tag: "link",
