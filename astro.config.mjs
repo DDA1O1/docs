@@ -16,7 +16,7 @@ export default defineConfig({
 					tag: "link",
 					attrs: {
 						rel: "prefetch",
-						href: "https://lorentz.d1o1.fun/",
+						href: "https://lorentz.d1o1.space/",
 					},
 				},
 			],
@@ -24,7 +24,12 @@ export default defineConfig({
 				{
 					icon: "github",
 					label: "GitHub",
-					href: "https://github.com/withastro/starlight",
+					href: "https://github.com/DDA1O1",
+				},
+				{
+					icon: "twitter",
+					label: "X",
+					href: "XXXXXXXXXXXXXXXXXXXXXXXXXX",
 				},
 			],
 			sidebar: [
