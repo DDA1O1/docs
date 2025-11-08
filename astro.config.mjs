@@ -27,9 +27,9 @@ export default defineConfig({
 					href: "https://github.com/DDA1O1",
 				},
 				{
-					icon: "twitter",
+					icon: "x.com",
 					label: "X",
-					href: "XXXXXXXXXXXXXXXXXXXXXXXXXX",
+					href: "https://x.com/DDA1O1",
 				},
 			],
 			sidebar: [
