@@ -87,16 +87,39 @@ Write code that is **accessible, performant, type-safe, and maintainable**. Focu
 
 ### Framework-Specific Guidance
 
-**Next.js:**
-- Use Next.js `<Image>` component for images
-- Use `next/head` or App Router metadata API for head elements
-- Use Server Components for async data fetching instead of async Client Components
+**Astro Starlight:**
+- Place all documentation content in `src/content/docs/` directory
+- Use `.md` or `.mdx` files for documentation pages
+- Define frontmatter at the top of each page with required fields:
+  - `title` - Page title (required)
+  - `description` - Page description for SEO
+  - `sidebar` - Customize sidebar behavior (`{ label, order, badge, hidden }`)
+- Use slug-based routing: `src/content/docs/guides/example.md` → `/guides/example`
+- Organize content with folders that match your sidebar structure
+- Use `autogenerate` in sidebar config for automatic navigation from folder structure
+- Leverage Starlight's built-in components:
+  - `<Card>` and `<CardGrid>` for callouts and feature grids
+  - `<Tabs>` and `<TabItem>` for tabbed content
+  - `<Aside>` for notes, tips, warnings, and cautions
+  - `<Steps>` for numbered step-by-step instructions
+  - `<Badge>` for status indicators
+- Keep custom components in `src/components/` and import them in MDX files
+- Use TypeScript for custom Astro components (`.astro` files support TypeScript in frontmatter)
+- Configure global settings in `astro.config.mjs` under the `starlight()` integration:
+  - `title`, `description`, `logo`, `favicon`
+  - `social` links for header
+  - `sidebar` navigation structure
+  - `editLink` for "Edit this page" functionality
+  - `head` for custom meta tags and scripts
+- Use `badge` property in sidebar items to highlight sections (e.g., "New", "Finished", "Beta")
+- Prefer `autogenerate` over manual sidebar entries for maintainability
+- Keep markdown content semantic: use proper heading hierarchy (h2, h3, h4)
+- Add code block language identifiers for syntax highlighting
+- Use relative links between docs pages: `[link text](../other-page)`
 
 **React 19+:**
 - Use ref as a prop instead of `React.forwardRef`
 
-**Solid/Svelte/Vue/Qwik:**
-- Use `class` and `for` attributes (not `className` or `htmlFor`)
 
 ---
 
