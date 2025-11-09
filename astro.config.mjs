@@ -31,6 +31,11 @@ export default defineConfig({
 					label: "X",
 					href: "https://x.com/DDA1O1",
 				},
+				{
+					icon: "email",
+					label: "Email",
+					href: "mailto:debashishdash101@gmail.com?subject=Hey%20there",
+				},
 			],
 			sidebar: [
 				{
