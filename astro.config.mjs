@@ -9,9 +9,6 @@ export default defineConfig({
     prefetchAll: true,
     defaultStrategy: 'viewport',
   },
-  experimental: {
-    clientPrerender: true,
-  },
   integrations: [
     starlight({
       title: "My Docs",
@@ -130,6 +127,8 @@ export default defineConfig({
     },
   },
   server: {
+    // For development not for production
+    // For production use your cloud provider headers(vercel.json)
     headers: {
       'Cache-Control': 'public, max-age=3600',
     },
