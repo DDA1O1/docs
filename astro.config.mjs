@@ -118,5 +118,20 @@ export default defineConfig({
         "@": "/src",
       },
     },
+    build: {
+      rollupOptions: {
+        output: {
+          // Add content hashes to filenames for cache busting
+          entryFileNames: 'entry.[hash].js',
+          chunkFileNames: 'chunks/chunk.[hash].js',
+          assetFileNames: 'assets/asset.[hash][extname]',
+        },
+      },
+    },
+  },
+  server: {
+    headers: {
+      'Cache-Control': 'public, max-age=3600',
+    },
   },
 });
