@@ -7,20 +7,14 @@
 <script>
   import Chart from 'chart.js/auto';
 
-  let complexityChart: Chart | null = null; // Variable to hold the chart instance
-
   function createChart() {
     const ctx = document.getElementById('complexityChart') as HTMLCanvasElement;
+    // Only create chart if the canvas exists on this page
     if (!ctx) return;
-
-    // If a chart instance already exists, destroy it before creating a new one
-    if (complexityChart) {
-      complexityChart.destroy();
-    }
 
     const points = Array.from({length: 20}, (_, i) => i);
 
-    complexityChart = new Chart(ctx, {
+    new Chart(ctx, {
       type: 'line',
       data: {
         labels: points,
@@ -49,7 +43,7 @@
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false, // Keep this false
+        maintainAspectRatio: false,
         scales: {
           y: {
             beginAtZero: true,
@@ -69,11 +63,7 @@
     });
   }
 
-  // Use Astro's page-load event for reliable execution on navigation
   document.addEventListener('astro:page-load', createChart);
-
-  // Initial call for the first page load
-  createChart();
 </script>
 
 <style>
