@@ -9,6 +9,9 @@ export default defineConfig({
     prefetchAll: true,
     defaultStrategy: 'viewport',
   },
+  experimental: {
+    clientPrerender: true,
+  },
   integrations: [
     starlight({
       title: "My Docs",
