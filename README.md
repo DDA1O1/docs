@@ -19,7 +19,7 @@ This documentation site is a living project, designed to store and share informa
 To run this project locally, follow these steps.
 ### Prerequisites
 
-You need to have [Bun](https://bun.sh/) installed on your machine.
+You need to have [pnpm](https://pnpm.io/) installed on your machine.
 
 ### Installation & Local Development
 
@@ -29,15 +29,15 @@ You need to have [Bun](https://bun.sh/) installed on your machine.
    cd docs
    ```
 
-2. Install dependencies using Bun:
+2. Install dependencies using pnpm:
    ```bash
-   bun install
+   pnpm install
    ```
    This will install all the necessary packages from package.json.
 
 3. Run the development server:
    ```bash
-   bun dev
+   pnpm dev
    ```
    This command starts the Astro development server, which will be accessible at http://localhost:4321.
 You can now open your browser and navigate to the local address to see the site running with hot-reloading enabled.
