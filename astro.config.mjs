@@ -106,6 +106,10 @@ export default defineConfig({
           label: "DSA",
           autogenerate: { directory: "DSA" },
         },
+        {
+          label: "Insight",
+          autogenerate: { directory: "Insight" },
+        },
       ],
     }),
   ],
